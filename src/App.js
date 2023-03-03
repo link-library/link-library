@@ -1,25 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+import { isLoggedInState } from './atoms';
+import { MainPage } from './Pages/MainPage';
+import { LoginPage } from './Pages/LoginPage';
+import { RegistrationPage } from './Pages/RegitrationPage';
 
-function App() {
+const App = () => {
+  const isLoggedIn = useRecoilValue(isLoggedInState);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/*"
+          element={isLoggedIn ? <MainPage /> : <Navigate to="/login" replace />}
+        />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/join" element={<RegistrationPage />} />
+      </Routes>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;

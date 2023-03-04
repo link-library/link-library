@@ -2,17 +2,30 @@ import React, { useState, useEffect } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState, usersState, isLoggedInState } from '../atoms';
 import { useNavigate, Navigate } from 'react-router-dom';
+import {
+  Container,
+  LoginBox,
+  Form1,
+  Form2,
+  Input,
+  Button,
+  Background,
+  ImgForm,
+  ElongatedButton,
+  InputContainer,
+  BottomMargin,
+} from '../Style/LoginPageStyle';
 
 export const LoginPage = () => {
   const [users, setUsers] = useRecoilState(usersState);
   const setUser = useSetRecoilState(userState);
   const [isRegistered, setIsRegistered] = useRecoilState(isLoggedInState);
   const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleLogin = (event) => {
     event.preventDefault();
-    const username = event.target.elements.username.value;
-    const password = event.target.elements.password.value;
     const user = users.find(
       (u) => u.username === username && u.password === password
     );
@@ -34,24 +47,36 @@ export const LoginPage = () => {
   }, [isRegistered, navigate]);
 
   return (
-    <div>
-      <h1>Login</h1>
-      <form onSubmit={handleLogin}>
-        <label>
-          Username:
-          <input type="text" name="username" />
-        </label>
-        <br />
-        <label>
-          Password:
-          <input type="password" name="password" />
-        </label>
-        <br />
-        <button type="submit">Login</button>
-      </form>
-      <button onClick={() => navigate('/join')}>회원가입</button>
-      {/* navigate는 이벤트로 사용시 useNavigate로 사용해야함. */}
-    </div>
+    <Background>
+      <Container>
+        <LoginBox>
+          <Form1>
+            <ImgForm />
+            <ElongatedButton />
+          </Form1>
+          <Form2 onSubmit={handleLogin}>
+            <h1>로그인</h1>
+            <BottomMargin />
+            <Input
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
+            />
+            <Input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+            />
+
+            <Button type="submit">로그인</Button>
+            <Button onClick={() => navigate('/join')}>회원가입</Button>
+            {/* navigate는 이벤트로 사용시 useNavigate로 사용해야함. */}
+          </Form2>
+        </LoginBox>
+      </Container>
+    </Background>
   );
 };
 

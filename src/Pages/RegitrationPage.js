@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
-import { usersState } from '../atoms';
-import { Navigate } from 'react-router-dom';
+import { saveUserToLocalStorage, usersState } from '../atoms';
+import { useNavigate } from 'react-router-dom';
 
 export const RegistrationPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isRegistered, setIsRegistered] = useState(false);
-
+  const navigate = useNavigate();
   const users = useRecoilValue(usersState);
   const setUsers = useSetRecoilState(usersState);
 
@@ -29,12 +29,15 @@ export const RegistrationPage = () => {
     const user = { username, password };
     setUsers([...users, user]);
     setIsRegistered(true);
+    saveUserToLocalStorage(user);
   };
 
-  if (isRegistered) {
-    console.log('회원가입 완료!');
-    return <Navigate to="/login" replace />;
-  }
+  useEffect(() => {
+    if (isRegistered) {
+      console.log('Registered!');
+      navigate('/login', { replace: true });
+    }
+  }, [isRegistered, navigate]);
 
   return (
     <div>

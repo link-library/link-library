@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState, usersState, isLoggedInState } from '../atoms';
 import { useNavigate, Navigate } from 'react-router-dom';
@@ -18,16 +18,20 @@ export const LoginPage = () => {
     );
     if (user) {
       // 입력한 정보가 DB에 있을 경우
-      setIsRegistered(true);
+
       setUser(user);
+      setIsRegistered(true);
     } else {
       alert('Invalid username or password');
     }
   };
 
-  if (isRegistered) {
-    return <Navigate to="/" replace />;
-  }
+  useEffect(() => {
+    if (isRegistered) {
+      navigate('/', { replace: true });
+      window.location.reload();
+    }
+  }, [isRegistered, navigate]);
 
   return (
     <div>

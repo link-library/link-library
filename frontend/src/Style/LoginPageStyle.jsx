@@ -2,17 +2,12 @@ import styled from 'styled-components';
 import loginBackground from '../images/logInBackground.png';
 import LinkLibraryLogo from '../images/LinkLibraryLogo.png';
 import LoginImage1 from '../images/LoginImage1.png';
+import { LoginSlider } from '../Components/LoginSlider';
 
 const Logo = styled.img`
   width: 250px;
   height: 50px;
   align-self: flex-start;
-`;
-
-const LoginImg1 = styled.img`
-  width: 240px;
-  height: 200px;
-  margin-top: 50px;
 `;
 
 export const Background = styled.div`
@@ -28,6 +23,7 @@ export const Background = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow-y: auto;
 `;
 
 export const Container = styled.div`
@@ -36,6 +32,14 @@ export const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media screen and (max-width: 768px) {
+    width: 90vw;
+    height: auto;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 50px;
+  }
 `;
 
 export const LoginBox = styled.div`
@@ -46,6 +50,13 @@ export const LoginBox = styled.div`
   padding: 30px;
   box-shadow: 0px 10px 10px 0px rgba(0, 0, 0, 0.2);
   display: flex;
+
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
 `;
 
 export const Form1 = styled.form`
@@ -55,23 +66,19 @@ export const Form1 = styled.form`
   flex: 1;
 
   padding-left: 30px;
-`;
 
-const ImgText = styled.span`
-  text-align: center;
-  margin-top: 10px;
-  margin-right: 30px;
+  @media screen and (max-width: 768px) {
+    padding-left: 0;
+    margin-bottom: 30px;
+  }
 `;
 
 export const ImgForm = () => {
   return (
     <>
       <Logo src={LinkLibraryLogo} alt="Link Library Logo" />
-      <LoginImg1 src={LoginImage1} alt="LoginImage1" />
-      <ImgText>
-        자주 방문하는 웹사이트들을
-        <br /> 효율적으로 관리하세요.
-      </ImgText>
+      <BottomMargin />
+      <LoginSlider />
     </>
   );
 };
@@ -82,42 +89,15 @@ export const Form2 = styled.form`
   align-items: center;
   flex: 1;
   padding-left: 20px;
-`;
 
-export const ElongatedButton = styled.button`
-  position: relative;
-  width: 50px;
-  height: 20px;
-  background-color: #f50057;
-  border: none;
-  border-radius: 10px;
-
-  ::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(45deg);
-    width: 20px;
-    height: 20px;
-    background-color: #ffffff;
-    border-radius: 3px;
-  }
-
-  ::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(-45deg);
-    width: 20px;
-    height: 20px;
-    background-color: #ffffff;
-    border-radius: 3px;
+  @media screen and (max-width: 768px) {
+    padding-left: 0;
+    width: 100%;
   }
 `;
+
 export const BottomMargin = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 5vh;
 `;
 
 export const Input = styled.input`
@@ -129,6 +109,9 @@ export const Input = styled.input`
   background-color: #ced4da;
   border-radius: 5px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  @media screen and (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 export const Button = styled.button`

@@ -5,6 +5,9 @@ import { isLoggedInState } from './atoms';
 import { MainPage } from './Pages/MainPage';
 import { LoginPage } from './Pages/LoginPage';
 import { RegistrationPage } from './Pages/RegitrationPage';
+import { SimpleSlider } from './Pages/SlidePage';
+import AsyncTest from './Pages/AsyncTest';
+import AsyncTest2 from './Pages/AsyncTest2';
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
@@ -25,6 +28,8 @@ const App = () => {
         />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/join" element={<RegistrationPage />} />
+        <Route path="/test" element={<AsyncTest />} />
+        <Route path="/test2" element={<AsyncTest2 />} />
       </Routes>
     </BrowserRouter>
   );

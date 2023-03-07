@@ -52,7 +52,7 @@ export const LoginPage = () => {
         <LoginBox>
           <Form1>
             <ImgForm />
-            <ElongatedButton />
+            <BottomMargin />
           </Form1>
           <Form2 onSubmit={handleLogin}>
             <h1>로그인</h1>

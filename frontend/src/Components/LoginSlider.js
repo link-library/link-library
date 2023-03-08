@@ -10,35 +10,40 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
 const LoginImg1 = styled.img`
-  width: 240px;
-  height: 200px;
+  width: 320px;
+  height: 250px;
   margin-top: 50px;
-  padding-left: 330px;
 `;
 
 const Cat2 = styled.img`
-  width: 240px;
-  height: 200px;
+  width: 320px;
+  height: 240px;
   margin-top: 50px;
-  padding-left: 330px;
+  /* padding-left: 330px; */
 `;
 
 const Cat3 = styled.img`
-  width: 240px;
-  height: 200px;
+  width: 320px;
+  height: 240px;
   margin-top: 50px;
-  padding-left: 330px;
+  /* padding-left: 330px; */
 `;
 
 const ImgText = styled.div`
   text-align: center;
   margin-top: 10px;
   margin-bottom: 10px;
+  margin-left: 20px;
 `;
 
 const SlideContainer = styled.div`
-  max-width: 300px;
-  margin: 0 auto;
+  max-width: 320px;
+  max-height: 240px;
+  margin-bottom: 150px;
+  justify-content: center;
+  .slick-slide > div {
+    margin-right: 20px;
+  }
 `;
 
 export const LoginSlider = () => {
@@ -48,6 +53,7 @@ export const LoginSlider = () => {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
+    arrows: false,
   };
 
   return (
@@ -65,14 +71,16 @@ export const LoginSlider = () => {
             <Cat2 src={cat2} alt="cat2" />
             <ImgText>
               고양이2
-              <br /> 사진입니다.
+              <br />
+              사진입니다.
             </ImgText>
           </div>
           <div>
             <Cat3 src={cat3} alt="cat2" />
             <ImgText>
               고양이3
-              <br /> 사진입니다.
+              <br />
+              사진입니다.
             </ImgText>
           </div>
         </Slider>

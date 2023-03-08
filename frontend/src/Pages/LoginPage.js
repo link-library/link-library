@@ -14,7 +14,12 @@ import {
   ElongatedButton,
   InputContainer,
   BottomMargin,
+  Logo,
 } from '../Style/LoginPageStyle';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import LockIcon from '@mui/icons-material/Lock';
+import LinkLibraryLogo from '../images/LinkLibraryLogo.png';
 
 export const LoginPage = () => {
   const [users, setUsers] = useRecoilState(usersState);
@@ -23,6 +28,7 @@ export const LoginPage = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [checkClicked, setCheckClicked] = useState(false);
 
   const handleLogin = (event) => {
     event.preventDefault();
@@ -39,6 +45,10 @@ export const LoginPage = () => {
     }
   };
 
+  const handleCheckClick = () => {
+    setCheckClicked(!checkClicked);
+  };
+
   useEffect(() => {
     if (isRegistered) {
       navigate('/', { replace: true });
@@ -51,6 +61,7 @@ export const LoginPage = () => {
       <Container>
         <LoginBox>
           <Form1>
+            <Logo src={LinkLibraryLogo} alt="Link Library Logo" />
             <ImgForm />
             <BottomMargin />
           </Form1>
@@ -69,6 +80,26 @@ export const LoginPage = () => {
               value={password}
               onChange={(event) => setPassword(event.target.value)}
             />
+            <div style={{ display: 'flex' }}>
+              <div onClick={handleCheckClick} style={{ color: '#4dabf7' }}>
+                {checkClicked ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}
+              </div>
+              <div
+                style={{ marginLeft: 10, marginBottom: 20, fontSize: '1.2rem' }}
+              >
+                로그인 상태 유지
+              </div>
+            </div>
+            <div style={{ display: 'flex' }}>
+              <div style={{ color: '#4dabf7' }}>
+                <LockIcon />
+              </div>
+              <div
+                style={{ marginLeft: 10, marginBottom: 20, fontSize: '1.2rem' }}
+              >
+                아이디 | 비밀번호 찾기
+              </div>
+            </div>
 
             <Button type="submit">로그인</Button>
             <Button onClick={() => navigate('/join')}>회원가입</Button>

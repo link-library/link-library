@@ -41,6 +41,7 @@ const SlideContainer = styled.div`
   max-height: 240px;
   margin-bottom: 150px;
   justify-content: center;
+  outline: none;
   .slick-slide > div {
     margin-right: 20px;
   }

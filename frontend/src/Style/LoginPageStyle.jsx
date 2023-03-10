@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import loginBackground from '../images/logInBackground.png';
 
 import { LoginSlider } from '../Components/LoginSlider';
@@ -11,6 +11,7 @@ export const Logo = styled.img`
 
   @media screen and (max-width: 768px) {
     align-self: center;
+    margin-top: 0;
   }
 `;
 
@@ -31,7 +32,7 @@ export const Background = styled.div`
 `;
 
 export const Container = styled.div`
-  width: 70vw;
+  width: ${({ width }) => (width ? width : '70vw')};
   height: 70vh;
   display: flex;
   justify-content: center;
@@ -42,7 +43,6 @@ export const Container = styled.div`
     height: 70vh;
     flex-direction: column;
     justify-content: flex-start;
-    padding-top: 50px;
   }
 `;
 
@@ -62,6 +62,28 @@ export const LoginBox = styled.div`
     align-items: center;
     padding: 20px;
   }
+`;
+
+export const RegistBox = styled.div`
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0px 10px 10px 0px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+`;
+
+export const RegistForm = styled.form`
+  width: 20vw;
 `;
 
 export const Form1 = styled.div`
@@ -84,7 +106,6 @@ export const Form2 = styled.form`
   text-align: center;
   font-size: 1.2rem;
   @media screen and (max-width: 768px) {
-    margin-top: 20px;
     width: 60vw;
     justify-content: center;
   }
@@ -112,6 +133,8 @@ export const Input = styled.input`
   background-color: #dee2e6;
   border-radius: 5px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  box-sizing: border-box; // 요소의 전체 너비와 높이에 패딩과 테두리를 포함하여 일관성을 유지합니다. padding-left로 width 달라지는 문제 수정.
   @media screen and (max-width: 768px) {
     width: 100%;
   }
@@ -127,12 +150,28 @@ export const Button = styled.button`
   cursor: pointer;
   margin-bottom: 20px;
   font-size: 1.4rem;
+  width: 100%;
+  box-sizing: border-box;
+
+  ${({ small, blue, idCheck }) =>
+    small &&
+    blue &&
+    css`
+      margin-left: 10px;
+      width: 100px;
+      height: 45px;
+      font-size: 1rem;
+      background-color: ${idCheck ? '#51cf66' : '#339af0'};
+    `}
 
   @media screen and (max-width: 768px) {
     width: 100%;
   }
 
   &:hover {
-    background-color: #ff6b6b;
+    ${({ small, blue }) =>
+      small && blue
+        ? 'background-color: #74c0fc;'
+        : 'background-color: #ff6b6b;'};
   }
 `;

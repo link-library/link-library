@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import { isLoggedInState } from '../atoms';
 import { useNavigate } from 'react-router-dom';
+import Header from '../Components/Header';
 
 export const MainPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
@@ -25,8 +26,7 @@ export const MainPage = () => {
 
   return (
     <div>
-      <h1>MainPage</h1>
-      <button onClick={handleLogout}>Logout</button>
+      <Header handleLogout={handleLogout} />
     </div>
   );
 };

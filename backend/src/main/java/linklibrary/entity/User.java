@@ -13,5 +13,5 @@ import javax.persistence.Table;
 public class User {
 
     @Id @GeneratedValue
-    private Long id;
+    private Integer id;
 }

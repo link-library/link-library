@@ -1,5 +1,6 @@
 package linklibrary.entity;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,10 +11,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name ="Users")
-@Getter
-@Setter
+@Data
 public class User {
 
     @Id @GeneratedValue
-    private String id;
+    private Long id;
 }

@@ -1,6 +1,5 @@
 import styled, { css } from 'styled-components';
 import loginBackground from '../images/logInBackground.png';
-
 import { LoginSlider } from '../Components/LoginSlider';
 
 export const Logo = styled.img`

@@ -30,6 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/login")
                 .successHandler(customLoginSuccessHandler())
                 .failureHandler(failureHandler())
+                .failureForwardUrl("/login/error")
                 .and()
                 .logout()
                 .logoutUrl("/logout")

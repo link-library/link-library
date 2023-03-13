@@ -4,28 +4,33 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @AllArgsConstructor
 @Data
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class Post {
 
     @Id
-    @GeneratedValue
-    @Column(name = "post_id")
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "post_id",unique = true, nullable = false)
+    private Long postId;
 
+    @Column(name = "album_name", unique = false, nullable = false)
     private String title; //제목
     @Lob //긴 문자열 받기
     private String memo; //메모
     private String url; //링크
+    @Column(name="created_at", unique = false, nullable = true)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
     private boolean bookmark; //북마크 여부
     private String createdBy; //생성자
-    private LocalDateTime createdDate; //생성일
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

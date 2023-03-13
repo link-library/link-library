@@ -9,20 +9,36 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class PostService {
-    private final PostRepository PostRepository;
+    private final PostRepository postRepository;
 
-    // 포스트 저장
+    /**
+     * 포스트 저장
+     */
     public PostDto createPost(PostDto postDto) throws IOException {
         Post post = PostMapper.convertToModel(postDto);
-        this.PostRepository.save(post);
+        this.postRepository.save(post);
         return PostMapper.convertToDto(post);
 
     }
-
+    /**
+     * 포스트 삭제
+     */
+    public void deletePost(Long postId) {
+        Optional<Post> post =postRepository.findById(postId);
+        // post가 빈값이라면?
+        if (post.isEmpty()) {
+            throw new NoSuchElementException(String.format("Post ID '%d'가 존재하지 않습니다.", postId));
+        }
+        // post 꺼내오기
+        Post findPost = post.get();
+        postRepository.delete(findPost);
+    }
 
 }

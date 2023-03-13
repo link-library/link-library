@@ -25,9 +25,26 @@ public class PostController {
         PostDto savedPostDto = postService.createPost(postDto);
         return new ResponseEntity<>(savedPostDto, HttpStatus.OK);
     }
+
+    /**
+     * 포스트 삭제하기
+     */
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{postId}")
     public void deletePost(@PathVariable final long postId) {
         postService.deletePost(postId);
-    }////
+    }
+
+    /**
+     * 포스트 수정
+     * 근데 리팩토링 필요함.
+     * 영한이가 BindinResult인가? 원래 데이터 보여주는식 있었던것 같음. 나중에 고치겠음
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping("/{postId}")
+    public PostDto updateAlbum(@PathVariable final long postId,
+                               @RequestBody final PostDto postDto) {
+        PostDto result = postService.change(postId, postDto);
+        return result;
+    }
 }

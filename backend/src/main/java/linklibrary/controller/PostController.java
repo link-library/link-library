@@ -36,7 +36,7 @@ public class PostController {
     }
 
     /**
-     * 포스트 수정
+     * 포스트 수정//
      * 근데 리팩토링 필요함.
      * 영한이가 BindinResult인가? 원래 데이터 보여주는식 있었던것 같음. 나중에 고치겠음
      */

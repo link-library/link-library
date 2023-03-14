@@ -19,7 +19,7 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id",unique = true, nullable = false)
-    private Long postId;
+    private Long id;
 
     @Column(name = "album_name", unique = false, nullable = false)
     private String title; //제목

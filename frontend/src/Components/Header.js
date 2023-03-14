@@ -99,7 +99,7 @@ export const Header = ({ handleLogout, handleMenuClick }) => {
         justifyContent="flex-end"
         sx={{
           position: 'absolute',
-          top: '30px',
+          top: '25px',
           right: '20px',
           width: 'auto',
           height: '30px',

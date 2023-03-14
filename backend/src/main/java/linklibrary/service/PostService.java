@@ -1,6 +1,6 @@
 package linklibrary.service;
 
-import linklibrary.dto.PostDto;
+import linklibrary.dto.PostFormDto;
 import linklibrary.entity.Post;
 import linklibrary.mapper.PostMapper;
 import linklibrary.repository.PostRepository;
@@ -21,10 +21,10 @@ public class PostService {
     /**
      * 포스트 저장
      */
-    public PostDto createPost(PostDto postDto) throws IOException {
-        Post post = PostMapper.convertToModel(postDto);
+    public Long createPost(PostFormDto postFormDto) throws IOException {
+        Post post = PostMapper.convertToModel(postFormDto);
         this.postRepository.save(post);
-        return PostMapper.convertToDto(post);
+        return post.getId();
 
     }
     /**
@@ -44,21 +44,21 @@ public class PostService {
      * 포스트 수정
      * 리팩토링 필요
      */
-    public PostDto change(Long postId, PostDto postDto) {
-        Optional<Post> post = postRepository.findById(postId);
-        if (post.isEmpty()) {
-            throw new NoSuchElementException(String.format("Post ID '%d'가 존재하지 않습니다", postId));
-        }
-        Post updatePost = post.get();
-        updatePost.setPostId(postDto.getPostId());
-        updatePost.setTitle(postDto.getTitle());
-        updatePost.setMemo(postDto.getMemo());
-        updatePost.setUrl(postDto.getUrl());
-        updatePost.setCategory(postDto.getCategory());
+    public Long change(Long postId, PostFormDto postFormDto) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("엔티티가 없습니다"));
+//        Optional<Post> post = postRepository.findById(postId);
+//        if (post.isEmpty()) {
+//            throw new NoSuchElementException(String.format("Post ID '%d'가 존재하지 않습니다", postId));
+//        }
+//        Post updatePost = post.get();
+//        updatePost.setPostId(postFormDto.getPostId()); //아이디 안 바뀜
+        post.setTitle(postFormDto.getTitle());
+        post.setMemo(postFormDto.getMemo());
+        post.setUrl(postFormDto.getUrl());
+        post.setCategory(postFormDto.getCategory());
+        return post.getId();
 
-
-        Post savedPost = postRepository.save(updatePost);
-        return PostMapper.convertToDto(savedPost);
+//        Post savedPost = postRepository.save(updatePost); // 변경감지로 save 안 해도 됨
     }
 
 }

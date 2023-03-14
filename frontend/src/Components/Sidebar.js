@@ -1,16 +1,12 @@
 import React from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { isSidebarOpenState } from '../atoms';
 
 export const Sidebar = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useRecoilState(isSidebarOpenState);
-
-  const handleToggle = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+  const isSidebarOpen = useRecoilValue(isSidebarOpenState);
 
   return (
-    <div
+    <div // 사이드바 오른쪽으로 밀리는 효과
       style={{
         position: 'fixed',
         top: '70px',

@@ -8,6 +8,7 @@ export const MainComponent = () => {
   return (
     <div
       style={{
+        // 메인 화면 컴포넌트가 오른쪽으로 밀리는 효과
         display: 'flex',
         flexDirection: 'row',
         backgroundColor: '#e7f5ff',

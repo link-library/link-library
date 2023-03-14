@@ -46,3 +46,8 @@ export const isLoggedInState = atom({
     },
   ],
 });
+
+export const isSidebarOpenState = atom({
+  key: 'isSidebarOpenState',
+  default: false,
+});

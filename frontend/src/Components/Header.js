@@ -71,13 +71,14 @@ const LogoutButton = ({ onClick }) => {
   );
 };
 
-export const Header = ({ handleLogout }) => {
+export const Header = ({ handleLogout, handleMenuClick }) => {
   return (
     <header
       style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
+        height: '70px',
       }}
     >
       <Logo
@@ -90,7 +91,7 @@ export const Header = ({ handleLogout }) => {
           height: '40px',
         }}
       />
-      <MenuButton />
+      <MenuButton onClick={handleMenuClick} />
       <Grid
         container
         direction="row"
@@ -105,9 +106,6 @@ export const Header = ({ handleLogout }) => {
         }}
         spacing={1}
       >
-        <Grid item>
-          <MenuButton />
-        </Grid>
         <Grid item>
           <ThemeToggleButton />
         </Grid>

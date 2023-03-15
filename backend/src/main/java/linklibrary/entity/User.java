@@ -1,5 +1,6 @@
 package linklibrary.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -18,6 +19,8 @@ public class User {
     @Column(name = "login_id")
     private Long id;
 
+
+    private String loginId;
     private String password;
 
     @Column(name = "created_at")
@@ -28,6 +31,8 @@ public class User {
 
     private String nickname;
 
+
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();
 

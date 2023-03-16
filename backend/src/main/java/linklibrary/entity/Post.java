@@ -36,16 +36,16 @@ public class Post {
     @JoinColumn(name = "user_id")
     private User user;
 
-    //기존에 있던 코드
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "category_id")
-//    private Category category;
+//    기존에 있던 코드
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
 
 
      // 이부분 추가하려고함  다대다 관계땜에  ////////////////////////////////
-     @ManyToMany(mappedBy = "posts")
-     private List<Category> categories = new ArrayList<>();
+//     @ManyToMany(mappedBy = "posts")
+//     private List<Category> categories = new ArrayList<>();
     /////////////////////////////////////////////////////////////////////
 
     @Column(name="created_at", unique = false, nullable = true)

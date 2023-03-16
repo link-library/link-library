@@ -16,7 +16,7 @@ import java.util.List;
 public class User {
 
     @Id @GeneratedValue
-    @Column(name = "login_id")
+    @Column(name = "user_id")
     private Long id;
 
 
@@ -36,6 +36,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();
 
+    //cascade 때문에 category 와 연관관계를 거는게 맞는지 모르겠음.
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 //    private List<Category> categories = new ArrayList<>();
 }

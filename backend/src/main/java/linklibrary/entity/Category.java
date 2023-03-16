@@ -9,6 +9,8 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.FetchType.LAZY;
+
 @Entity
 @AllArgsConstructor
 @Data
@@ -32,4 +34,14 @@ public class Category {
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "user_id")
 //    private User user;
+
+    /**
+     * 카테고리 부모-자식 관계
+     */
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name ="parent_id")
+    private Category parent;
+
+    @OneToMany(mappedBy = "parent")
+    private List<Category> child = new ArrayList<>();
 }

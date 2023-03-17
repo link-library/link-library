@@ -56,5 +56,5 @@ export const isSidebarOpenState = atom({
 export const expandedCategoryState = atom({
   // 카테고리 열림/닫힘 상태
   key: 'expandedCategoryState',
-  default: '',
+  default: [],
 });

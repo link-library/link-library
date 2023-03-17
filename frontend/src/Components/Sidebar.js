@@ -11,6 +11,8 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import { Typography } from '@mui/material';
 
 const rootCategories = [
   { id: '1', name: 'Loot 1' },
@@ -27,24 +29,58 @@ const categories = [
 ];
 
 const CategoryList = ({ categories }) => {
-  const [expandedCategory, setExpandedCategory] = useRecoilState(
+  const [expandedCategories, setExpandedCategories] = useRecoilState(
     expandedCategoryState
   );
 
-  const handleExpandClick = (categoryId) => {
-    setExpandedCategory(categoryId === expandedCategory ? '' : categoryId);
+  const handleExpandClick = (rootId) => {
+    setExpandedCategories({
+      ...expandedCategories,
+      [rootId]: !expandedCategories[rootId],
+    });
+  };
+
+  const handleAddIconClick = (event) => {
+    event.stopPropagation();
   };
 
   return (
     <List>
       {rootCategories.map((root) => (
         <React.Fragment key={root.id}>
-          <ListItemButton onClick={() => handleExpandClick(root.id)}>
-            <ListItemText primary={root.name} />
-            {expandedCategory === root.id ? <ExpandLess /> : <ExpandMore />}
+          <ListItemButton
+            onClick={() => handleExpandClick(root.id)}
+            sx={{
+              padding: '20px',
+              border: '1px solid',
+              borderColor: 'primary.main',
+              '&:hover .addIcon': {
+                opacity: 1,
+              },
+            }}
+          >
+            <ListItemText>
+              <Typography fontWeight="fontWeightBold">{root.name}</Typography>
+            </ListItemText>
+            <PlaylistAddIcon
+              className="addIcon"
+              onClick={handleAddIconClick}
+              sx={{
+                color: '#339af0',
+                marginRight: '5px',
+                cursor: 'pointer',
+                transition: 'opacity 0.2s',
+                opacity: 0,
+              }}
+            />
+            {expandedCategories[root.id] ? (
+              <ExpandLess sx={{ color: '#A5D8FF' }} />
+            ) : (
+              <ExpandMore sx={{ color: '#A5D8FF' }} />
+            )}
           </ListItemButton>
           <Collapse
-            in={expandedCategory === root.id}
+            in={expandedCategories[root.id]}
             timeout="auto"
             unmountOnExit
           >
@@ -113,9 +149,16 @@ export const Sidebar = () => {
         top: '70px',
         left: isSidebarOpen ? 0 : '-250px',
         width: '250px',
-        height: '100%',
+        height: 'calc(100% - 70px)',
         backgroundColor: '#FFFFFF',
         transition: 'left 0.5s ease-in-out',
+        overflowY: 'auto',
+        '&::-webkit-scrollbar': {
+          width: '0.4em',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          backgroundColor: '#4dabf7',
+        },
       }}
     >
       <CategoryList categories={categories} />

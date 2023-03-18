@@ -27,16 +27,14 @@ public class User {
     private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Role role; // USER, ADMIN
 
     private String nickname;
-
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();
 
-    //cascade 때문에 category 와 연관관계를 거는게 맞는지 모르겠음.
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-//    private List<Category> categories = new ArrayList<>();
+
+
 }

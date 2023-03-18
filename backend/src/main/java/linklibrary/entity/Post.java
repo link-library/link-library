@@ -36,22 +36,26 @@ public class Post {
     @JoinColumn(name = "user_id")
     private User user;
 
-//    기존에 있던 코드
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 
-
-
-     // 이부분 추가하려고함  다대다 관계땜에  ////////////////////////////////
-//     @ManyToMany(mappedBy = "posts")
-//     private List<Category> categories = new ArrayList<>();
-    /////////////////////////////////////////////////////////////////////
-
     @Column(name="created_at", unique = false, nullable = true)
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    // 이거 꼭 넣어야 할까요?
     private String createdBy; //생성자
+
+   // ==연관관계 메서드 ==//
+    public void setUser(User user){
+        this.user = user;
+        user.getPosts().add(this);
+    }
+    public void addCategory(Category category){
+        this.category = category;
+        category.getPosts().add(this);
+    }
 
 
 }

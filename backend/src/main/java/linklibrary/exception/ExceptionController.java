@@ -24,8 +24,8 @@ public class ExceptionController {
         return new ResponseEntity<>(new ResponseData(errorMessage, null), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ResponseData> handleIllegalArgumentException(IllegalArgumentException e) {
+    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
+    public ResponseEntity<ResponseData> handleIllegalArgumentException(Exception e) {
         return new ResponseEntity<>(new ResponseData(e.getMessage(), null), HttpStatus.BAD_REQUEST);
     }
 

@@ -1,4 +1,4 @@
-import { atom, useRecoilValue, useSetRecoilState } from 'recoil';
+import { atom } from 'recoil';
 
 export const userState = atom({
   // 현재 로그인된 유저 정보
@@ -57,4 +57,9 @@ export const expandedCategoryState = atom({
   // 카테고리 열림/닫힘 상태
   key: 'expandedCategoryState',
   default: [],
+});
+
+export const isCreatingNewCategoryState = atom({
+  key: 'isCreatingNewRootCategoryState',
+  default: false,
 });

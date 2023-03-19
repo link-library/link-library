@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
-import { expandedCategoryState, isSidebarOpenState } from '../atoms';
+import {
+  expandedCategoryState,
+  isCreatingNewCategoryState,
+  isSidebarOpenState,
+} from '../atoms';
 import {
   List,
   ListItemButton,
@@ -13,6 +17,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import { Typography } from '@mui/material';
+import NewCategoryInput from './NewCategoryInput';
 
 const rootCategories = [
   { id: '1', name: 'Loot 1' },
@@ -32,6 +37,9 @@ const CategoryList = ({ categories }) => {
   const [expandedCategories, setExpandedCategories] = useRecoilState(
     expandedCategoryState
   );
+  const [isCreatingNewCategory, setIsCreatingNewCategory] = useRecoilState(
+    isCreatingNewCategoryState
+  );
 
   const handleExpandClick = (rootId) => {
     setExpandedCategories({
@@ -41,7 +49,20 @@ const CategoryList = ({ categories }) => {
   };
 
   const handleAddIconClick = (event) => {
+    // 새 카테고리 추가 버튼 클릭시
     event.stopPropagation();
+    setIsCreatingNewCategory(true);
+  };
+
+  const handleCreateNewRootCategory = (newCategoryName) => {
+    // catetories에 새로운 항목 추가
+    if (newCategoryName.trim()) {
+      categories.push({
+        id: (rootCategories.length + 1).toString(),
+        name: newCategoryName,
+      });
+      setIsCreatingNewCategory(false);
+    }
   };
 
   return (
@@ -131,6 +152,12 @@ const CategoryList = ({ categories }) => {
                   </ListItemButton>
                 </React.Fragment>
               ))}
+              {isCreatingNewCategory && (
+                <NewCategoryInput
+                  onCreate={handleCreateNewRootCategory}
+                  onCancel={() => setIsCreatingNewCategory(false)}
+                />
+              )}
             </List>
           </Collapse>
         </React.Fragment>

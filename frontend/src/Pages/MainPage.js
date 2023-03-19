@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import { isLoggedInState, isSidebarOpenState } from '../atoms';
 import { useNavigate } from 'react-router-dom';
 import Header from '../Components/Header';
-import Category from '../Components/Category';
 import MainComponent from '../Components/MainComponent';
 
 export const MainPage = () => {

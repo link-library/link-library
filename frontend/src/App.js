@@ -5,7 +5,6 @@ import { isLoggedInState } from './atoms';
 import { MainPage } from './Pages/MainPage';
 import { LoginPage } from './Pages/LoginPage';
 import { RegistrationPage } from './Pages/RegitrationPage';
-import { SimpleSlider } from './Pages/SlidePage';
 import AsyncTest from './Pages/AsyncTest';
 import AsyncTest2 from './Pages/AsyncTest2';
 

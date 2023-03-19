@@ -35,7 +35,11 @@ export const RegistrationPage = () => {
       alert('아이디 중복 체크를 확인해주세요.');
       return;
     }
-    const user = { username, password };
+    const defaultCategories = [
+      { id: '1', name: '페이지 목록', categories: [] },
+      { id: '2', name: '미구현', categories: [] },
+    ];
+    const user = { username, password, categories: defaultCategories };
     setUsers([...users, user]);
     setIsRegistered(true);
     saveUserToLocalStorage(user);

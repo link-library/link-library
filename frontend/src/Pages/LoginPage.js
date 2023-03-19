@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { userState, usersState, isLoggedInState } from '../atoms';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   Container,
   LoginBox,
@@ -11,8 +11,6 @@ import {
   Button,
   Background,
   ImgForm,
-  ElongatedButton,
-  InputContainer,
   BottomMargin,
   Logo,
 } from '../Style/LoginPageStyle';

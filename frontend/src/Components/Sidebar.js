@@ -1,5 +1,6 @@
 import React from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
+import { v4 as uuidv4 } from 'uuid';
 import {
   expandedCategoryState,
   isCreatingNewCategoryState,
@@ -42,15 +43,17 @@ const CategoryList = ({ categories }) => {
     // 새 카테고리 추가 버튼 클릭시
     event.stopPropagation();
     setIsCreatingNewCategory(rootId);
+
+    setExpandedCategories({
+      ...expandedCategories,
+      [rootId]: true,
+    });
   };
 
   const handleCreateNewCategory = (newCategoryName, rootId) => {
     if (newCategoryName.trim()) {
       const newCategory = {
-        id: (
-          userCategories.find((root) => root.id === rootId).categories.length +
-          1
-        ).toString(),
+        id: uuidv4(),
         name: newCategoryName,
       };
 

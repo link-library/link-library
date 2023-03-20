@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -79,13 +80,15 @@ class CategoryServiceTest {
         //given
         User user = createUser();
         createCategoryList(user); //카테고리 20개 생성
+        em.flush();
+        em.clear();
         //when
-        System.out.println("user.getId() = " + user.getId());
         List<CategoryDto> categoryDtoList = categoryService.findAll(user.getId());
         //then
         for (CategoryDto categoryDto : categoryDtoList) {
             System.out.println(categoryDto.getName());
         }
+        assertThat(categoryDtoList.size()).isEqualTo(20);
 
     }
 

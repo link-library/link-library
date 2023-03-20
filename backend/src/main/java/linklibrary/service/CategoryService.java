@@ -37,7 +37,9 @@ public class CategoryService {
      */
     @Transactional(readOnly = true)
     public List<CategoryDto> findAll(Long userId) {
+        log.info("===========");
         List<Category> categoryList = categoryRepository.findByUserId(userId);//회원에 해당하는 카테고리들 반환
+        log.info("===========");
         List<CategoryDto> categoryDtoList =
                 categoryList.stream()
                 .map(c -> new CategoryDto(c.getId(), c.getName()))

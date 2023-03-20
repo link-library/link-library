@@ -4,11 +4,13 @@ import linklibrary.dto.JoinFormDto;
 import linklibrary.entity.User;
 import linklibrary.repository.UserRepository;
 import org.assertj.core.api.Assertions;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -24,15 +26,37 @@ class UserServiceTest {
     @Test
     public void 회원가입() throws Exception {
         //given
-        JoinFormDto joinFormDto = new JoinFormDto();
-        joinFormDto.setLoginId("abcde");
-        joinFormDto.setPassword("abcdefg1!");
-        joinFormDto.setNickname("요롱롱");
+        JoinFormDto joinFormDto = getJoinFormDto();
         //when
         Long joinUserId = userService.join(joinFormDto);
         //then
         User findUser = userRepository.findById(joinUserId).get();
-        Assertions.assertThat(findUser.getLoginId()).isEqualTo(joinFormDto.getLoginId());
-        Assertions.assertThat(findUser.getNickname()).isEqualTo(joinFormDto.getNickname());
+        assertThat(findUser.getLoginId()).isEqualTo(joinFormDto.getLoginId());
+        assertThat(findUser.getNickname()).isEqualTo(joinFormDto.getNickname());
+    }
+
+    @Test
+    public void 아이디중복체크() throws Exception {
+        //given
+        JoinFormDto joinFormDto1 = getJoinFormDto();
+        userService.join(joinFormDto1);
+        JoinFormDto joinFormDto2 = getJoinFormDto(); //중복 아이디
+        JoinFormDto joinFormDto3 = getJoinFormDto(); //중복되지 않은 아이디
+        joinFormDto3.setLoginId("abcdef");
+        //when
+        Boolean useful1 = userService.validLoginId(joinFormDto2.getLoginId()); //이미 있는 아이디로 회원가입 하려는 경우
+        Boolean useful2 = userService.validLoginId(joinFormDto3.getLoginId());//사용 가능한 아이디로 회원가입 하려는 경우
+        //then
+        assertThat(useful1).isFalse();
+        assertThat(useful2).isTrue();
+    }
+
+
+    private JoinFormDto getJoinFormDto() {
+        JoinFormDto joinFormDto = new JoinFormDto();
+        joinFormDto.setLoginId("abcde");
+        joinFormDto.setPassword("abcdefg1!");
+        joinFormDto.setNickname("요롱롱");
+        return joinFormDto;
     }
 }

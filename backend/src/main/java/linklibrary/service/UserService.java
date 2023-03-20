@@ -35,6 +35,14 @@ public class UserService {
         return user.getId();
     }
 
+    /**
+     * 아이디 중복 체크
+     */
+    public Boolean validLoginId(String loginId) {
+        User user = userRepository.findByLoginId(loginId);
+        return user == null ? true : false;
+    }
+
     private void validateDuplicateUser(User user) {
         User findUser = userRepository.findByLoginId(user.getLoginId());
         if(findUser != null) {

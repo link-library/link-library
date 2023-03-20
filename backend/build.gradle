@@ -38,7 +38,8 @@ dependencies {
 
 	//querydsl 적용
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
-	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
+    implementation 'org.jetbrains:annotations:23.0.0'
+    annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
 
 	//security 적용
 	implementation 'org.springframework.boot:spring-boot-starter-security'

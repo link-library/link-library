@@ -1,6 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
-import { expandedCategoryState, isSidebarOpenState } from '../atoms';
+import { v4 as uuidv4 } from 'uuid';
+import {
+  expandedCategoryState,
+  isCreatingNewCategoryState,
+  isSidebarOpenState,
+  updateUserCategories,
+  userCategoriesState,
+} from '../atoms';
 import {
   List,
   ListItemButton,
@@ -13,24 +20,16 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import { Typography } from '@mui/material';
-
-const rootCategories = [
-  { id: '1', name: 'Loot 1' },
-  { id: '2', name: 'Loot 2' },
-  { id: '3', name: 'Loot 3' },
-  { id: '4', name: 'Loot 4' },
-];
-
-const categories = [
-  { id: '1', name: 'Category 1' },
-  { id: '2', name: 'Category 2' },
-  { id: '3', name: 'Category 3' },
-  { id: '4', name: 'Category 4' },
-];
+import NewCategoryInput from './NewCategoryInput';
 
 const CategoryList = ({ categories }) => {
+  const [userCategories, setUserCategories] =
+    useRecoilState(userCategoriesState);
   const [expandedCategories, setExpandedCategories] = useRecoilState(
     expandedCategoryState
+  );
+  const [isCreatingNewCategory, setIsCreatingNewCategory] = useRecoilState(
+    isCreatingNewCategoryState
   );
 
   const handleExpandClick = (rootId) => {
@@ -40,13 +39,57 @@ const CategoryList = ({ categories }) => {
     });
   };
 
-  const handleAddIconClick = (event) => {
+  const handleAddIconClick = (event, rootId) => {
+    // 새 카테고리 추가 버튼 클릭시
     event.stopPropagation();
+    setIsCreatingNewCategory(rootId);
+
+    setExpandedCategories({
+      ...expandedCategories,
+      [rootId]: true,
+    });
+  };
+
+  const handleCreateNewCategory = (newCategoryName, rootId) => {
+    if (newCategoryName.trim()) {
+      const newCategory = {
+        id: uuidv4(),
+        name: newCategoryName,
+      };
+
+      const newUserCategories = userCategories.map((root) =>
+        root.id === rootId
+          ? { ...root, categories: [...root.categories, newCategory] }
+          : root
+      );
+      setUserCategories(newUserCategories);
+
+      const loggedInUserId = JSON.parse(localStorage.getItem('isLoggedIn'));
+      updateUserCategories(newUserCategories, loggedInUserId);
+
+      setIsCreatingNewCategory(null);
+    }
+  };
+
+  const handleDeleteCategory = (event, rootId, categoryId) => {
+    event.stopPropagation();
+    setUserCategories(
+      userCategories.map((root) =>
+        root.id === rootId
+          ? {
+              ...root,
+              categories: root.categories.filter(
+                (category) => category.id !== categoryId
+              ),
+            }
+          : root
+      )
+    );
   };
 
   return (
     <List>
-      {rootCategories.map((root) => (
+      {userCategories.map((root) => (
         <React.Fragment key={root.id}>
           <ListItemButton
             onClick={() => handleExpandClick(root.id)}
@@ -64,7 +107,7 @@ const CategoryList = ({ categories }) => {
             </ListItemText>
             <PlaylistAddIcon
               className="addIcon"
-              onClick={handleAddIconClick}
+              onClick={(event) => handleAddIconClick(event, root.id)}
               sx={{
                 color: '#339af0',
                 marginRight: '5px',
@@ -85,7 +128,7 @@ const CategoryList = ({ categories }) => {
             unmountOnExit
           >
             <List>
-              {categories.map((category) => (
+              {root.categories.map((category) => (
                 <React.Fragment key={category.id}>
                   <ListItemButton
                     sx={{
@@ -117,6 +160,9 @@ const CategoryList = ({ categories }) => {
                     />
                     <DeleteIcon
                       className="deleteIcon"
+                      onClick={(event) =>
+                        handleDeleteCategory(event, root.id, category.id)
+                      }
                       sx={{
                         display: { xs: 'none', sm: 'block' },
                         marginLeft: 'auto',
@@ -131,6 +177,14 @@ const CategoryList = ({ categories }) => {
                   </ListItemButton>
                 </React.Fragment>
               ))}
+              {isCreatingNewCategory === root.id && (
+                <NewCategoryInput
+                  onCreate={(newCategoryName) =>
+                    handleCreateNewCategory(newCategoryName, root.id)
+                  }
+                  onCancel={() => setIsCreatingNewCategory(null)}
+                />
+              )}
             </List>
           </Collapse>
         </React.Fragment>
@@ -161,7 +215,7 @@ export const Sidebar = () => {
         },
       }}
     >
-      <CategoryList categories={categories} />
+      <CategoryList />
     </Box>
   );
 };

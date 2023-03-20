@@ -1,9 +1,16 @@
-import { atom, useRecoilValue, useSetRecoilState } from 'recoil';
+import { atom } from 'recoil';
 
 export const userState = atom({
   // 현재 로그인된 유저 정보
   key: 'userState',
-  default: { username: '', password: '' },
+  default: JSON.parse(localStorage.getItem('usersState') ?? '[]'),
+  effects_UNSTABLE: [
+    ({ onSet }) => {
+      onSet((newValue) => {
+        localStorage.setItem('userState', JSON.stringify(newValue));
+      });
+    },
+  ],
 });
 
 export const usersState = atom({
@@ -40,7 +47,9 @@ export const isLoggedInState = atom({
           const storedUsers = JSON.parse(
             localStorage.getItem('usersState') ?? '[]'
           );
-          onSet(usersState, storedUsers);
+          const loggedInUser = storedUsers.find((user) => user.id === newValue);
+          onSet(userState, loggedInUser); // 로그인 된 유저 정보 불러오기
+          onSet(userCategoriesState, loggedInUser.categories); // 로그인 한 유저의 카테고리 정보 불러오기
         }
       });
     },
@@ -57,4 +66,38 @@ export const expandedCategoryState = atom({
   // 카테고리 열림/닫힘 상태
   key: 'expandedCategoryState',
   default: [],
+});
+
+export const isCreatingNewCategoryState = atom({
+  // 새로운 카테고리 생성 확인용
+  key: 'isCreatingNewCategoryState',
+  default: null,
+});
+
+export const updateUserCategories = (userCategories, loggedInUserId) => {
+  const users = JSON.parse(localStorage.getItem('usersState')) ?? [];
+  const updatedUsers = users.map((user) =>
+    user.id === loggedInUserId ? { ...user, categories: userCategories } : user
+  );
+  localStorage.setItem('usersState', JSON.stringify(updatedUsers));
+};
+
+export const userCategoriesState = atom({
+  key: 'userCategoriesState',
+  default: [
+    { id: '1', name: '페이지 목록', categories: [] },
+    { id: '2', name: '미구현', categories: [] },
+  ],
+  effects_UNSTABLE: [
+    ({ onSet }) => {
+      onSet((newValue, oldValue) => {
+        if (oldValue !== newValue) {
+          const loggedInUserId = JSON.parse(
+            localStorage.getItem('loggedInUser')
+          );
+          updateUserCategories(newValue, loggedInUserId);
+        }
+      });
+    },
+  ],
 });

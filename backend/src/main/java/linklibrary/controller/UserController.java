@@ -30,14 +30,8 @@ public class UserController {
         return new ResponseEntity<>(new ResponseData("회원가입 완료", savedUserId), HttpStatus.OK);
     }
 
-//    @PostMapping("/login")
-//    public ResponseEntity<ResponseData> login(@Valid @RequestBody LoginFormDto loginFormDto) {
-//
-//    }
-
     @GetMapping("/joinCheck")
     public String test(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-
         return principalDetails.getUsername();
     }
 }

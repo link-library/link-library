@@ -45,7 +45,7 @@ public class PostService {
      * 리팩토링 필요
      */
     public Long change(Long postId, PostFormDto postFormDto) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("엔티티가 없습니다"));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("포스트 엔티티가 없습니다"));
 
         post.setTitle(postFormDto.getTitle());
         post.setMemo(postFormDto.getMemo());

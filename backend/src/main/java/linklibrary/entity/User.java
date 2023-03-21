@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class User {
+public class User extends BaseEntity{
 
     @Id @GeneratedValue
     @Column(name = "user_id")
@@ -24,8 +24,8 @@ public class User {
     private String loginId;
     private String password;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+//    @Column(name = "created_at")
+//    private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
     private Role role; // USER, ADMIN

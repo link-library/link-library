@@ -1,10 +1,7 @@
 package linklibrary.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -15,8 +12,9 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @Data
+@Builder
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class Post {
+public class Post extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,12 +38,17 @@ public class Post {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @Column(name="created_at", unique = false, nullable = true)
-    @CreationTimestamp
-    private LocalDateTime createdAt;
+//    @Column(name="created_at", unique = false, nullable = true)
+//    @CreationTimestamp
+//    private LocalDateTime createdAt;
+//
+//    @Column(name="updated_at", unique = false, nullable = true)
+//    @CreationTimestamp
+//    private LocalDateTime updatedAt;
 
-    // 이거 꼭 넣어야 할까요?
-    private String createdBy; //생성자
+    private String createdBy; //생성자 닉네임
+
+
 
    // ==연관관계 메서드 ==//
     public void setUser(User user){

@@ -31,19 +31,10 @@ public class PostService {
      * 포스트 삭제
      */
     public void deletePost(Long postId) {
-        Optional<Post> post =postRepository.findById(postId);
-        // post가 빈값이라면? 에러 !
-        if (post.isEmpty()) {
-            throw new NoSuchElementException(String.format("Post ID '%d'가 존재하지 않습니다.", postId));
-        }
-        // post 꺼내오기
-        Post findPost = post.get();
-        postRepository.delete(findPost);
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("포스트 엔티티가 없습니다"));
+        postRepository.delete(post);
     }
-    /**
-     * 포스트 수정
-     * 리팩토링 필요
-     */
+
     public Long change(Long postId, PostFormDto postFormDto) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("포스트 엔티티가 없습니다"));
 

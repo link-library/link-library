@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 @Builder
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class Post {
+public class Post extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,13 +38,13 @@ public class Post {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @Column(name="created_at", unique = false, nullable = true)
-    @CreationTimestamp
-    private LocalDateTime createdAt;
-
-    @Column(name="updated_at", unique = false, nullable = true)
-    @CreationTimestamp
-    private LocalDateTime updatedAt;
+//    @Column(name="created_at", unique = false, nullable = true)
+//    @CreationTimestamp
+//    private LocalDateTime createdAt;
+//
+//    @Column(name="updated_at", unique = false, nullable = true)
+//    @CreationTimestamp
+//    private LocalDateTime updatedAt;
 
     private String createdBy; //생성자 닉네임
 

@@ -28,7 +28,6 @@ public class UserService {
                 .password(encoder.encode(joinFormDto.getPassword())) //비밀번호 인코딩
                 .nickname(joinFormDto.getNickname())
                 .role(Role.ROLE_USER) //user 등급으로 회원가입
-                .createdAt(LocalDateTime.now()) //생성일
                 .build();
         validateDuplicateUser(user); // 중복회원 검사
         userRepository.save(user);

@@ -42,21 +42,18 @@ public class InitDB {
                     .loginId("abcde1")
                     .password(encoder.encode("abcdefg1!"))
                     .nickname("nickname1")
-                    .createdAt(LocalDateTime.now())
                     .role(Role.ROLE_USER)
                     .build();
             User user2 = User.builder()
                     .loginId("abcde2")
                     .password(encoder.encode("abcdefg1!"))
                     .nickname("nickname2")
-                    .createdAt(LocalDateTime.now())
                     .role(Role.ROLE_USER)
                     .build();
             User user3 = User.builder()
                     .loginId("abcde3")
                     .password(encoder.encode("abcdefg1!"))
                     .nickname("nickname3")
-                    .createdAt(LocalDateTime.now())
                     .role(Role.ROLE_USER)
                     .build();
             em.persist(user1);

@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 
 @Service
@@ -40,6 +41,25 @@ public class UserService {
     public Boolean validLoginId(String loginId) {
         User user = userRepository.findByLoginId(loginId);
         return user == null ? true : false;
+    }
+
+    /**
+     * 닉네임 중복 체크
+     */
+    public Boolean validNickname(String nickname) {
+        User user = userRepository.findByNickname(nickname);
+        return user == null ? true : false;
+    }
+
+    /**
+     * 회원 찾기
+     */
+    public User findUser(String loginId) {
+        User user = userRepository.findByLoginId(loginId);
+        if(user == null) {
+            throw new EntityNotFoundException("유저 엔티티가 없습니다");
+        }
+        return user;
     }
 
     private void validateDuplicateUser(User user) {

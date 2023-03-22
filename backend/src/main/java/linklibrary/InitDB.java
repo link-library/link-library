@@ -33,9 +33,9 @@ public class InitDB {
         private final BCryptPasswordEncoder encoder;
 
         /**
-         * USER1 : Category1(post1,post2,post3)  Category2(post4,post5)
-         * USER2 : Category3(post6)
-         * USER3 :
+         * USER1 : id:abcde1  pw:abcdefg1!  |  Category1(post1,post2,post3)  Category2(post4,post5)
+         * USER2 : id:abcde2  pw:abcdefg1!  |  Category3(post6)
+         * USER3 : id:abcde3  pw:abcdefg1!  |
          */
         public void init() {
             User user1 = User.builder()
@@ -90,8 +90,6 @@ public class InitDB {
         }
     }
 
-    public void postInit() {
-    }
 }
 
 

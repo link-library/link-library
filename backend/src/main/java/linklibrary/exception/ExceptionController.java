@@ -8,6 +8,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.persistence.EntityNotFoundException;
+
 @ControllerAdvice
 @Slf4j
 public class ExceptionController {
@@ -24,8 +26,9 @@ public class ExceptionController {
         return new ResponseEntity<>(new ResponseData(errorMessage, null), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
-    public ResponseEntity<ResponseData> handleIllegalArgumentException(Exception e) {
+    //조회시 엔티티가 없을 때, 생성시 이미 존재할 때
+    @ExceptionHandler({EntityNotFoundException.class, IllegalStateException.class})
+    public ResponseEntity<ResponseData> handleEntityNotFoundExceptionIllegalStateException(Exception e) {
         return new ResponseEntity<>(new ResponseData(e.getMessage(), null), HttpStatus.BAD_REQUEST);
     }
 

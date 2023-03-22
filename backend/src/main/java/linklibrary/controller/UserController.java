@@ -34,22 +34,34 @@ public class UserController {
         return new ResponseEntity<>(new ResponseData("회원가입 완료", savedUserId), HttpStatus.OK);
     }
 
+    /**
+     * 회원가입시 같은 아이디가 있는지 중복체크
+     */
     @PostMapping("/validation-id")
     public ResponseEntity<?> validateUserId(@Valid @RequestBody ValidateIdForm validateIdForm) {
         Boolean useful = userService.validLoginId(validateIdForm.loginId);
         String msg = "";
         if(useful) {
-            msg = "사용가능한 아이디 입니다.";
+            msg = "사용 가능한 아이디 입니다.";
         } else {
             msg = "이미 사용중인 아이디 입니다.";
         }
         return ResponseEntity.ok(new ResponseData(msg, null));
     }
 
-    @GetMapping("/joinCheck")
-    public String test(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return principalDetails.getUsername();
+    /**
+     * 회원가입시 같은 닉네임이 있는지 중복체크
+     */
+    @PostMapping("/validation-nickname")
+    public ResponseEntity<?> validateNickname(@Valid @RequestBody ValidateNicknameForm validateNicknameForm) {
+        Boolean useful = userService.validNickname(validateNicknameForm.getNickname());
+        String msg ="";
+        if(useful) msg = "사용 가능한 닉네임 입니다.";
+        else msg = "이미 사용중인 닉네임 입니다.";
+        return ResponseEntity.ok(new ResponseData(msg, null));
     }
+
+
 
     @Data
     @AllArgsConstructor
@@ -57,5 +69,16 @@ public class UserController {
         @NotBlank(message = "아이디는 필수 입력 값입니다.")
         @Pattern(regexp = "^[a-z0-9]{4,20}$", message = "아이디는 영어 소문자와 숫자만 사용하여 4~20자리여야 합니다.")
         private String loginId;
+    }
+    @Data
+    @AllArgsConstructor
+    static class ValidateNicknameForm {
+        @NotBlank(message = "아이디는 필수 입력 값입니다.")
+        private String nickname;
+    }
+
+    @GetMapping("/joinCheck")
+    public String test(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        return principalDetails.getUsername();
     }
 }

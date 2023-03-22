@@ -42,6 +42,14 @@ public class UserService {
         return user == null ? true : false;
     }
 
+    /**
+     * 닉네임 중복 체크
+     */
+    public Boolean validNickname(String nickname) {
+        User user = userRepository.findByNickname(nickname);
+        return user == null ? true : false;
+    }
+
     private void validateDuplicateUser(User user) {
         User findUser = userRepository.findByLoginId(user.getLoginId());
         if(findUser != null) {

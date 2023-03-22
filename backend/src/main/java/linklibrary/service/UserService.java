@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 
 @Service
@@ -55,7 +56,10 @@ public class UserService {
      */
     public User findUser(String loginId) {
         User user = userRepository.findByLoginId(loginId);
-        if(user == null)
+        if(user == null) {
+            throw new EntityNotFoundException("유저 엔티티가 없습니다");
+        }
+        return user;
     }
 
     private void validateDuplicateUser(User user) {

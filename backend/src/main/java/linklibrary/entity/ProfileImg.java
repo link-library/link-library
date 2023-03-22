@@ -2,10 +2,7 @@ package linklibrary.entity;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter @Setter
@@ -20,4 +17,8 @@ public class ProfileImg {
     private Long id;
 
     private String storeFileName; //저장할때 쓰는 파일 이름
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    User user;
 }

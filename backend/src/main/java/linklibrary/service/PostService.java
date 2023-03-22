@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -31,12 +32,12 @@ public class PostService {
      * 포스트 삭제
      */
     public void deletePost(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("포스트 엔티티가 없습니다"));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException("포스트 엔티티가 없습니다"));
         postRepository.delete(post);
     }
 
     public Long change(Long postId, PostFormDto postFormDto) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("포스트 엔티티가 없습니다"));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException("포스트 엔티티가 없습니다"));
 
         post.setTitle(postFormDto.getTitle());
         post.setMemo(postFormDto.getMemo());

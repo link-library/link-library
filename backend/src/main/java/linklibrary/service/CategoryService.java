@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +28,7 @@ public class CategoryService {
     }
 
     public Long editCategory(CategoryDto categoryDto, Long categoryId) {
-        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new IllegalArgumentException("카테고리 엔티티가 없습니다"));
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new EntityNotFoundException("카테고리 엔티티가 없습니다"));
         category.setName(categoryDto.getName());
         return category.getId();
     }

@@ -1,12 +1,9 @@
 package linklibrary.controller;
 
-import linklibrary.dto.JoinFormDto;
-import linklibrary.dto.LoginFormDto;
-import linklibrary.dto.ResponseData;
+import linklibrary.dto.*;
 import linklibrary.security.auth.PrincipalDetails;
+import linklibrary.service.ProfileImgService;
 import linklibrary.service.UserService;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,8 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,6 +23,7 @@ import javax.validation.constraints.Pattern;
 public class UserController {
 
     private final UserService userService;
+    private final ProfileImgService profileImgService;
 
     @PostMapping("/join")
     public ResponseEntity<ResponseData> joinUser(@Valid @RequestBody JoinFormDto joinFormDto) {
@@ -39,7 +36,7 @@ public class UserController {
      */
     @PostMapping("/validation-id")
     public ResponseEntity<?> validateUserId(@Valid @RequestBody ValidateIdForm validateIdForm) {
-        Boolean useful = userService.validLoginId(validateIdForm.loginId);
+        Boolean useful = userService.validLoginId(validateIdForm.getLoginId());
         String msg = "";
         if(useful) {
             msg = "사용 가능한 아이디 입니다.";
@@ -61,20 +58,14 @@ public class UserController {
         return ResponseEntity.ok(new ResponseData(msg, null));
     }
 
+    /**
+     * 회원 프로필 이미지 업로드
+     */
+    @PostMapping("/profileImg")
+    public ResponseEntity<?> uploadImg(@AuthenticationPrincipal PrincipalDetails principalDetails, ProfileImgDto profileImgDto) throws IOException {
+        profileImgService.uploadImg(profileImgDto.getProfileImg());
+        userService.
 
-
-    @Data
-    @AllArgsConstructor
-    static class ValidateIdForm {
-        @NotBlank(message = "아이디는 필수 입력 값입니다.")
-        @Pattern(regexp = "^[a-z0-9]{4,20}$", message = "아이디는 영어 소문자와 숫자만 사용하여 4~20자리여야 합니다.")
-        private String loginId;
-    }
-    @Data
-    @AllArgsConstructor
-    static class ValidateNicknameForm {
-        @NotBlank(message = "아이디는 필수 입력 값입니다.")
-        private String nickname;
     }
 
     @GetMapping("/joinCheck")

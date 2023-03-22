@@ -50,6 +50,14 @@ public class UserService {
         return user == null ? true : false;
     }
 
+    /**
+     * 회원 찾기
+     */
+    public User findUser(String loginId) {
+        User user = userRepository.findByLoginId(loginId);
+        if(user == null)
+    }
+
     private void validateDuplicateUser(User user) {
         User findUser = userRepository.findByLoginId(user.getLoginId());
         if(findUser != null) {

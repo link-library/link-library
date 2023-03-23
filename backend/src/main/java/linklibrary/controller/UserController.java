@@ -8,16 +8,22 @@ import linklibrary.service.ProfileImgService;
 import linklibrary.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Path;
 import javax.validation.Valid;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 @RestController
 @RequiredArgsConstructor
@@ -68,13 +74,13 @@ public class UserController {
      */
     @PostMapping("/profileImg")
     public ResponseEntity<?> uploadImg(@AuthenticationPrincipal PrincipalDetails principalDetails, ProfileImgDto profileImgDto) throws IOException {
-        ProfileImg profileImg = profileImgService.uploadImg(profileImgDto.getProfileImg());
-        User user = userService.findUser(principalDetails.getUsername()); //로그인 아이디로 user 찾음
+        User loginUser = principalDetails.getUser();
+        ProfileImg profileImg = profileImgService.uploadImg(profileImgDto.getProfileImg(), loginUser);
         //기존에 프로필 사진이 있다면 삭제
-        if (user.getProfileImg() != null) {
+        if (loginUser.getProfileImg() != null) {
             //나중에 추가
         }
-        user.setProfileImg(profileImg); //프로필 연관관계 설정
+        loginUser.setProfileImg(profileImg); //프로필 연관관계 설정
         return ResponseEntity.ok(new ResponseData("이미지 업로드 완료", null));
     }
 
@@ -83,10 +89,30 @@ public class UserController {
      */
     @GetMapping("/user-info")
     public ResponseEntity<?> getUserPage(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        //여기서 사진이랑 이것저것 dto 만들어서 반환
+        //여기서 마이페이지 정보들과 사진이 저장된 이름(UUID.png) 를 넘김
+        //프론트단에서 src="images/{imgName} 하면 getImage() 에서 넘겨줌
+        //따라서 여기선 저장된 이미지 이름만 넘기면 됨
         return null;
     }
 
+    /**
+     * 로컬 경로에 해당하는 이미지 불러오기
+     */
+    @GetMapping("/images/{imgName}")
+    public ResponseEntity<byte[]> getImage(@PathVariable String imgName) throws IOException {
+        // 로컬 경로에 있는 이미지 파일을 읽어와서 byte 배열로 변환합니다.
+        String fullPath = profileImgService.getFullPath(imgName);
+        File imageFile = new File(fullPath); //파일경로에 해당하는걸 File 로 만듦
+        byte[] imageBytes = new byte[(int) imageFile.length()]; //File 크기만큼의 byte 배열 생성
+        FileInputStream inputStream = new FileInputStream(imageFile); //File 로 FileInputStream 생성
+        inputStream.read(imageBytes); //byte 배열 크기만큼 inputStream 에서 읽어 배열에 담음
+        inputStream.close();
+
+        // HTTP 응답으로 byte 배열과 MIME 타입을 전송
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG) //메서드는 응답 바디의 타입을 image/jpeg 로 설정
+                .body(imageBytes);
+    }
 
     @GetMapping("/joinCheck")
     public String test(@AuthenticationPrincipal PrincipalDetails principalDetails) {

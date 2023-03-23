@@ -1,6 +1,7 @@
 package linklibrary.service;
 
 import linklibrary.entity.ProfileImg;
+import linklibrary.entity.User;
 import linklibrary.repository.ProfileImgRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,13 +24,19 @@ public class ProfileImgService {
     @Value("${file.dir}")
     String fileDir;
 
-    public ProfileImg uploadImg(MultipartFile multipartFile)throws IOException {
+    public ProfileImg uploadImg(MultipartFile multipartFile, User user)throws IOException {
         if(multipartFile.isEmpty()) return null;
 
         String originalFileName = multipartFile.getOriginalFilename();
+        log.info("originalFileName= " + originalFileName);
         String storeFileName = createStoreFileName(originalFileName);
+        log.info("storeFileName= " + storeFileName);
+        System.out.println(getFullPath(storeFileName));
         multipartFile.transferTo(new File(getFullPath(storeFileName))); //fileDir 경로 파일에 사진 저장
-        return ProfileImg.builder().storeFileName(storeFileName).build();
+        log.info("사진 저장");
+        ProfileImg profileImg = ProfileImg.builder().storeFileName(storeFileName).user(user).build();
+        profileImgRepository.save(profileImg);
+        return profileImg;
     }
 
     /**

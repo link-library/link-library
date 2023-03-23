@@ -24,4 +24,4 @@ logging.level:
   org.hibernate.SQL: debug # 디버그 모드로 sql 출력
 
 file:
-  dir: C:/Users/김진수/link-library
+  dir: C:/Users/김진수/link-library/

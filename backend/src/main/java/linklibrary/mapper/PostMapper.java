@@ -1,5 +1,6 @@
 package linklibrary.mapper;
 
+import linklibrary.dto.PostDto;
 import linklibrary.dto.PostFormDto;
 import linklibrary.entity.Post;
 
@@ -35,4 +36,20 @@ public class PostMapper {
         return posts.stream().map(PostMapper::convertToDto).collect(Collectors.toList());
         /** 요소들을 Dto로 가공하였다면 collect 를 이용하여 결과를 리턴받을 수 있음 */
     }
+
+    /**조회용 DTO 만듬.
+     * 데이터 생략없이 전부 보여주는 폼이 필요한 상태.
+     * */
+    public static PostDto convertToDtoAll(Post post){
+        PostDto postDto = new PostDto();
+
+
+        return postDto;
+    }
+    public static List<PostDto> convertToDtoListAll(List<Post> posts) {
+        return posts.stream().map(PostMapper::convertToDtoAll).collect(Collectors.toList());
+        /** 요소들을 Dto로 가공하였다면 collect 를 이용하여 결과를 리턴받을 수 있음 */
+    }
+
+
 }

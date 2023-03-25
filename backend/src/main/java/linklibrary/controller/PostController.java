@@ -53,8 +53,8 @@ public class PostController {
      * 포스트 전체 조회
      */
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("posts/{categoryName}")
-    public List<PostDto> getAlbumList(
+    @GetMapping("/posts")
+    public List<PostDto> getPostList(
             @RequestParam(required = false, defaultValue = "") final String keyword, //포스트에 들어가는 글자
             @RequestParam(required = false, defaultValue = "byDate") final String sort) {
         List<PostDto> postDtos = postService.getPostList(keyword, sort);

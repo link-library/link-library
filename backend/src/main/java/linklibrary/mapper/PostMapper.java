@@ -42,7 +42,14 @@ public class PostMapper {
      * */
     public static PostDto convertToDtoAll(Post post){
         PostDto postDto = new PostDto();
-
+        postDto.setId(post.getId());
+        postDto.setTitle(post.getTitle());
+        postDto.setMemo(post.getMemo());
+        postDto.setUrl(post.getUrl());
+        postDto.setBookmark(post.isBookmark());
+        /**  문제 터지는 것들 */
+        postDto.setCategory(post.getCategory());
+        postDto.setUser(post.getUser());
 
         return postDto;
     }

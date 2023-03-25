@@ -6,20 +6,13 @@ import linklibrary.entity.Post;
 import linklibrary.mapper.PostMapper;
 import linklibrary.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -79,7 +72,6 @@ public class PostService {
         List<PostDto> postDtos = PostMapper.convertToDtoListAll(posts);
         return postDtos;
     }
-
 
 
 }

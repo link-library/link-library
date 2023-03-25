@@ -89,15 +89,23 @@ export const userCategoriesState = atom({
     { id: '2', name: '미구현', categories: [] },
   ],
   effects_UNSTABLE: [
-    ({ onSet }) => {
-      onSet((newValue, oldValue) => {
-        if (oldValue !== newValue) {
-          const loggedInUserId = JSON.parse(
-            localStorage.getItem('loggedInUser')
-          );
+    ({ onSet, setSelf }) => {
+      onSet((newValue) => {
+        const loggedInUserId = JSON.parse(localStorage.getItem('isLoggedIn'));
+        if (loggedInUserId !== null) {
           updateUserCategories(newValue, loggedInUserId);
         }
       });
+    },
+    ({ setSelf }) => {
+      const loggedInUserId = JSON.parse(localStorage.getItem('isLoggedIn'));
+      if (loggedInUserId !== null) {
+        const users = JSON.parse(localStorage.getItem('usersState')) ?? [];
+        const loggedInUser = users.find((user) => user.id === loggedInUserId);
+        if (loggedInUser) {
+          setSelf(loggedInUser.categories);
+        }
+      }
     },
   ],
 });

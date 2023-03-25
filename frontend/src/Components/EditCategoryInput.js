@@ -3,8 +3,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import CheckIcon from '@mui/icons-material/Check';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const NewCategoryInput = ({ onCreate, onCancel }) => {
-  const [inputValue, setInputValue] = useState('');
+const EditCategoryInput = ({ currentName, onCreate, onCancel }) => {
+  const [inputValue, setInputValue] = useState(currentName);
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -58,4 +58,4 @@ const NewCategoryInput = ({ onCreate, onCancel }) => {
   );
 };
 
-export default NewCategoryInput;
+export default EditCategoryInput;

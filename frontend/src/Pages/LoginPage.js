@@ -37,7 +37,7 @@ export const LoginPage = () => {
       // 입력한 정보가 DB에 있을 경우
 
       setUser(user);
-      setIsRegistered(true);
+      setIsRegistered(username);
     } else {
       alert('Invalid username or password');
     }
@@ -48,7 +48,7 @@ export const LoginPage = () => {
   };
 
   useEffect(() => {
-    if (isRegistered) {
+    if (isRegistered !== null) {
       navigate('/', { replace: true });
       window.location.reload();
     }

@@ -9,7 +9,7 @@ export const MainPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
   const navigate = useNavigate();
   const handleLogout = () => {
-    setIsLoggedIn(false);
+    setIsLoggedIn(null);
     navigate('/', { replace: true });
     window.location.reload();
   };
@@ -21,13 +21,13 @@ export const MainPage = () => {
   };
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (isLoggedIn === null) {
       navigate('/login', { replace: true });
       window.location.reload();
     }
   }, [isLoggedIn, navigate]);
 
-  if (!isLoggedIn) {
+  if (isLoggedIn === null) {
     return null;
   }
 

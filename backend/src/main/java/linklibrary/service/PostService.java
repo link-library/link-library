@@ -5,7 +5,9 @@ import linklibrary.dto.PostFormDto;
 import linklibrary.entity.Post;
 import linklibrary.mapper.PostMapper;
 import linklibrary.repository.PostRepository;
+import linklibrary.security.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,7 +61,7 @@ public class PostService {
      * posts에 있는 각 앨범을 하나씩 하나씩 `PostMapper.converToDto`로 변화시킨 이후 리스트형태로 다시 모읍니다
      * `collect(Collectors.toList())`.
      */
-    public List<PostDto> getPostList(String keyword, String sort) {
+    public List<PostDto> getPostList(@AuthenticationPrincipal PrincipalDetails principalDetails,String keyword, String sort) {
         List<Post> posts;
         if (Objects.equals(sort, "byName")) {
             posts = postRepository.findByTitleContainingOrderByTitleAsc(keyword);
@@ -69,7 +71,7 @@ public class PostService {
             throw new IllegalArgumentException("알 수 없는 정렬 기준입니다");
         }
         //
-        List<PostDto> postDtos = PostMapper.convertToDtoListAll(posts);
+        List<PostDto> postDtos = PostMapper.convertToDtoListAll(principalDetails,posts);
         return postDtos;
     }
 

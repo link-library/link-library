@@ -3,11 +3,13 @@ package linklibrary.controller;
 import linklibrary.dto.PostDto;
 import linklibrary.dto.PostFormDto;
 import linklibrary.dto.ResponseData;
+import linklibrary.security.auth.PrincipalDetails;
 import linklibrary.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -56,8 +58,9 @@ public class PostController {
     @GetMapping("/posts")
     public List<PostDto> getPostList(
             @RequestParam(required = false, defaultValue = "") final String keyword, //포스트에 들어가는 글자
-            @RequestParam(required = false, defaultValue = "byDate") final String sort) {
-        List<PostDto> postDtos = postService.getPostList(keyword, sort);
+            @RequestParam(required = false, defaultValue = "byDate") final String sort,
+    @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        List<PostDto> postDtos = postService.getPostList(principalDetails,keyword, sort);
         return postDtos;
     }
 }

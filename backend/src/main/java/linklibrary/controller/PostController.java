@@ -1,5 +1,6 @@
 package linklibrary.controller;
 
+import linklibrary.dto.PostDto;
 import linklibrary.dto.PostFormDto;
 import linklibrary.dto.ResponseData;
 import linklibrary.service.PostService;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,5 +48,16 @@ public class PostController {
                                    @Valid @RequestBody final PostFormDto postFormDto) {
         Long updatedPostId = postService.change(postId, postFormDto);
         return new ResponseEntity<>(new ResponseData("포스트 수정 완료", updatedPostId), HttpStatus.OK);
+    }
+    /**
+     * 포스트 전체 조회
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/posts")
+    public List<PostDto> getPostList(
+            @RequestParam(required = false, defaultValue = "") final String keyword, //포스트에 들어가는 글자
+            @RequestParam(required = false, defaultValue = "byDate") final String sort) {
+        List<PostDto> postDtos = postService.getPostList(keyword, sort);
+        return postDtos;
     }
 }

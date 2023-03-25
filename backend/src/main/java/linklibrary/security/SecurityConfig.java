@@ -24,7 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) //세션 방식을 쓰지 않겠다
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) //세션 방식을 쓰지 않겠다.
                 .and()
                 .addFilter(corsFilter) //인증이 있을 땐 cors 해결 필터를 여기 걸어줘야 함
                 .formLogin().disable()

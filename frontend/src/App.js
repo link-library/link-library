@@ -23,7 +23,9 @@ const App = () => {
       <Routes>
         <Route
           path="/"
-          element={isLoggedIn ? <MainPage /> : <Navigate to="/login" replace />}
+          element={
+            isLoggedIn != null ? <MainPage /> : <Navigate to="/login" replace />
+          }
         />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/join" element={<RegistrationPage />} />

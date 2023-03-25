@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { v4 as uuidv4 } from 'uuid';
 import {
@@ -17,12 +17,15 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import CheckIcon from '@mui/icons-material/Check';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import { Typography } from '@mui/material';
 import NewCategoryInput from './NewCategoryInput';
+import EditCategoryInput from './EditCategoryInput';
 
 const CategoryList = ({ categories }) => {
+  const [editingCategoryId, setEditingCategoryId] = useState(null); // 편집 중인 카테고리를 추적
   const [userCategories, setUserCategories] =
     useRecoilState(userCategoriesState);
   const [expandedCategories, setExpandedCategories] = useRecoilState(
@@ -50,6 +53,39 @@ const CategoryList = ({ categories }) => {
     });
   };
 
+  const handleEditIconClick = (event, categoryId) => {
+    // 카테고리 수정을 위해 현재 이름 값을 추적하는 이벤트
+    event.stopPropagation();
+    setEditingCategoryId(categoryId);
+  };
+
+  const handleSaveEdit = (event, rootId, categoryId) => {
+    const newName = event.target.textContent.trim();
+    if (newName) {
+      const newUserCategories = userCategories.map((root) =>
+        root.id === rootId
+          ? {
+              ...root,
+              categories: root.categories.map((category) =>
+                category.id === categoryId
+                  ? { ...category, name: newName }
+                  : category
+              ),
+            }
+          : root
+      );
+      setUserCategories(newUserCategories);
+
+      const loggedInUserId = JSON.parse(localStorage.getItem('isLoggedIn'));
+      updateUserCategories(newUserCategories, loggedInUserId);
+      setEditingCategoryId(null);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingCategoryId(null);
+  };
+
   const handleCreateNewCategory = (newCategoryName, rootId) => {
     if (newCategoryName.trim()) {
       const newCategory = {
@@ -71,6 +107,13 @@ const CategoryList = ({ categories }) => {
     }
   };
 
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      event.target.blur();
+    }
+  };
+
   const handleDeleteCategory = (event, rootId, categoryId) => {
     event.stopPropagation();
     setUserCategories(
@@ -86,6 +129,14 @@ const CategoryList = ({ categories }) => {
       )
     );
   };
+
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   return (
     <List>
@@ -134,19 +185,43 @@ const CategoryList = ({ categories }) => {
                     sx={{
                       padding: '20px',
                       '&:hover': {
-                        backgroundColor: '#E7F5FF',
+                        backgroundColor:
+                          editingCategoryId === category.id
+                            ? 'inherit'
+                            : '#E7F5FF',
                       },
                       '&:hover .editIcon': {
-                        opacity: 1,
+                        opacity: editingCategoryId === category.id ? 0 : 1,
                       },
                       '&:hover .deleteIcon': {
-                        opacity: 1,
+                        opacity: editingCategoryId === category.id ? 0 : 1,
                       },
                     }}
                   >
-                    <ListItemText primary={category.name} />
+                    {editingCategoryId === category.id ? (
+                      <ListItemText
+                        primary={category.name}
+                        contentEditable
+                        suppressContentEditableWarning
+                        onBlur={(event) =>
+                          handleSaveEdit(event, root.id, category.id)
+                        }
+                        onKeyPress={handleKeyPress}
+                        style={{
+                          width: '100%',
+                          padding: '5px',
+                          border: '1px solid black',
+                          marginRight: '10px',
+                        }}
+                      />
+                    ) : (
+                      <ListItemText primary={category.name} />
+                    )}
                     <EditIcon
                       className="editIcon"
+                      onClick={(event) =>
+                        handleEditIconClick(event, category.id)
+                      }
                       sx={{
                         display: { xs: 'none', sm: 'block' },
                         marginLeft: 'auto',

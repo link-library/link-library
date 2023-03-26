@@ -16,7 +16,7 @@ import java.util.Date;
 public class PostFormDto {
 
     //https://sanghye.tistory.com/36 validation 관련 블로그
-
+//ss
     @NotBlank(message = "제목을 입력해주세요")
     private String title;
     private String memo;

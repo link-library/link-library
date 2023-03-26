@@ -82,15 +82,39 @@ public class PostController {
         resultData.put("categories", categories);
         resultData.put("posts", postDtos);
         resultData.put("PostTotal", postDtos.size());
-        // 응답 객체를 생성하고 데이터를 설정합니다.
+        // 응답 객체를 생성하고 데이터를 설정
         ResponseData responseData = new ResponseData("포스트 조회(찜목록)", resultData);
 
-        // ResponseEntity 객체를 생성하여 반환합니다.
+        // ResponseEntity 객체를 생성하여 반환
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
     /**
-     *
+     * 카테고리로 전체조회
      */
+    @PreAuthorize("isAuthenticated()")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/posts")
+    public  ResponseEntity<ResponseData> getPostList2(
+            @RequestParam(required = false, defaultValue = "") final String keyword, //포스트에 들어가는 글자
+            @RequestParam(required = false, defaultValue = "byDate") final String sort,
+            @RequestParam(required = false) final String categoryName,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        List<PostDto> postDtos = postService.getPostListByCategoryName(principalDetails.getUser().getId(), keyword, sort, categoryName);
+        // 카테고리 정보를 가져옴.
+        List<CategoryDto> categories = categoryService.findAll(principalDetails.getUser().getId());
+
+        // 결과 데이터를 생성해주기
+        Map<String, Object> resultData = new HashMap<>();
+        resultData.put("categories", categories);
+        resultData.put("posts", postDtos);
+        resultData.put("PostTotal", postDtos.size());
+        resultData.put("currentCategory",categoryName);
+        // 응답 객체를 생성하고 데이터를 설정
+        ResponseData responseData = new ResponseData("포스트 조회(찜목록)", resultData);
+
+        // ResponseEntity 객체를 생성하여 반환
+        return new ResponseEntity<>(responseData, HttpStatus.OK);
+    }
 
 
 }

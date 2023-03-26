@@ -2,9 +2,11 @@ package linklibrary.service;
 
 import linklibrary.dto.PostDto;
 import linklibrary.dto.PostFormDto;
+import linklibrary.entity.Category;
 import linklibrary.entity.Post;
 import linklibrary.entity.User;
 import linklibrary.mapper.PostMapper;
+import linklibrary.repository.CategoryRepository;
 import linklibrary.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
+    private final CategoryRepository categoryRepository;
 
     /**
      * 포스트 생성
@@ -88,8 +91,23 @@ public class PostService {
     }
 
 
+    public List<PostDto> getPostListByCategoryName(Long userId, String keyword, String sort, String categoryName) {
+        List<Post> posts;
 
+        if (categoryName != null) { // 카테고리 이름이 주어진 경우
+            if (Objects.equals(sort, "byName")) {
+                posts = postRepository.findByUserIdAndCategoryNameAndTitleContainingOrderByTitleAsc(userId, categoryName, keyword);
+            } else { // "byDate"를 기본값으로 사용
+                posts = postRepository.findByUserIdAndCategoryNameAndTitleContainingOrderByCreatedAtDesc(userId, categoryName, keyword);
+            }
+        } else { // 카테고리 이름이 주어지지 않은 경우
+            if (Objects.equals(sort, "byName")) {
+                posts = postRepository.findByUserIdAndTitleContainingOrderByTitleAsc(userId, keyword);
+            } else { // "byDate"를 기본값으로 사용
+                posts = postRepository.findByUserIdAndTitleContainingOrderByCreatedAtDesc(userId, keyword);
+            }
+        }
 
-
-
+        return PostMapper.convertToDtoListAll(posts);
+    }
 }

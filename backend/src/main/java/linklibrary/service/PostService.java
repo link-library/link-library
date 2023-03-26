@@ -2,6 +2,7 @@ package linklibrary.service;
 
 import linklibrary.dto.PostDto;
 import linklibrary.dto.PostFormDto;
+import linklibrary.entity.Category;
 import linklibrary.entity.Post;
 import linklibrary.entity.User;
 import linklibrary.mapper.PostMapper;
@@ -12,8 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -22,12 +25,19 @@ public class PostService {
     private final PostRepository postRepository;
 
     /**
-     * 포스트 저장
+     * 포스트 생성
      */
-    public Long createPost(PostFormDto postFormDto) throws IOException {
-        Post post = PostMapper.convertToModel(postFormDto);
+    public Long createPost(PostFormDto postFormDto, User user) throws IOException {
+        Post post = Post.builder().title(postFormDto.getTitle())
+                .memo(postFormDto.getMemo())
+                .url(postFormDto.getUrl())
+                .category(postFormDto.getCategory())
+                .user(user)
+                .bookmark(postFormDto.getBookmark())
+                .createdBy(user.getNickname())
+                .build();
         this.postRepository.save(post);
-        return post.getId();
+        return post.getPostId();
 
     }
 
@@ -49,7 +59,7 @@ public class PostService {
         post.setMemo(postFormDto.getMemo());
         post.setUrl(postFormDto.getUrl());
         post.setCategory(postFormDto.getCategory());
-        return post.getId();
+        return post.getPostId();
 
     }
     /**
@@ -60,29 +70,28 @@ public class PostService {
      * posts에 있는 각 앨범을 하나씩 하나씩 `PostMapper.converToDto`로 변화시킨 이후 리스트형태로 다시 모읍니다
      * `collect(Collectors.toList())`.
      */
-    public List<PostDto> getPostList(User user, String keyword, String sort, Boolean bookmark) {
+
+    public List<PostDto> getPostList(Long userId, String keyword, String sort, Boolean bookmark) {
         List<Post> posts;
-        if (bookmark != null) { //북마크 해준 경우
+        if (bookmark != null) { // 북마크 해준 경우
             if (Objects.equals(sort, "byName")) {
-                posts = postRepository.findByBookmarkAndTitleContainingOrderByTitleAsc(bookmark, keyword);
-            } else if (Objects.equals(sort, "byDate")) {
-                posts = postRepository.findByBookmarkAndTitleContainingOrderByCreatedAtDesc(bookmark, keyword);
-            } else {
-                throw new IllegalArgumentException("알 수 없는 정렬 기준입니다");
+                posts = postRepository.findByUserIdAndBookmarkAndTitleContainingOrderByTitleAsc(userId, bookmark, keyword);
+            } else { // "byDate"를 기본값으로 사용
+                posts = postRepository.findByUserIdAndBookmarkAndTitleContainingOrderByCreatedAtDesc(userId, bookmark, keyword);
             }
-        } else { //북마크 안 해준 경우
+        } else { // 북마크 안 해준 경우
             if (Objects.equals(sort, "byName")) {
-                posts = postRepository.findByTitleContainingOrderByTitleAsc(keyword);
-            } else if (Objects.equals(sort, "byDate")) {
-                posts = postRepository.findByTitleContainingOrderByCreatedAtDesc(keyword);
-            } else {
-                throw new IllegalArgumentException("알 수 없는 정렬 기준입니다");
+                posts = postRepository.findByUserIdAndTitleContainingOrderByTitleAsc(userId, keyword);
+            } else { // "byDate"를 기본값으로 사용
+                posts = postRepository.findByUserIdAndTitleContainingOrderByCreatedAtDesc(userId, keyword);
             }
         }
 
-        List<PostDto> postDtos = PostMapper.convertToDtoListAll(user, posts);
-        return postDtos;
+        return PostMapper.convertToDtoListAll(posts);
     }
+
+
+
 
 
 

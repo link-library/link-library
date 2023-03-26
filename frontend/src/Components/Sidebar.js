@@ -15,14 +15,24 @@ import {
   Box,
   Collapse,
 } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import CheckIcon from '@mui/icons-material/Check';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import { Typography } from '@mui/material';
 import NewCategoryInput from './NewCategoryInput';
-import EditCategoryInput from './EditCategoryInput';
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragOverlay,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import SortableListItem from './SortableListItem';
 
 const CategoryList = ({ categories }) => {
   const [editingCategoryId, setEditingCategoryId] = useState(null); // 편집 중인 카테고리를 추적
@@ -60,6 +70,7 @@ const CategoryList = ({ categories }) => {
   };
 
   const handleSaveEdit = (event, rootId, categoryId) => {
+    // 편집된 카테고리 값을 db에 적용.
     const newName = event.target.textContent.trim();
     if (newName) {
       const newUserCategories = userCategories.map((root) =>
@@ -110,7 +121,7 @@ const CategoryList = ({ categories }) => {
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
       event.preventDefault();
-      event.target.blur();
+      event.target.blur(); // 엔터시에 onBlur를 실행시킴.
     }
   };
 
@@ -130,140 +141,170 @@ const CategoryList = ({ categories }) => {
     );
   };
 
-  const inputRef = useRef(null);
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        delay: 250,
+        delayTouch: 250,
+      },
+    })
+  ); // 드래그 드롭을 위한 센서 추가
+  const [activeId, setActiveId] = useState(null);
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    if (active.id !== over.id) {
+      const activeRoot = userCategories.find((root) =>
+        root.categories.some((category) => category.id === active.id)
+      );
+      const overRoot = userCategories.find((root) =>
+        root.categories.some((category) => category.id === over.id)
+      );
+
+      if (activeRoot.id === overRoot.id) {
+        const oldIndex = activeRoot.categories.findIndex(
+          (category) => category.id === active.id
+        );
+        const newIndex = overRoot.categories.findIndex(
+          (category) => category.id === over.id
+        );
+
+        const updatedCategories = arrayMove(
+          activeRoot.categories,
+          oldIndex,
+          newIndex
+        );
+        const newUserCategories = userCategories.map((root) =>
+          root.id === activeRoot.id
+            ? { ...root, categories: updatedCategories }
+            : root
+        );
+        setUserCategories(newUserCategories);
+      }
+    }
+
+    setActiveId(null);
+  };
+
+  const inputRef = useRef(null); // 카테고리 이름 수정시 input 요소 맨 끝에 포커싱하기
 
   useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
+    if (editingCategoryId && inputRef.current) {
+      const moveCursorToEnd = (el) => {
+        const range = document.createRange();
+        const selection = window.getSelection();
+        range.selectNodeContents(el);
+        range.collapse(false);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        el.focus();
+      };
+
+      moveCursorToEnd(inputRef.current);
     }
-  }, []);
+  }, [editingCategoryId]);
 
   return (
     <List>
-      {userCategories.map((root) => (
-        <React.Fragment key={root.id}>
-          <ListItemButton
-            onClick={() => handleExpandClick(root.id)}
-            sx={{
-              padding: '20px',
-              border: '1px solid',
-              borderColor: 'primary.main',
-              '&:hover .addIcon': {
-                opacity: 1,
-              },
-            }}
-          >
-            <ListItemText>
-              <Typography fontWeight="fontWeightBold">{root.name}</Typography>
-            </ListItemText>
-            <PlaylistAddIcon
-              className="addIcon"
-              onClick={(event) => handleAddIconClick(event, root.id)}
+      {userCategories.map(
+        (
+          root // 상위 카테고리
+        ) => (
+          <React.Fragment key={root.id}>
+            <ListItemButton
+              onClick={() => handleExpandClick(root.id)}
               sx={{
-                color: '#339af0',
-                marginRight: '5px',
-                cursor: 'pointer',
-                transition: 'opacity 0.2s',
-                opacity: 0,
+                padding: '20px',
+                border: '1px solid',
+                borderColor: 'primary.main',
+                '&:hover .addIcon': {
+                  opacity: 1,
+                },
               }}
-            />
-            {expandedCategories[root.id] ? (
-              <ExpandLess sx={{ color: '#A5D8FF' }} />
-            ) : (
-              <ExpandMore sx={{ color: '#A5D8FF' }} />
-            )}
-          </ListItemButton>
-          <Collapse
-            in={expandedCategories[root.id]}
-            timeout="auto"
-            unmountOnExit
-          >
-            <List>
-              {root.categories.map((category) => (
-                <React.Fragment key={category.id}>
-                  <ListItemButton
-                    sx={{
-                      padding: '20px',
-                      '&:hover': {
-                        backgroundColor:
-                          editingCategoryId === category.id
-                            ? 'inherit'
-                            : '#E7F5FF',
-                      },
-                      '&:hover .editIcon': {
-                        opacity: editingCategoryId === category.id ? 0 : 1,
-                      },
-                      '&:hover .deleteIcon': {
-                        opacity: editingCategoryId === category.id ? 0 : 1,
-                      },
-                    }}
-                  >
-                    {editingCategoryId === category.id ? (
-                      <ListItemText
-                        primary={category.name}
-                        contentEditable
-                        suppressContentEditableWarning
-                        onBlur={(event) =>
-                          handleSaveEdit(event, root.id, category.id)
-                        }
-                        onKeyPress={handleKeyPress}
-                        style={{
-                          width: '100%',
-                          padding: '5px',
-                          border: '1px solid black',
-                          marginRight: '10px',
-                        }}
-                      />
-                    ) : (
-                      <ListItemText primary={category.name} />
-                    )}
-                    <EditIcon
-                      className="editIcon"
-                      onClick={(event) =>
-                        handleEditIconClick(event, category.id)
-                      }
-                      sx={{
-                        display: { xs: 'none', sm: 'block' },
-                        marginLeft: 'auto',
-                        opacity: 0,
-                        paddingLeft: '5px',
-                        transition: 'opacity 0.2s',
-                        '&:hover': {
-                          color: '#69db7c',
-                        },
-                      }}
-                    />
-                    <DeleteIcon
-                      className="deleteIcon"
-                      onClick={(event) =>
-                        handleDeleteCategory(event, root.id, category.id)
-                      }
-                      sx={{
-                        display: { xs: 'none', sm: 'block' },
-                        marginLeft: 'auto',
-                        paddingLeft: '5px',
-                        opacity: 0,
-                        transition: 'opacity 0.2s',
-                        '&:hover': {
-                          color: '#fa5252',
-                        },
-                      }}
-                    />
-                  </ListItemButton>
-                </React.Fragment>
-              ))}
-              {isCreatingNewCategory === root.id && (
-                <NewCategoryInput
-                  onCreate={(newCategoryName) =>
-                    handleCreateNewCategory(newCategoryName, root.id)
-                  }
-                  onCancel={() => setIsCreatingNewCategory(null)}
-                />
+            >
+              <ListItemText>
+                <Typography fontWeight="fontWeightBold">{root.name}</Typography>
+              </ListItemText>
+              <PlaylistAddIcon // 카테고리 생성 버튼
+                className="addIcon"
+                onClick={(event) => handleAddIconClick(event, root.id)}
+                sx={{
+                  color: '#339af0',
+                  marginRight: '5px',
+                  cursor: 'pointer',
+                  transition: 'opacity 0.2s',
+                  opacity: 0,
+                }}
+              />
+              {expandedCategories[root.id] ? ( // 카테고리 목록 열고 닫기
+                <ExpandLess sx={{ color: '#A5D8FF' }} />
+              ) : (
+                <ExpandMore sx={{ color: '#A5D8FF' }} />
               )}
-            </List>
-          </Collapse>
-        </React.Fragment>
-      ))}
+            </ListItemButton>
+            <Collapse
+              in={expandedCategories[root.id]}
+              timeout="auto"
+              unmountOnExit
+            >
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragStart={({ active }) => {
+                  setActiveId(active.id);
+                }}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext
+                  items={root.categories.map((category) => category.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <List>
+                    {root.categories.map(
+                      (
+                        category // 하위 카테고리
+                      ) => (
+                        <React.Fragment key={category.id}>
+                          <SortableListItem
+                            category={category}
+                            editingCategoryId={editingCategoryId}
+                            handleEditIconClick={handleEditIconClick}
+                            handleSaveEdit={handleSaveEdit}
+                            handleKeyPress={handleKeyPress}
+                            inputRef={inputRef}
+                            handleDeleteCategory={handleDeleteCategory}
+                            root={root}
+                          />
+                        </React.Fragment>
+                      )
+                    )}
+                    {/* 카테고리 생성 활성화된 경우 */}
+                    {isCreatingNewCategory === root.id && (
+                      <NewCategoryInput
+                        onCreate={(newCategoryName) =>
+                          handleCreateNewCategory(newCategoryName, root.id)
+                        }
+                        onCancel={() => setIsCreatingNewCategory(null)}
+                      />
+                    )}
+                  </List>
+                </SortableContext>
+                <DragOverlay>
+                  {activeId ? (
+                    <ListItemButton>
+                      {
+                        root.categories.find(
+                          (category) => category.id === activeId
+                        )?.name
+                      }
+                    </ListItemButton>
+                  ) : null}
+                </DragOverlay>
+              </DndContext>
+            </Collapse>
+          </React.Fragment>
+        )
+      )}
     </List>
   );
 };

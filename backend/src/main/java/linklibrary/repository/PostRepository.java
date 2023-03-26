@@ -1,6 +1,7 @@
 package linklibrary.repository;
 
 import linklibrary.entity.Post;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -22,5 +23,9 @@ List<Post> findByUserIdAndTitleContainingOrderByTitleAsc(Long userId, String tit
     List<Post> findByUserIdAndTitleContainingOrderByCreatedAtDesc(Long userId, String title);
     List<Post> findByUserIdAndBookmarkAndTitleContainingOrderByTitleAsc(Long userId, Boolean bookmark, String title);
     List<Post> findByUserIdAndBookmarkAndTitleContainingOrderByCreatedAtDesc(Long userId, Boolean bookmark, String title);
+    // PostRepository.java
+    List<Post> findByUserIdAndCategoryNameAndTitleContainingOrderByTitleAsc(Long userId, String categoryName, String keyword);
+    List<Post> findByUserIdAndCategoryNameAndTitleContainingOrderByCreatedAtDesc(Long userId, String categoryName, String keyword);
+
 
 }

@@ -19,6 +19,7 @@ public class PostMapper {
         postFormDto.setTitle(post.getTitle());
         postFormDto.setUrl(post.getUrl());
         postFormDto.setCategory(post.getCategory());
+        postFormDto.setCreatedAt(post.getCreatedAt());
         return postFormDto;
     }
 
@@ -57,6 +58,7 @@ public class PostMapper {
          */
         postDto.setUserId(post.getUser().getId());
         postDto.setNickname(post.getUser().getNickname());
+        postDto.setCreatedAt(post.getCreatedAt());
         return postDto;
     }
     public static List<PostDto> convertToDtoListAll( List<Post> posts) {

@@ -7,6 +7,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.validation.constraints.NotEmpty;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -23,4 +25,7 @@ public class PostDto {
 //    private User user;
   private Long userId;
   private String nickname;
+
+    LocalDateTime createdAt;
+
 }

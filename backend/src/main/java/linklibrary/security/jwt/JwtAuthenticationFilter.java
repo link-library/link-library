@@ -1,8 +1,8 @@
 package linklibrary.security.jwt;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import linklibrary.entity.User;
 import linklibrary.exception.JsonParseException;
 import linklibrary.security.auth.PrincipalDetails;
@@ -64,12 +64,20 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
          * JWT 토큰 생성
          * HASH 암호방식
          */
-        String jwtToken = JWT.create()
-                .withSubject("login 토큰")
-                .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME)) // 토큰 유효 시간 10분
-                .withClaim("id", principalDetails.getUser().getId())
-                .withClaim("loginId", principalDetails.getUser().getLoginId())
-                .sign(Algorithm.HMAC512(JwtProperties.SECRET)); //서버만 알고있는 secret 키로 암호화
+//        String jwtToken = JWT.create()
+//                .withSubject("login 토큰")
+//                .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME)) // 토큰 유효 시간 10분
+//                .withClaim("id", principalDetails.getUser().getId())
+//                .withClaim("loginId", principalDetails.getUser().getLoginId())
+//                .sign(Algorithm.HMAC512(JwtProperties.SECRET)); //서버만 알고있는 secret 키로 암호화
+//        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
+        String jwtToken = Jwts.builder()
+                .setSubject("login 토큰")
+                .setExpiration(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME)) // 토큰 유효 시간 10분
+                .claim("id", principalDetails.getUser().getId())
+                .claim("loginId", principalDetails.getUser().getLoginId())
+                .signWith(SignatureAlgorithm.HS512, JwtProperties.SECRET.getBytes())
+                .compact();
         response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
         log.info("헤더에 JWT 토큰을 실어 응답");
 

@@ -3,6 +3,7 @@ package linklibrary.service;
 import linklibrary.entity.ProfileImg;
 import linklibrary.entity.User;
 import linklibrary.repository.ProfileImgRepository;
+import linklibrary.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityNotFoundException;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
@@ -20,22 +22,42 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProfileImgService {
     private final ProfileImgRepository profileImgRepository;
+    private final UserRepository userRepository;
 
     @Value("${file.dir}")
     String fileDir;
 
-    public ProfileImg uploadImg(MultipartFile multipartFile, User user)throws IOException {
-        if(multipartFile.isEmpty()) return null;
+    public ProfileImg uploadImg(MultipartFile multipartFile, Long userId) throws IOException {
+        if (multipartFile.isEmpty()) {
+            throw new IllegalArgumentException("업로드할 파일이 넘어오지 않았습니다.");
+        }
 
         String originalFileName = multipartFile.getOriginalFilename();
         log.info("originalFileName= " + originalFileName);
         String storeFileName = createStoreFileName(originalFileName);
         log.info("storeFileName= " + storeFileName);
-        System.out.println(getFullPath(storeFileName));
         multipartFile.transferTo(new File(getFullPath(storeFileName))); //fileDir 경로 파일에 사진 저장
-        log.info("사진 저장");
+        log.info("저장 경로= " + getFullPath(storeFileName) + " , 저장 완료");
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("엔티티를 찾을 수 없습니다.[ProfileImgService]"));
         ProfileImg profileImg = ProfileImg.builder().storeFileName(storeFileName).user(user).build();
         profileImgRepository.save(profileImg);
+
+        //기존에 프로필 사진이 있다면
+        //로컬 저장소에서 삭제, db에서 삭제
+        if (user.getProfileImg() != null) {
+            log.info("기존 프로필 사진 있음");
+            ProfileImg deleteImg = user.getProfileImg();
+            try {
+                profileImgRepository.deleteById(deleteImg.getId());
+            } catch (Exception e) {
+                throw new EntityNotFoundException("존재하지 않는 엔티티 삭제 시도");
+            }
+            File file = new File(getFullPath(deleteImg.getStoreFileName()));
+            boolean delete = file.delete();
+            if (delete) log.info("기존 파일 로컬에서 삭제 완료");
+            else log.info("기존 파일 로컬에서 삭제 실패");
+        }
         return profileImg;
     }
 

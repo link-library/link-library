@@ -22,6 +22,7 @@ public class PostFormDto {
     private String memo;
     @NotBlank(message = "주소를 입력해주세요")
     private String url;
+    //Category category;
     private Category category;
 
     private Boolean bookmark;

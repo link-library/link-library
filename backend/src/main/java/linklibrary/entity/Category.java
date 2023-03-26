@@ -11,8 +11,8 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @AllArgsConstructor
-@Table(name = "Category")
 @Data
+@Table(name = "Category")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 public class Category {

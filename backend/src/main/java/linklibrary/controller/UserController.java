@@ -2,28 +2,21 @@ package linklibrary.controller;
 
 import linklibrary.dto.*;
 import linklibrary.entity.ProfileImg;
-import linklibrary.entity.User;
 import linklibrary.security.auth.PrincipalDetails;
 import linklibrary.service.ProfileImgService;
 import linklibrary.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Path;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 @RestController
 @RequiredArgsConstructor

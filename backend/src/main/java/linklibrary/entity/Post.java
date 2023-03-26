@@ -1,14 +1,8 @@
 package linklibrary.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -51,7 +45,7 @@ public class Post extends BaseEntity{
 
 
 
-    // ==연관관계 메서드 ==//
+   // ==연관관계 메서드 ==//
     public void setUser(User user){
         this.user = user;
         user.getPosts().add(this);

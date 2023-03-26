@@ -3,7 +3,6 @@ package linklibrary.mapper;
 import linklibrary.dto.PostDto;
 import linklibrary.dto.PostFormDto;
 import linklibrary.entity.Post;
-import linklibrary.entity.User;
 
 import java.util.List;
 import java.util.stream.Collectors;

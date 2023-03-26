@@ -4,7 +4,6 @@ import linklibrary.dto.CategoryDto;
 import linklibrary.dto.PostDto;
 import linklibrary.dto.PostFormDto;
 import linklibrary.dto.ResponseData;
-import linklibrary.entity.Category;
 import linklibrary.security.auth.PrincipalDetails;
 import linklibrary.service.CategoryService;
 import linklibrary.service.PostService;
@@ -16,7 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
@@ -56,7 +54,7 @@ public class PostController {
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("post/{postId}")
     public ResponseEntity<ResponseData> updatePost(@PathVariable final long postId,
-                                                   @Valid @RequestBody final PostFormDto postFormDto) {
+                                   @Valid @RequestBody final PostFormDto postFormDto) {
         Long updatedPostId = postService.change(postId, postFormDto);
         return new ResponseEntity<>(new ResponseData("포스트 수정 완료", updatedPostId), HttpStatus.OK);
     }

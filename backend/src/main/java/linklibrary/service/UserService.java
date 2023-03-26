@@ -1,6 +1,7 @@
 package linklibrary.service;
 
 import linklibrary.dto.JoinFormDto;
+import linklibrary.dto.LoginFormDto;
 import linklibrary.entity.Role;
 import linklibrary.entity.User;
 import linklibrary.repository.UserRepository;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.time.LocalDateTime;
 
 @Service
 @Transactional
@@ -56,7 +56,7 @@ public class UserService {
      */
     public User findUser(String loginId) {
         User user = userRepository.findByLoginId(loginId);
-        if(user == null) {
+        if (user == null) {
             throw new EntityNotFoundException("유저 엔티티가 없습니다");
         }
         return user;
@@ -64,8 +64,22 @@ public class UserService {
 
     private void validateDuplicateUser(User user) {
         User findUser = userRepository.findByLoginId(user.getLoginId());
-        if(findUser != null) {
+        if (findUser != null) {
             throw new IllegalStateException("이미 존재하는 회원입니다");
         }
+    }
+
+    /**
+     * 로그인 하기
+     */
+    public Long login(LoginFormDto loginFormDto) {
+        User findUser = userRepository.findByLoginId(loginFormDto.getLoginId());
+
+        String userPassword = findUser.getPassword();
+        String inputPassword = loginFormDto.getPassword();
+        if (userPassword.equals(inputPassword) == false) {
+            throw new IllegalStateException("비밀번호가 잘못됐습니다.");
+        }
+        return findUser.getId();
     }
 }

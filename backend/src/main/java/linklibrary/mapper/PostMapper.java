@@ -3,8 +3,7 @@ package linklibrary.mapper;
 import linklibrary.dto.PostDto;
 import linklibrary.dto.PostFormDto;
 import linklibrary.entity.Post;
-import linklibrary.security.auth.PrincipalDetails;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import linklibrary.entity.User;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,23 +41,24 @@ public class PostMapper {
     /**조회용 DTO 만듬.
      * 데이터 생략없이 전부 보여주는 폼이 필요한 상태.
      * */
-    public static PostDto convertToDtoAll(PrincipalDetails principalDetails,Post post){
+    public static PostDto convertToDtoAll(User user, Post post){
         PostDto postDto = new PostDto();
-        postDto.setId(principalDetails.getUser().getId());
+        postDto.setId(user.getId());
         postDto.setTitle(post.getTitle());
         postDto.setMemo(post.getMemo());
         postDto.setUrl(post.getUrl());
         postDto.setBookmark(post.isBookmark());
         /**  문제 터지는 것들 */
 //        postDto.setCategory(post.getCategory());
-        postDto.setUser(post.getUser());
+//        postDto.setUser(post.getUser());
 
         return postDto;
     }
-    public static List<PostDto> convertToDtoListAll(PrincipalDetails principalDetails,List<Post> posts) {
+    public static List<PostDto> convertToDtoListAll(User user, List<Post> posts) {
         // 람다를 사용하여 principalDetails 파라미터를 명시적으로 전달합니다.
 
-        return posts.stream().map(post -> PostMapper.convertToDtoAll(principalDetails, post)).collect(Collectors.toList());        /** 요소들을 Dto로 가공하였다면 collect 를 이용하여 결과를 리턴받을 수 있음 */
+        return posts.stream().map(post -> PostMapper.convertToDtoAll(user, post)).collect(Collectors.toList());
+        /** 요소들을 Dto로 가공하였다면 collect 를 이용하여 결과를 리턴받을 수 있음 */
     }
 
 

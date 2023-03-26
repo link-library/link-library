@@ -19,6 +19,7 @@ public class PostMapper {
         postFormDto.setTitle(post.getTitle());
         postFormDto.setUrl(post.getUrl());
         postFormDto.setCategory(post.getCategory());
+        postFormDto.setCreatedAt(post.getCreatedAt());
         return postFormDto;
     }
 
@@ -41,9 +42,9 @@ public class PostMapper {
     /**조회용 DTO 만듬.
      * 데이터 생략없이 전부 보여주는 폼이 필요한 상태.
      * */
-    public static PostDto convertToDtoAll(User user, Post post){
+    public static PostDto convertToDtoAll(Post post){
         PostDto postDto = new PostDto();
-        postDto.setId(user.getId());
+        postDto.setPostId(post.getPostId());
         postDto.setTitle(post.getTitle());
         postDto.setMemo(post.getMemo());
         postDto.setUrl(post.getUrl());
@@ -51,13 +52,19 @@ public class PostMapper {
         /**  문제 터지는 것들 */
 //        postDto.setCategory(post.getCategory());
 //        postDto.setUser(post.getUser());
-
+        /** 실험 */
+        /** 어 실험 해보니까 연관관계인 User 객체를 가져오면 무한 루프 뜨고,
+         * User의 타입을 가져오면 에러가 안떠요.
+         */
+        postDto.setUserId(post.getUser().getId());
+        postDto.setNickname(post.getUser().getNickname());
+        postDto.setCreatedAt(post.getCreatedAt());
         return postDto;
     }
-    public static List<PostDto> convertToDtoListAll(User user, List<Post> posts) {
+    public static List<PostDto> convertToDtoListAll( List<Post> posts) {
         // 람다를 사용하여 principalDetails 파라미터를 명시적으로 전달합니다.
 
-        return posts.stream().map(post -> PostMapper.convertToDtoAll(user, post)).collect(Collectors.toList());
+        return posts.stream().map(post -> PostMapper.convertToDtoAll(post)).collect(Collectors.toList());
         /** 요소들을 Dto로 가공하였다면 collect 를 이용하여 결과를 리턴받을 수 있음 */
     }
 

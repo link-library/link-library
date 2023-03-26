@@ -14,7 +14,7 @@ import java.util.Date;
 @Setter
 @ToString
 public class PostDto {
-   Long postId;
+    Long postId;
     String title;
     String memo;
 
@@ -22,9 +22,9 @@ public class PostDto {
     boolean bookmark;
 
     Category category;
-//    private User user;
-  private Long userId;
-  private String nickname;
+    //    private User user;
+    private Long userId;
+    private String nickname;
 
     LocalDateTime createdAt;
 

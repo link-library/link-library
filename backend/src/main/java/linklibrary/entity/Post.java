@@ -1,5 +1,6 @@
 package linklibrary.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -50,12 +51,12 @@ public class Post extends BaseEntity{
 
 
 
-   // ==연관관계 메서드 ==//
+    // ==연관관계 메서드 ==//
     public void setUser(User user){
         this.user = user;
         user.getPosts().add(this);
     }
-    public void setCategory(Category category){
+    public void addCategory(Category category){
         this.category = category;
         category.getPosts().add(this);
     }

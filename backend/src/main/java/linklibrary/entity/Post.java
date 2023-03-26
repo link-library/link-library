@@ -1,13 +1,8 @@
 package linklibrary.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -19,7 +14,7 @@ public class Post extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id",unique = true, nullable = false)
-    private Long id;
+    private Long postId;
 
     @Column(unique = false, nullable = false)
     private String title; //제목
@@ -55,7 +50,7 @@ public class Post extends BaseEntity{
         this.user = user;
         user.getPosts().add(this);
     }
-    public void setCategory(Category category){
+    public void addCategory(Category category){
         this.category = category;
         category.getPosts().add(this);
     }

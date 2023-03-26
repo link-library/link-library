@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -19,16 +20,11 @@ public class PostFormDto {
     private String memo;
     @NotBlank(message = "주소를 입력해주세요")
     private String url;
-<<<<<<< HEAD
-    //Category category;
-    private Long categoryId; // 카테고리 ID를 받기 위해 Long 타입으로 변경 By chat gpt4
+    private Category category;
 
     private Boolean bookmark;
     LocalDateTime createdAt;
 
 
 
-=======
-    private Category category;
->>>>>>> parent of 0fe8305 (Merge pull request #50 from link-library/plan11plan)
 }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,4 +40,6 @@ public class User extends BaseEntity{
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private ProfileImg profileImg;
+
+
 }

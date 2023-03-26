@@ -1,4 +1,4 @@
-//package linklibrary.security_;
+package linklibrary.security_;//package linklibrary.security_;
 //
 //import org.springframework.security.core.userdetails.UserDetails;
 //import org.springframework.security.core.userdetails.UserDetailsService;

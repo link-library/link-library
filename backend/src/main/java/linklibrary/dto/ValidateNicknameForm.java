@@ -8,22 +8,22 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.NoArgsConstructor;
 
-   //컨트롤에서 변수 바인딩이 안되서 조금 손봤어요.
+@Data
+@AllArgsConstructor
+@NoArgsConstructor //기본 생성자가 없어서 나는 오류였어요. 수정했습니다
+public class ValidateNicknameForm {
+    @NotBlank(message = "닉네임은 필수 입력 값입니다.")
+    private String nickname;
+}
+
 //@Data
-//@AllArgsConstructor
+//@NoArgsConstructor
 //public class ValidateNicknameForm {
 //    @NotBlank(message = "아이디는 필수 입력 값입니다.")
 //    private String nickname;
+//
+//    @JsonCreator
+//    public ValidateNicknameForm(@JsonProperty("nickname") String nickname) {
+//        this.nickname = nickname;
+//    }
 //}
-
-@Data
-@NoArgsConstructor
-public class ValidateNicknameForm {
-    @NotBlank(message = "아이디는 필수 입력 값입니다.")
-    private String nickname;
-
-    @JsonCreator
-    public ValidateNicknameForm(@JsonProperty("nickname") String nickname) {
-        this.nickname = nickname;
-    }
-}

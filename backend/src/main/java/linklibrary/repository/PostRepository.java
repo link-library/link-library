@@ -1,6 +1,7 @@
 package linklibrary.repository;
 
 import linklibrary.entity.Post;
+import linklibrary.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -19,4 +20,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     //포스트검색 + 생성날짜 최신순 + 북마크 온 :
     List<Post> findByBookmarkAndTitleContainingOrderByCreatedAtDesc(Boolean bookmark,String title);
+//    List<Post> findByUserAndTitleContainingOrderByTitleAsc(User user, String title);
+//    List<Post> findByUserAndTitleContainingOrderByCreatedAtDesc(User user, String title);
+//    List<Post> findByUserAndBookmarkAndTitleContainingOrderByTitleAsc(User user, Boolean bookmark, String title);
+//    List<Post> findByUserAndBookmarkAndTitleContainingOrderByCreatedAtDesc(User user, Boolean bookmark, String title);
 }

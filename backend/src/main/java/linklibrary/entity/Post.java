@@ -1,5 +1,6 @@
 package linklibrary.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -19,7 +20,7 @@ public class Post extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id",unique = true, nullable = false)
-    private Long id;
+    private Long postId;
 
     @Column(unique = false, nullable = false)
     private String title; //제목

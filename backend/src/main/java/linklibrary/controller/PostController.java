@@ -59,6 +59,7 @@ public class PostController {
     //로그인이 필요한 엔드포인트인 경우, 로그인하지 않은 사용자에게 로그인하도록 요청하십시오.
     // 이렇게 하려면, @GetMapping("/posts") 애노테이션 위에 @PreAuthorize("isAuthenticated()")를 추가하십시오.
     // 이렇게 하려면 먼저 spring-security의 의존성을 프로젝트에 추가해야 합니다.
+
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/posts")
@@ -68,9 +69,13 @@ public class PostController {
             @RequestParam(required = false) final Boolean bookmark,
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             HttpServletResponse response) {
+        /** 그냥 출력 */
         String token = response.getHeader("Authorization");
         System.out.println(token);
+        /*******/
         List<PostDto> postDtos = postService.getPostList(principalDetails.getUser(),keyword, sort,bookmark);
         return postDtos;
     }
+
+
 }

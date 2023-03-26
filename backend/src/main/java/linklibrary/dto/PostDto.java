@@ -12,13 +12,15 @@ import javax.validation.constraints.NotEmpty;
 @Setter
 @ToString
 public class PostDto {
-   Long id;
+   Long postId;
     String title;
     String memo;
 
     String url;
     boolean bookmark;
-    Category category;
-    private User user;
 
+    Category category;
+//    private User user;
+  private Long userId;
+  private String nickname;
 }

@@ -1,6 +1,7 @@
 package linklibrary.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -41,4 +42,6 @@ public class User extends BaseEntity{
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private ProfileImg profileImg;
+
+
 }

@@ -32,6 +32,12 @@ public class ExceptionController {
         return new ResponseEntity<>(new ResponseData(e.getMessage(), null), HttpStatus.BAD_REQUEST);
     }
 
+    //파라미터가 제대로 넘어오지 않았을 때 (파일업로드)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ResponseData> handleIllegalArgumentException(Exception e) {
+        return new ResponseEntity<>(new ResponseData(e.getMessage(), null), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(JsonParseException.class)
     public ResponseEntity<ResponseData> handleJsonParseException(JsonParseException e) {
         return new ResponseEntity<>(new ResponseData(e.getMessage(), null), HttpStatus.BAD_REQUEST);

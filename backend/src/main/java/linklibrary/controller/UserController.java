@@ -89,13 +89,8 @@ public class UserController {
      */
     @PostMapping("/profileImg")
     public ResponseEntity<?> uploadImg(@AuthenticationPrincipal PrincipalDetails principalDetails, ProfileImgDto profileImgDto) throws IOException {
-        User loginUser = principalDetails.getUser();
-        ProfileImg profileImg = profileImgService.uploadImg(profileImgDto.getProfileImg(), loginUser);
-        //기존에 프로필 사진이 있다면 삭제
-        if (loginUser.getProfileImg() != null) {
-            //나중에 추가
-        }
-        loginUser.setProfileImg(profileImg); //프로필 연관관계 설정
+        Long userId = principalDetails.getUser().getId();
+        ProfileImg profileImg = profileImgService.uploadImg(profileImgDto.getProfileImg(), userId);
         return ResponseEntity.ok(new ResponseData("이미지 업로드 완료", null));
     }
 

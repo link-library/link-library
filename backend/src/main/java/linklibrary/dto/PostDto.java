@@ -7,25 +7,29 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.validation.constraints.NotEmpty;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter
 @Setter
 @ToString
 public class PostDto {
-   Long postId;
+   Long id;
     String title;
     String memo;
 
     String url;
     boolean bookmark;
+<<<<<<< HEAD
 
-    Category category;
+    //Category category;
+    String category;
 //    private User user;
   private Long userId;
   private String nickname;
 
     LocalDateTime createdAt;
+=======
+    Category category;
+    private User user;
+>>>>>>> parent of 0fe8305 (Merge pull request #50 from link-library/plan11plan)
 
 }

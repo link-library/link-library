@@ -11,7 +11,6 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @AllArgsConstructor
-@Table(name = "Category")
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
@@ -26,7 +25,6 @@ public class Category {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @JsonIgnore
     private User user;
 
     @OneToMany(mappedBy = "category")

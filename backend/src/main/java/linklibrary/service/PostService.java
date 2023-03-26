@@ -3,11 +3,10 @@ package linklibrary.service;
 import linklibrary.dto.PostDto;
 import linklibrary.dto.PostFormDto;
 import linklibrary.entity.Post;
+import linklibrary.entity.User;
 import linklibrary.mapper.PostMapper;
 import linklibrary.repository.PostRepository;
-import linklibrary.security.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,19 +60,30 @@ public class PostService {
      * posts에 있는 각 앨범을 하나씩 하나씩 `PostMapper.converToDto`로 변화시킨 이후 리스트형태로 다시 모읍니다
      * `collect(Collectors.toList())`.
      */
-    public List<PostDto> getPostList(@AuthenticationPrincipal PrincipalDetails principalDetails,String keyword, String sort) {
+    public List<PostDto> getPostList(User user, String keyword, String sort, Boolean bookmark) {
         List<Post> posts;
-        if (Objects.equals(sort, "byName")) {
-            posts = postRepository.findByTitleContainingOrderByTitleAsc(keyword);
-        } else if (Objects.equals(sort, "byDate")) {
-            posts = postRepository.findByTitleContainingOrderByCreatedAtDesc(keyword);
-        } else {
-            throw new IllegalArgumentException("알 수 없는 정렬 기준입니다");
+        if (bookmark != null) { //북마크 해준 경우
+            if (Objects.equals(sort, "byName")) {
+                posts = postRepository.findByBookmarkAndTitleContainingOrderByTitleAsc(bookmark, keyword);
+            } else if (Objects.equals(sort, "byDate")) {
+                posts = postRepository.findByBookmarkAndTitleContainingOrderByCreatedAtDesc(bookmark, keyword);
+            } else {
+                throw new IllegalArgumentException("알 수 없는 정렬 기준입니다");
+            }
+        } else { //북마크 안 해준 경우
+            if (Objects.equals(sort, "byName")) {
+                posts = postRepository.findByTitleContainingOrderByTitleAsc(keyword);
+            } else if (Objects.equals(sort, "byDate")) {
+                posts = postRepository.findByTitleContainingOrderByCreatedAtDesc(keyword);
+            } else {
+                throw new IllegalArgumentException("알 수 없는 정렬 기준입니다");
+            }
         }
-        //
-        List<PostDto> postDtos = PostMapper.convertToDtoListAll(principalDetails,posts);
+
+        List<PostDto> postDtos = PostMapper.convertToDtoListAll(user, posts);
         return postDtos;
     }
+
 
 
 }

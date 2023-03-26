@@ -9,9 +9,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -52,15 +54,23 @@ public class PostController {
         return new ResponseEntity<>(new ResponseData("포스트 수정 완료", updatedPostId), HttpStatus.OK);
     }
     /**
-     * 포스트 전체 조회
+     * 로그인한 녀석의 포스트 전체 조회
      */
+    //로그인이 필요한 엔드포인트인 경우, 로그인하지 않은 사용자에게 로그인하도록 요청하십시오.
+    // 이렇게 하려면, @GetMapping("/posts") 애노테이션 위에 @PreAuthorize("isAuthenticated()")를 추가하십시오.
+    // 이렇게 하려면 먼저 spring-security의 의존성을 프로젝트에 추가해야 합니다.
+    @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/posts")
     public List<PostDto> getPostList(
             @RequestParam(required = false, defaultValue = "") final String keyword, //포스트에 들어가는 글자
             @RequestParam(required = false, defaultValue = "byDate") final String sort,
-    @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        List<PostDto> postDtos = postService.getPostList(principalDetails,keyword, sort);
+            @RequestParam(required = false) final Boolean bookmark,
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            HttpServletResponse response) {
+        String token = response.getHeader("Authorization");
+        System.out.println(token);
+        List<PostDto> postDtos = postService.getPostList(principalDetails.getUser(),keyword, sort,bookmark);
         return postDtos;
     }
 }

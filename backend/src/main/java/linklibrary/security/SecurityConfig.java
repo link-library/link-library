@@ -11,7 +11,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.CorsFilter;
+
+import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
@@ -21,6 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final CorsFilter corsFilter;
     private final UserRepository userRepository;
 
+    /**
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
@@ -35,6 +39,34 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/joinCheck").authenticated()
                 .antMatchers("/**").permitAll()
                 .anyRequest().authenticated();
+    }
+*/
+
+    //기존의 설정과 로그아웃 관련 설정을 함께 사용
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .addFilter(corsFilter)
+                .formLogin().disable()
+                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
+                .httpBasic().disable()
+                .authorizeRequests()
+                .antMatchers("/joinCheck").authenticated()
+                .antMatchers("/**").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST"))
+                .logoutSuccessHandler((request, response, authentication) -> {
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    response.getWriter().write("{\"message\":\"로그아웃 성공\"}");
+                })
+                .permitAll();
     }
 
     @Bean

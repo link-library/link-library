@@ -13,4 +13,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     //포스트검색 + 생성날짜 최신순:
     List<Post> findByTitleContainingOrderByCreatedAtDesc(String title);
+
+    //포스트검색 + 제목명 A-Z 정렬 + 북마크 온:
+    List<Post> findByBookmarkAndTitleContainingOrderByTitleAsc(Boolean bookmark,String title);
+
+    //포스트검색 + 생성날짜 최신순 + 북마크 온 :
+    List<Post> findByBookmarkAndTitleContainingOrderByCreatedAtDesc(Boolean bookmark,String title);
 }

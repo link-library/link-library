@@ -72,5 +72,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .sign(Algorithm.HMAC512(JwtProperties.SECRET)); //서버만 알고있는 secret 키로 암호화
         response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
         log.info("헤더에 JWT 토큰을 실어 응답");
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write("{\"message\":\"로그인 성공!\", \"token\":\"" + JwtProperties.TOKEN_PREFIX + jwtToken + "\"}");
     }
 }

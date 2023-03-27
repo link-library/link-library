@@ -110,4 +110,9 @@ public class PostService {
 
         return PostMapper.convertToDtoListAll(posts);
     }
+
+    public Integer findTotalPostNumberByUser(Long userId) {
+        Integer totalPostNumberByUser = postRepository.findTotalPostNumberByUser(userId);
+        return totalPostNumberByUser;
+    }
 }

@@ -93,7 +93,7 @@ public class PostController {
      */
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/posts")
+//    @GetMapping("/posts")
     public  ResponseEntity<ResponseData> getPostList2(
             @RequestParam(required = false, defaultValue = "") final String keyword, //포스트에 들어가는 글자
             @RequestParam(required = false, defaultValue = "byDate") final String sort,

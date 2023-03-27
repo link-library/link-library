@@ -93,11 +93,11 @@ public class PostController {
      */
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.OK)
-//    @GetMapping("/posts")
+    @GetMapping("/posts/{categoryName}")
     public  ResponseEntity<ResponseData> getPostList2(
             @RequestParam(required = false, defaultValue = "") final String keyword, //포스트에 들어가는 글자
             @RequestParam(required = false, defaultValue = "byDate") final String sort,
-            @RequestParam(required = false) final String categoryName,
+            @PathVariable(required = true) final String categoryName,
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
         List<PostDto> postDtos = postService.getPostListByCategoryName(principalDetails.getUser().getId(), keyword, sort, categoryName);
         // 카테고리 정보를 가져옴.

@@ -39,20 +39,6 @@ public class UserController {
     }
 
     /**
-     * 로그인
-     */
-    @PostMapping("/login")
-    public ResponseEntity<ResponseData> loginUser(@Valid @RequestBody LoginFormDto loginFormDto) {
-        Long loginId = userService.login(loginFormDto);
-        return new ResponseEntity<>(new ResponseData("로그인 완료", null), HttpStatus.OK);
-
-    }
-    /**
-     * 로그아웃
-     */
-
-
-    /**
      * 회원가입시 같은 아이디가 있는지 중복체크
      */
     @PostMapping("/validation-id")

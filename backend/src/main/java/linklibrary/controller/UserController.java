@@ -2,7 +2,9 @@ package linklibrary.controller;
 
 import linklibrary.dto.*;
 import linklibrary.entity.ProfileImg;
+import linklibrary.entity.User;
 import linklibrary.security.auth.PrincipalDetails;
+import linklibrary.service.PostService;
 import linklibrary.service.ProfileImgService;
 import linklibrary.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class UserController {
 
     private final UserService userService;
     private final ProfileImgService profileImgService;
+    private final PostService postService;
 
     /**
      * 회원가입
@@ -36,10 +39,10 @@ public class UserController {
     }
 
     /**
-     로그인
+     * 로그인
      */
     @PostMapping("/login")
-    public ResponseEntity<ResponseData> loginUser(@Valid @RequestBody LoginFormDto loginFormDto){
+    public ResponseEntity<ResponseData> loginUser(@Valid @RequestBody LoginFormDto loginFormDto) {
         Long loginId = userService.login(loginFormDto);
         return new ResponseEntity<>(new ResponseData("로그인 완료", null), HttpStatus.OK);
 
@@ -47,7 +50,6 @@ public class UserController {
     /**
      * 로그아웃
      */
-
 
 
     /**
@@ -95,16 +97,25 @@ public class UserController {
         //여기서 마이페이지 정보들과 사진이 저장된 이름(UUID.png) 를 넘김
         //프론트단에서 src="images/{imgName} 하면 getImage() 에서 넘겨줌
         //따라서 여기선 저장된 이미지 이름만 넘기면 됨
-        return null;
+        User loginUser = principalDetails.getUser();
+        Integer totalPost = postService.findTotalPostNumberByUser(loginUser.getId());
+        String storeFileName =
+                (loginUser.getProfileImg() != null) ? loginUser.getProfileImg().getStoreFileName() : null;
+        UserPageDto userPageDto = UserPageDto.builder()
+                .nickname(loginUser.getNickname())
+                .storeFileName(storeFileName)
+                .totalPost(totalPost)
+                .build();
+        return ResponseEntity.ok(new ResponseData("마이페이지 조회 완료", userPageDto));
     }
 
     /**
      * 로컬 경로에 해당하는 이미지 불러오기
      */
-    @GetMapping("/images/{imgName}")
-    public ResponseEntity<byte[]> getImage(@PathVariable String imgName) throws IOException {
+    @GetMapping("/images/{fileName}")
+    public ResponseEntity<byte[]> getImage(@PathVariable String fileName) throws IOException {
         // 로컬 경로에 있는 이미지 파일을 읽어와서 byte 배열로 변환합니다.
-        String fullPath = profileImgService.getFullPath(imgName);
+        String fullPath = profileImgService.getFullPath(fileName);
         File imageFile = new File(fullPath); //파일경로에 해당하는걸 File 로 만듦
         byte[] imageBytes = new byte[(int) imageFile.length()]; //File 크기만큼의 byte 배열 생성
         FileInputStream inputStream = new FileInputStream(imageFile); //File 로 FileInputStream 생성

@@ -126,7 +126,7 @@ public class PostController {
             @RequestParam(defaultValue = "0") int page) {
         PageRequest pageable = PageRequest.of(page, 16);
         Long userId = principalDetails.getUser().getId();
-        MainPageDto mainPageDto = postService.getPosts(userId, bookmark, sort, keyword, pageable);
+        MainPageDto mainPageDto = postService.getPosts(userId, bookmark, sort, keyword, null, pageable);
         return ResponseEntity.ok(new ResponseData("찜목록 or 전체페이지 조회 완료", mainPageDto));
     }
 
@@ -135,11 +135,11 @@ public class PostController {
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestParam(required = false, defaultValue = "byDate") String sort,
             @RequestParam(required = false, defaultValue = "") String keyword,
-            @PathVariable Long categoryId
+            @PathVariable Long categoryId,
             @RequestParam(defaultValue = "0") int page) {
         PageRequest pageable = PageRequest.of(page, 16);
         Long userId = principalDetails.getUser().getId();
-        MainPageDto mainPageDto = postService.getPosts(userId, bookmark, sort, keyword, pageable);
+        MainPageDto mainPageDto = postService.getPosts(userId, null, sort, keyword, categoryId, pageable);
         return ResponseEntity.ok(new ResponseData("찜목록 or 전체페이지 조회 완료", mainPageDto));
     }
 

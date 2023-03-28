@@ -27,6 +27,7 @@ public class Category {
     @JsonIgnore
     private User user;
 
+    @Builder.Default
     @OneToMany(mappedBy = "category")
     private List<Post> posts = new ArrayList<>();
 

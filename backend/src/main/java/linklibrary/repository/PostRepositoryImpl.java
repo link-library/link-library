@@ -30,10 +30,10 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
 
 
     @Override
-    public Page<PostDto1> findPostDtos(Long userId, String bookmark, String sort, String keyword, Pageable pageable) {
+    public Page<PostDto1> findPostDtos(Long userId, String bookmark, String sort, String keyword, Long categoryId, Pageable pageable) {
         List<PostDto1> result = queryFactory
                 .select(new QPostDto1(
-                        post.postId,
+                        post.id,
                         post.title,
                         post.memo,
                         post.url,
@@ -45,13 +45,18 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                 .where(
                         userIdEq(userId),
                         postTitleEq(keyword),
-                        bookmarkEq(bookmark)
+                        bookmarkEq(bookmark),
+                        categoryIdEq(categoryId)
                 )
                 .orderBy(postOrderBy(sort))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
         return new PageImpl<>(result, pageable, result.size());
+    }
+
+    private BooleanExpression categoryIdEq(Long categoryId) {
+        return categoryId != null ? post.category.id.eq(categoryId) : null;
     }
 
     private OrderSpecifier postOrderBy(String sort) {
@@ -61,6 +66,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
     }
 
     private BooleanExpression bookmarkEq(String bookmark) {
+        if(bookmark == null) return null;
         return bookmark.equals("true") ? post.bookmark.eq(true) : post.bookmark.eq(false);
     }
 

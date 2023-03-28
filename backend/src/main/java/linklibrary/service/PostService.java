@@ -17,6 +17,7 @@ import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,7 +40,7 @@ public class PostService {
                 .createdBy(user.getNickname())
                 .build();
         this.postRepository.save(post);
-        return post.getPostId();
+        return post.getId();
 
     }
 
@@ -61,7 +62,7 @@ public class PostService {
         post.setMemo(postFormDto.getMemo());
         post.setUrl(postFormDto.getUrl());
         post.setCategory(postFormDto.getCategory());
-        return post.getPostId();
+        return post.getId();
 
     }
     /**
@@ -112,19 +113,29 @@ public class PostService {
         return totalPostNumberByUser;
     }
 
-    public MainPageDto getPosts(Long userId, String bookmark, String sort, String keyword, Pageable pageable) {
+    public MainPageDto getPosts(Long userId, String bookmark, String sort, String keyword, Long categoryId, Pageable pageable) {
         List<Category> categories = categoryRepository.findByUserId(userId);
         List<CategoryDto> categoryDtoList = categories.stream()
                 .map(c -> new CategoryDto(c.getId(), c.getName()))
                 .collect(Collectors.toList());
+        String current = "";
+        if (bookmark != null) {
+            current = bookmark.equals("true") ? "찜목록" : "전체 조회";  //bookmark 여부에 따라 currentCategory 이름 설정
+        }
+        if (categoryId != null) {
+            Category category = categoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new EntityNotFoundException("카테고리 아이디에 해당하는 엔티티가 없습니다. [PostService]"));
+            current = category.getName(); //만약 Category 목록을 조회했다면 current 에 카테고리명
+        }
 
-        Page<PostDto1> postDtos = postRepository.findPostDtos(userId, bookmark, sort, keyword, pageable);
+
+        Page<PostDto1> postDtos = postRepository.findPostDtos(userId, bookmark, sort, keyword, categoryId, pageable);
         long totalPost = postDtos.getTotalElements();
         MainPageDto mainPageDto = MainPageDto.builder()
                 .categoryDtoList(categoryDtoList)
                 .postDtoList(postDtos)
                 .total(totalPost)
-                .currentCategory((bookmark.equals("true") ? "찜목록" : "전체 조회"))
+                .currentCategory(current)
                 .build();
         return mainPageDto;
     }

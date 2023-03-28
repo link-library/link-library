@@ -43,7 +43,7 @@ public class PostMapper {
      * */
     public static PostDto convertToDtoAll(Post post){
         PostDto postDto = new PostDto();
-        postDto.setPostId(post.getPostId());
+        postDto.setPostId(post.getId());
         postDto.setTitle(post.getTitle());
         postDto.setMemo(post.getMemo());
         postDto.setUrl(post.getUrl());

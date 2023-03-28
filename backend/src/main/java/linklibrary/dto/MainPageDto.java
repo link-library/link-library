@@ -16,6 +16,6 @@ public class MainPageDto {
 
     private List<CategoryDto> categoryDtoList;
     private Page<PostDto1> postDtoList;
-    private Integer total;
+    private Long total;
     private String currentCategory;
 }

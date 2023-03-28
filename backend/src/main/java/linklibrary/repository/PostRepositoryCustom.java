@@ -8,5 +8,5 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface PostRepositoryCustom {
-    Page<PostDto1> findPostDtos(Long userId, String bookmark, String sort, String keyword, Pageable pageable);
+    Page<PostDto1> findPostDtos(Long userId, String bookmark, String sort, String keyword, Long categoryId, Pageable pageable);
 }

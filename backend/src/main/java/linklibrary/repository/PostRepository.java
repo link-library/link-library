@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository extends JpaRepository<Post, Long>, PostRepositoryCustom{
     //    //포스트검색 + 제목명 A-Z 정렬:
 //    List<Post> findByTitleContainingOrderByTitleAsc(String title);
 //

@@ -69,17 +69,4 @@ public class UserService {
         }
     }
 
-    /**
-     * 로그인 하기
-     */
-    public Long login(LoginFormDto loginFormDto) {
-        User findUser = userRepository.findByLoginId(loginFormDto.getLoginId());
-
-        String userPassword = findUser.getPassword();
-        String inputPassword = loginFormDto.getPassword();
-        if (userPassword.equals(inputPassword) == false) {
-            throw new IllegalStateException("비밀번호가 잘못됐습니다.");
-        }
-        return findUser.getId();
-    }
 }

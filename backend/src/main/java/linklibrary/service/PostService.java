@@ -105,6 +105,9 @@ public class PostService {
     }
 
     public Integer findTotalPostNumberByUser(Long userId) {
+        /**
+         * //찜목록, 카테고리별 개수가 아닌 전체 개수만 가져와져서 수정해야됩니다.
+         */
         Integer totalPostNumberByUser = postRepository.findTotalPostNumberByUser(userId);
         return totalPostNumberByUser;
     }
@@ -116,10 +119,11 @@ public class PostService {
                 .collect(Collectors.toList());
 
         Page<PostDto1> postDtos = postRepository.findPostDtos(userId, bookmark, sort, keyword, pageable);
+        long totalPost = postDtos.getTotalElements();
         MainPageDto mainPageDto = MainPageDto.builder()
                 .categoryDtoList(categoryDtoList)
                 .postDtoList(postDtos)
-                .total(postDtos.getSize()) //이거 다시 구현해야 함. page 사이즈를 가져와버림
+                .total(totalPost)
                 .currentCategory((bookmark.equals("true") ? "찜목록" : "전체 조회"))
                 .build();
         return mainPageDto;

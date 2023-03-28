@@ -1,7 +1,6 @@
 package linklibrary.service;
 
-import linklibrary.dto.PostDto;
-import linklibrary.dto.PostFormDto;
+import linklibrary.dto.*;
 import linklibrary.entity.Category;
 import linklibrary.entity.Post;
 import linklibrary.entity.User;
@@ -9,6 +8,8 @@ import linklibrary.mapper.PostMapper;
 import linklibrary.repository.CategoryRepository;
 import linklibrary.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,7 @@ import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -105,5 +107,21 @@ public class PostService {
     public Integer findTotalPostNumberByUser(Long userId) {
         Integer totalPostNumberByUser = postRepository.findTotalPostNumberByUser(userId);
         return totalPostNumberByUser;
+    }
+
+    public MainPageDto getPosts(Long userId, String bookmark, String sort, String keyword, Pageable pageable) {
+        List<Category> categories = categoryRepository.findByUserId(userId);
+        List<CategoryDto> categoryDtoList = categories.stream()
+                .map(c -> new CategoryDto(c.getId(), c.getName()))
+                .collect(Collectors.toList());
+
+        Page<PostDto1> postDtos = postRepository.findPostDtos(userId, bookmark, sort, keyword, pageable);
+        MainPageDto mainPageDto = MainPageDto.builder()
+                .categoryDtoList(categoryDtoList)
+                .postDtoList(postDtos)
+                .total(postDtos.getSize()) //이거 다시 구현해야 함. page 사이즈를 가져와버림
+                .currentCategory((bookmark.equals("true") ? "찜목록" : "전체 조회"))
+                .build();
+        return mainPageDto;
     }
 }

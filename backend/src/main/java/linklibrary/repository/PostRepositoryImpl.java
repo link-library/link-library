@@ -1,0 +1,74 @@
+package linklibrary.repository;
+
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import linklibrary.dto.PostDto1;
+import linklibrary.dto.QPostDto1;
+import linklibrary.entity.Post;
+import linklibrary.entity.QPost;
+import linklibrary.entity.QUser;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
+import javax.persistence.EntityManager;
+
+import java.util.List;
+
+import static linklibrary.entity.QPost.*;
+import static linklibrary.entity.QUser.*;
+
+public class PostRepositoryImpl implements PostRepositoryCustom{
+
+    private final JPAQueryFactory queryFactory;
+
+    public PostRepositoryImpl(EntityManager em) {
+        this.queryFactory = new JPAQueryFactory(em);
+    }
+
+
+    @Override
+    public Page<PostDto1> findPostDtos(Long userId, String bookmark, String sort, String keyword, Pageable pageable) {
+        List<PostDto1> result = queryFactory
+                .select(new QPostDto1(
+                        post.postId,
+                        post.title,
+                        post.memo,
+                        post.url,
+                        post.bookmark,
+                        user.nickname,
+                        post.updatedAt))
+                .from(post)
+                .join(post.user, user)
+                .where(
+                        userIdEq(userId),
+                        postTitleEq(keyword),
+                        bookmarkEq(bookmark)
+                )
+                .orderBy(postOrderBy(sort))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        return new PageImpl<>(result, pageable, result.size());
+    }
+
+    private OrderSpecifier postOrderBy(String sort) {
+        if(sort.equals("byDate")) return post.createdAt.desc();
+        else if(sort.equals("byTitle")) return post.title.desc();
+        return null;
+    }
+
+    private BooleanExpression bookmarkEq(String bookmark) {
+        return bookmark.equals("true") ? post.bookmark.eq(true) : post.bookmark.eq(false);
+    }
+
+    private BooleanExpression postTitleEq(String keyword) {
+        return keyword.equals("") ? null : post.title.eq(keyword);
+    }
+
+    private BooleanExpression userIdEq(Long userId) {
+        return userId != null ? post.user.id.eq(userId) : null;
+    }
+}

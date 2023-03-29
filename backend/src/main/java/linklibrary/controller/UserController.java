@@ -88,6 +88,7 @@ public class UserController {
         String storeFileName =
                 (loginUser.getProfileImg() != null) ? loginUser.getProfileImg().getStoreFileName() : null;
         UserPageDto userPageDto = UserPageDto.builder()
+                .userId(loginUser.getId())
                 .nickname(loginUser.getNickname())
                 .storeFileName(storeFileName)
                 .totalPost(totalPost)

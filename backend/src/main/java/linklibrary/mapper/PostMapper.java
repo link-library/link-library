@@ -17,7 +17,7 @@ public class PostMapper {
 //        postFormDto.setPostId(post.getId());
         postFormDto.setTitle(post.getTitle());
         postFormDto.setUrl(post.getUrl());
-        postFormDto.setCategory(post.getCategory());
+        postFormDto.setCategoryId(post.getCategory().getId());
         postFormDto.setCreatedAt(post.getCreatedAt());
         return postFormDto;
     }
@@ -28,7 +28,7 @@ public class PostMapper {
 //        post.setId(postFormDto.getPostId());
         post.setTitle(postFormDto.getTitle());
         post.setUrl(postFormDto.getUrl());
-        post.setCategory(postFormDto.getCategory());
+//        post.setCategory(postFormDto.getCategoryId()); //이부분 Repo 에서 찾아서 넣어줘야 하는데 어떻게 할지 모르겠네요..
         return post;
     }
 

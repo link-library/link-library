@@ -7,6 +7,7 @@ import linklibrary.entity.User;
 import linklibrary.mapper.PostMapper;
 import linklibrary.repository.CategoryRepository;
 import linklibrary.repository.PostRepository;
+import linklibrary.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,11 +27,14 @@ import java.util.stream.Collectors;
 public class PostService {
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
+    private final UserRepository userRepository;
 
     /**
      * 포스트 생성
      */
-    public Long createPost(PostFormDto postFormDto, User user) throws IOException {
+    public Long createPost(PostFormDto postFormDto, Long userId) throws IOException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("회원 엔티티가 없습니다. [postService]"));
         Category category = categoryRepository.findById(postFormDto.getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("카테고리 엔티티가 없습니다. [postService]"));
         Post post = Post.builder().title(postFormDto.getTitle())

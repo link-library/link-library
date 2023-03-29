@@ -1,6 +1,7 @@
 package linklibrary.security.jwt;
 
 import io.jsonwebtoken.Jwts;
+import linklibrary.dto.UserDto;
 import linklibrary.entity.User;
 import linklibrary.repository.UserRepository;
 import linklibrary.security.auth.PrincipalDetails;
@@ -56,7 +57,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         if (loginId != null) {
             User userEntity = userRepository.findByLoginId(loginId);
-            PrincipalDetails principalDetails = new PrincipalDetails(userEntity);
+            UserDto userDto = new UserDto(userEntity.getId(), userEntity.getLoginId(), userEntity.getPassword(), userEntity.getRole());
+            PrincipalDetails principalDetails = new PrincipalDetails(userDto);
 
             Authentication authenticationToken =
                     new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());

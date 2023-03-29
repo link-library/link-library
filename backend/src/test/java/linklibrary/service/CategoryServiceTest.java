@@ -1,6 +1,7 @@
 package linklibrary.service;
 
 import linklibrary.dto.CategoryDto;
+import linklibrary.dto.CategoryFormDto;
 import linklibrary.dto.PostFormDto;
 import linklibrary.entity.Category;
 import linklibrary.entity.Post;
@@ -42,9 +43,9 @@ class CategoryServiceTest {
     public void 카테고리생성() {
         //gien
         User user = createUser();
-        CategoryDto categoryDto = getCategoryDto();
+        CategoryFormDto categoryFormDto= new CategoryFormDto("카테고리ex1");
         //when
-        Long savedCategory = categoryService.createCategory(categoryDto, user);
+        Long savedCategory = categoryService.createCategory(categoryFormDto, user.getId());
         //then
         Category category = categoryRepository.findById(savedCategory).get();
         assertThat(category.getName()).isEqualTo("카테고리ex1");
@@ -57,12 +58,12 @@ class CategoryServiceTest {
         //given
         User user = createUser();
         Category category = createCategory(user); //name = 카테고리
-        CategoryDto categoryDto = getCategoryDto(); //name = 카테고리ex1
+        CategoryFormDto categoryFormDto = createcategoryFormDto(); //name = 카테고리ex1
         //when
-        Long editCategoryId = categoryService.editCategory(categoryDto, category.getId());
+        Long editCategoryId = categoryService.editCategory(categoryFormDto, category.getId());
         //then
         Category editCategory = categoryRepository.findById(editCategoryId).get();
-        assertThat(editCategory.getName()).isEqualTo(categoryDto.getName());
+        assertThat(editCategory.getName()).isEqualTo(categoryFormDto.getName());
     }
 
     @Test
@@ -115,10 +116,10 @@ class CategoryServiceTest {
         }
     }
 
-    private CategoryDto getCategoryDto() {
-        CategoryDto categoryDto = new CategoryDto();
-        categoryDto.setName("카테고리ex1");
-        return categoryDto;
+    private CategoryFormDto createcategoryFormDto() {
+        CategoryFormDto categoryFormDto = new CategoryFormDto();
+        categoryFormDto.setName("카테고리ex1");
+        return categoryFormDto;
     }
 
 }

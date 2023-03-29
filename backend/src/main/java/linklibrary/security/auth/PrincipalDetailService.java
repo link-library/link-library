@@ -1,5 +1,6 @@
 package linklibrary.security.auth;
 
+import linklibrary.dto.UserDto;
 import linklibrary.entity.User;
 import linklibrary.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ public class PrincipalDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("loadUserByUsername 실행");
         User userEntity = userRepository.findByLoginId(username);
-        return new PrincipalDetails(userEntity);
+        UserDto userDto = new UserDto(userEntity.getId(), userEntity.getLoginId(), userEntity.getPassword(), userEntity.getRole());
+        return new PrincipalDetails(userDto);
     }
 }

@@ -2,6 +2,7 @@ package linklibrary.service;
 
 import linklibrary.dto.JoinFormDto;
 import linklibrary.dto.LoginFormDto;
+import linklibrary.dto.UserPageDto;
 import linklibrary.entity.Role;
 import linklibrary.entity.User;
 import linklibrary.repository.UserRepository;
@@ -19,6 +20,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder;
+    private final PostService postService;
 
     /**
      * 회원 가입
@@ -69,4 +71,19 @@ public class UserService {
         }
     }
 
+    public UserPageDto getUserPage(Long userId) {
+        Integer totalPost = postService.findTotalPostNumberByUser(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("유저 엔티티가 없습니다"));
+        String storeFileName =
+                (user.getProfileImg() != null) ? user.getProfileImg().getStoreFileName() : null;
+        UserPageDto userPageDto = UserPageDto.builder()
+                .userId(user.getId())
+                .nickname(user.getNickname())
+                .storeFileName(storeFileName)
+                .totalPost(totalPost)
+                .build();
+
+        return userPageDto;
+    }
 }

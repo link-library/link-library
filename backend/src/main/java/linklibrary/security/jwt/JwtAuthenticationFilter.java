@@ -74,8 +74,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String jwtToken = Jwts.builder()
                 .setSubject("login 토큰")
                 .setExpiration(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME)) // 토큰 유효 시간 10분
-                .claim("id", principalDetails.getUser().getId())
-                .claim("loginId", principalDetails.getUser().getLoginId())
+                .claim("id", principalDetails.getUserDto().getUserId())
+                .claim("loginId", principalDetails.getUserDto().getLoginId())
                 .signWith(SignatureAlgorithm.HS512, JwtProperties.SECRET.getBytes())
                 .compact();
         response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);

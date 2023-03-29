@@ -7,8 +7,6 @@ import linklibrary.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,8 +31,8 @@ public class PostController {
     @PostMapping("/post")
     public ResponseEntity<ResponseData> createPost(@Valid @RequestBody final PostFormDto postFormDto,
                                                    @AuthenticationPrincipal PrincipalDetails principalDetails) throws IOException {
-        Long savedPostId = postService.createPost(postFormDto, principalDetails.getUser());
-        //보통 생성했을 때 id 값만 반환하더라구요
+        Long savedPostId = postService.createPost(postFormDto, principalDetails.getUserDto().getUserId());
+
         return new ResponseEntity<>(new ResponseData("포스터 생성 완료. 전체 조회 화면으로 이동", savedPostId), HttpStatus.OK);
     }
 
@@ -73,9 +71,9 @@ public class PostController {
             @RequestParam(required = false, defaultValue = "byDate") final String sort,
             @RequestParam(required = false) final Boolean bookmark,
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        List<PostDto> postDtos = postService.getPostList(principalDetails.getUser().getId(), keyword, sort, bookmark);
+        List<PostDto> postDtos = postService.getPostList(principalDetails.getUserDto().getUserId(), keyword, sort, bookmark);
         // 카테고리 정보를 가져옴.
-        List<CategoryDto> categories = categoryService.findAll(principalDetails.getUser().getId());
+        List<CategoryDto> categories = categoryService.findAll(principalDetails.getUserDto().getUserId());
 
         // 결과 데이터를 생성해주기
         Map<String, Object> resultData = new HashMap<>();
@@ -100,9 +98,9 @@ public class PostController {
             @RequestParam(required = false, defaultValue = "byDate") final String sort,
             @PathVariable(required = true) final String categoryName,
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        List<PostDto> postDtos = postService.getPostListByCategoryName(principalDetails.getUser().getId(), keyword, sort, categoryName);
+        List<PostDto> postDtos = postService.getPostListByCategoryName(principalDetails.getUserDto().getUserId(), keyword, sort, categoryName);
         // 카테고리 정보를 가져옴.
-        List<CategoryDto> categories = categoryService.findAll(principalDetails.getUser().getId());
+        List<CategoryDto> categories = categoryService.findAll(principalDetails.getUserDto().getUserId());
 
         // 결과 데이터를 생성해주기
         Map<String, Object> resultData = new HashMap<>();
@@ -120,12 +118,12 @@ public class PostController {
     @GetMapping("/posts")
     public ResponseEntity<?> getPosts(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @RequestParam String bookmark,
+            @RequestParam(required = false) String bookmark,
             @RequestParam(required = false, defaultValue = "byDate") String sort,
             @RequestParam(required = false, defaultValue = "") String keyword,
             @RequestParam(defaultValue = "0") int page) {
         PageRequest pageable = PageRequest.of(page, 16);
-        Long userId = principalDetails.getUser().getId();
+        Long userId = principalDetails.getUserDto().getUserId();
         MainPageDto mainPageDto = postService.getPosts(userId, bookmark, sort, keyword, null, pageable);
         return ResponseEntity.ok(new ResponseData("찜목록 or 전체페이지 조회 완료", mainPageDto));
     }
@@ -138,7 +136,7 @@ public class PostController {
             @PathVariable Long categoryId,
             @RequestParam(defaultValue = "0") int page) {
         PageRequest pageable = PageRequest.of(page, 16);
-        Long userId = principalDetails.getUser().getId();
+        Long userId = principalDetails.getUserDto().getUserId();
         MainPageDto mainPageDto = postService.getPosts(userId, null, sort, keyword, categoryId, pageable);
         return ResponseEntity.ok(new ResponseData("찜목록 or 전체페이지 조회 완료", mainPageDto));
     }

@@ -31,10 +31,13 @@ public class PostService {
      * 포스트 생성
      */
     public Long createPost(PostFormDto postFormDto, User user) throws IOException {
+        Category category = categoryRepository.findById(postFormDto.getCategoryId())
+                .orElseThrow(() -> new EntityNotFoundException("카테고리 엔티티가 없습니다. [postService]"));
         Post post = Post.builder().title(postFormDto.getTitle())
                 .memo(postFormDto.getMemo())
                 .url(postFormDto.getUrl())
-                .category(postFormDto.getCategory())
+//                .category(postFormDto.getCategory())
+                .category(category)
                 .user(user)
                 .bookmark(postFormDto.getBookmark())
                 .createdBy(user.getNickname())
@@ -57,11 +60,13 @@ public class PostService {
      */
     public Long change(Long postId, PostFormDto postFormDto) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException("포스트 엔티티가 없습니다"));
+        Category category = categoryRepository.findById(postFormDto.getCategoryId())
+                .orElseThrow(() -> new EntityNotFoundException("카테고리 엔티티가 없습니다"));
 
         post.setTitle(postFormDto.getTitle());
         post.setMemo(postFormDto.getMemo());
         post.setUrl(postFormDto.getUrl());
-        post.setCategory(postFormDto.getCategory());
+        post.setCategory(category);
         return post.getId();
 
     }
@@ -113,6 +118,11 @@ public class PostService {
         return totalPostNumberByUser;
     }
 
+    /**
+     * 카테고리로 포스트 전체 조회
+     * 북마크로 포스트 전체 조회
+     * 포스트 전체 조회
+     */
     public MainPageDto getPosts(Long userId, String bookmark, String sort, String keyword, Long categoryId, Pageable pageable) {
         List<Category> categories = categoryRepository.findByUserId(userId);
         List<CategoryDto> categoryDtoList = categories.stream()

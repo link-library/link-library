@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class CategoryDto {
 
-    private Long id;
+    private Long categoryId;
     @NotBlank(message = "카테고리명을 입력해주세요.")
     private String name;
 

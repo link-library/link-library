@@ -3,6 +3,7 @@ package linklibrary.security.jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import linklibrary.dto.ResponseData;
 import linklibrary.entity.User;
 import linklibrary.exception.JsonParseException;
 import linklibrary.security.auth.PrincipalDetails;
@@ -30,6 +31,7 @@ import java.util.Date;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -60,29 +62,38 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         log.info("successfulAuthentication 실행됨 (인증완료)");
         PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
 
+        String jwtToken = JwtProcess.create(principalDetails);
+
         /**
          * JWT 토큰 생성
          * HASH 암호방식
          */
-//        String jwtToken = JWT.create()
-//                .withSubject("login 토큰")
-//                .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME)) // 토큰 유효 시간 10분
-//                .withClaim("id", principalDetails.getUser().getId())
-//                .withClaim("loginId", principalDetails.getUser().getLoginId())
-//                .sign(Algorithm.HMAC512(JwtProperties.SECRET)); //서버만 알고있는 secret 키로 암호화
-//        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
-        String jwtToken = Jwts.builder()
-                .setSubject("login 토큰")
-                .setExpiration(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME)) // 토큰 유효 시간 10분
-                .claim("id", principalDetails.getUserDto().getUserId())
-                .claim("loginId", principalDetails.getUserDto().getLoginId())
-                .signWith(SignatureAlgorithm.HS512, JwtProperties.SECRET.getBytes())
-                .compact();
+//        String jwtToken = Jwts.builder()
+//                .setSubject("login 토큰")
+//                .setExpiration(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME)) // 토큰 유효 시간 10분
+//                .claim("id", principalDetails.getUserDto().getUserId())
+//                .claim("loginId", principalDetails.getUserDto().getLoginId())
+//                .signWith(SignatureAlgorithm.HS512, JwtProperties.SECRET.getBytes())
+//                .compact();
         response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
         log.info("헤더에 JWT 토큰을 실어 응답");
 
+//        response.setContentType("application/json");
+//        response.setCharacterEncoding("UTF-8");
+//        response.getWriter().write("{\"message\":\"로그인 성공!\", \"token\":\"" + JwtProperties.TOKEN_PREFIX + jwtToken + "\"}");
+        ResponseData responseData = new ResponseData("로그인 성공", jwtToken);
+        String body = objectMapper.writeValueAsString(responseData);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write("{\"message\":\"로그인 성공!\", \"token\":\"" + JwtProperties.TOKEN_PREFIX + jwtToken + "\"}");
+        response.getWriter().println(body);
+    }
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+        ResponseData responseData = new ResponseData("아이디와 비밀번호를 다시 확인해주세요", null);
+        String body = objectMapper.writeValueAsString(responseData);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().println(body);
     }
 }

@@ -31,6 +31,7 @@ public class InitDB {
         private final EntityManager em;
         private final BCryptPasswordEncoder encoder;
 
+
         /**
          * USER1 : id:abcde1  pw:abcdefg1!  |  Category1(post1,post2,post3)  Category2(post4,post5)
          * USER2 : id:abcde2  pw:abcdefg1!  |  Category3(post6)

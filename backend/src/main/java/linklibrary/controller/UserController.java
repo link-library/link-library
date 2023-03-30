@@ -4,6 +4,9 @@ import linklibrary.dto.*;
 import linklibrary.entity.ProfileImg;
 import linklibrary.entity.User;
 import linklibrary.security.auth.PrincipalDetails;
+import linklibrary.securityTest.SecurityUtil;
+import linklibrary.securityTest.dto.TokenDto;
+import linklibrary.securityTest.service.AuthService;
 import linklibrary.service.PostService;
 import linklibrary.service.ProfileImgService;
 import linklibrary.service.UserService;
@@ -13,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,15 +32,42 @@ public class UserController {
     private final UserService userService;
     private final ProfileImgService profileImgService;
     private final PostService postService;
+    private final AuthService authService;
 
-    /**
-     * 회원가입
-     */
-    @PostMapping("/join")
-    public ResponseEntity<ResponseData> joinUser(@Valid @RequestBody JoinFormDto joinFormDto) {
-        Long savedUserId = userService.join(joinFormDto);
-        return new ResponseEntity<>(new ResponseData("회원가입 완료", savedUserId), HttpStatus.OK);
-    }
+//    /**
+//     * 회원가입
+//     */
+//    @PostMapping("/join")
+//    public ResponseEntity<ResponseData> joinUser(@Valid @RequestBody JoinFormDto joinFormDto) {
+//        Long savedUserId = userService.join(joinFormDto);
+//        return new ResponseEntity<>(new ResponseData("회원가입 완료", savedUserId), HttpStatus.OK);
+//    }
+
+//    //테스트시작
+//
+//    /**
+//     * 회원가입
+//     */
+//    @PostMapping("/join")
+//    public ResponseEntity<ResponseData> joinUser(@Valid @RequestBody JoinFormDto joinFormDto) {
+//        Long savedUserId = authService.join(joinFormDto);
+//        return new ResponseEntity<>(new ResponseData("회원가입 완료", savedUserId), HttpStatus.OK);
+//    }
+//
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(@RequestBody LoginFormDto loginFormDto) {
+//        TokenDto tokenDto = authService.login(loginFormDto);
+//        return ResponseEntity.ok(new ResponseData("로그인 완료!", tokenDto));
+//    }
+//
+//    @GetMapping("/me")
+//    public ResponseEntity<?> findMemberInfoById(@AuthenticationPrincipal UserDetails userDetails) {
+//
+//        String loginId = SecurityUtil.getCurrentMemberId();
+//        return ResponseEntity.ok(new ResponseData("dd", userDetails.getUsername()));
+//    }
+//
+//    //테스트 끝
 
     /**
      * 회원가입시 같은 아이디가 있는지 중복체크

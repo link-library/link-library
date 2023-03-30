@@ -70,8 +70,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll();
     }
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }

@@ -41,21 +41,12 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         log.info("인증이나 권한이 필요한 주소 요청됨");
         String jwtToken = request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, "");
-//        String loginId = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET))
-//                .build()
-//                .verify(jwtToken)
-//                .getClaim("loginId")
-//                .asString();
-        String loginId = Jwts.parserBuilder()
-                .setSigningKey(JwtProperties.SECRET.getBytes())
-                .build()
-                .parseClaimsJws(jwtToken)
-                .getBody()
-                .get("loginId", String.class);
+        String loginId = JwtProcess.verify(jwtToken);
         log.info("JWT 토큰에서 인코딩된 정보 확인중");
 
 
         if (loginId != null) {
+            log.info("확인 완료");
             User userEntity = userRepository.findByLoginId(loginId);
             UserDto userDto = new UserDto(userEntity.getId(), userEntity.getLoginId(), userEntity.getPassword(), userEntity.getRole());
             PrincipalDetails principalDetails = new PrincipalDetails(userDto);

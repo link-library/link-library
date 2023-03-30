@@ -1,13 +1,13 @@
 package linklibrary.dto;
 
 import linklibrary.entity.Role;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class UserDto {
     private Long userId;
     private String loginId;

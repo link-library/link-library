@@ -36,7 +36,7 @@ class PostServiceTest {
         Category category = createCategory(user);
         PostFormDto postFormDto = createPostForm(category);
         //when
-        Long savedPostId = postService.createPost(postFormDto, user);
+        Long savedPostId = postService.createPost(postFormDto, user.getId());
         //then
         em.flush();
         em.clear();

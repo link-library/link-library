@@ -1,9 +1,11 @@
 package linklibrary.service;
 
 import linklibrary.dto.CategoryDto;
+import linklibrary.dto.CategoryFormDto;
 import linklibrary.entity.Category;
 import linklibrary.entity.User;
 import linklibrary.repository.CategoryRepository;
+import linklibrary.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,16 +23,19 @@ import java.util.stream.Collectors;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final UserRepository userRepository;
 
-    public Long createCategory(CategoryDto categoryDto, User user) {
-        Category category = Category.builder().name(categoryDto.getName()).user(user).build();
+    public Long createCategory(CategoryFormDto categoryFormDto, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("유저 엔티티가 없습니다. [categoryService]"));
+        Category category = Category.builder().name(categoryFormDto.getName()).user(user).build();
         categoryRepository.save(category);
         return category.getId();
     }
 
-    public Long editCategory(CategoryDto categoryDto, Long categoryId) {
+    public Long editCategory(CategoryFormDto categoryFormDto, Long categoryId) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new EntityNotFoundException("카테고리 엔티티가 없습니다"));
-        category.setName(categoryDto.getName());
+        category.setName(categoryFormDto.getName());
         return category.getId();
     }
 

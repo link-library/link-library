@@ -1,7 +1,9 @@
 package linklibrary.security.auth;
 
+import linklibrary.dto.UserDto;
 import linklibrary.entity.User;
 import lombok.Data;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,30 +11,29 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
-@Data
+@Getter
 public class PrincipalDetails implements UserDetails {
 
-    private User user;
+    private UserDto userDto;
 
-    public PrincipalDetails(User user) {
-        this.user = user;
+    public PrincipalDetails(UserDto userDto) {
+        this.userDto = userDto;
     }
 
-    //사용자가 가지고 있는 권한 정보를 반환
-    //권한을 하나만 갖고 있기 때문에 singleton 객체 반환
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(user.getRole().toString())); //역할을 문자열로 바꾸어 return
+        return Collections.singleton(new SimpleGrantedAuthority(userDto.getRole().toString())); //역할을 문자열로 바꾸어 return
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return userDto.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getLoginId();
+        return userDto.getLoginId();
     }
 
     @Override

@@ -33,17 +33,11 @@ public class UserController {
     private final PostService postService;
     private final AuthService authService;
 
-//    /**
-//     * 회원가입
-//     */
-//    @PostMapping("/join")
-//    public ResponseEntity<ResponseData> joinUser(@Valid @RequestBody JoinFormDto joinFormDto) {
-//        Long savedUserId = userService.join(joinFormDto);
-//        return new ResponseEntity<>(new ResponseData("회원가입 완료", savedUserId), HttpStatus.OK);
-//    }
 
-    //테스트시작
-
+    /**
+     * authService 와 userService 나중에 합쳐야 함
+     */
+    
     /**
      * 회원가입
      */
@@ -59,14 +53,6 @@ public class UserController {
         return ResponseEntity.ok(new ResponseData("로그인 완료!", tokenDto));
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<?> findMemberInfoById(@AuthenticationPrincipal UserDetails userDetails) {
-
-        String loginId = SecurityUtil.getCurrentMemberId();
-        return ResponseEntity.ok(new ResponseData("dd", userDetails.getUsername()));
-    }
-
-    //테스트 끝
 
     /**
      * 회원가입시 같은 아이디가 있는지 중복체크

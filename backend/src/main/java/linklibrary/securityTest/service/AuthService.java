@@ -48,7 +48,6 @@ public class AuthService {
 
         // 3. 인증 정보를 기반으로 JWT 토큰 생성
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
-
         // 4. 토큰 발급
         return tokenDto;
     }

@@ -2,8 +2,7 @@ package linklibrary.controller;
 
 import linklibrary.dto.*;
 import linklibrary.entity.ProfileImg;
-import linklibrary.entity.User;
-import linklibrary.security.auth.PrincipalDetails;
+import linklibrary.securityTest.auth.PrincipalDetails;
 import linklibrary.securityTest.SecurityUtil;
 import linklibrary.securityTest.dto.TokenDto;
 import linklibrary.securityTest.service.AuthService;
@@ -34,40 +33,26 @@ public class UserController {
     private final PostService postService;
     private final AuthService authService;
 
-//    /**
-//     * 회원가입
-//     */
-//    @PostMapping("/join")
-//    public ResponseEntity<ResponseData> joinUser(@Valid @RequestBody JoinFormDto joinFormDto) {
-//        Long savedUserId = userService.join(joinFormDto);
-//        return new ResponseEntity<>(new ResponseData("회원가입 완료", savedUserId), HttpStatus.OK);
-//    }
 
-//    //테스트시작
-//
-//    /**
-//     * 회원가입
-//     */
-//    @PostMapping("/join")
-//    public ResponseEntity<ResponseData> joinUser(@Valid @RequestBody JoinFormDto joinFormDto) {
-//        Long savedUserId = authService.join(joinFormDto);
-//        return new ResponseEntity<>(new ResponseData("회원가입 완료", savedUserId), HttpStatus.OK);
-//    }
-//
-//    @PostMapping("/login")
-//    public ResponseEntity<?> login(@RequestBody LoginFormDto loginFormDto) {
-//        TokenDto tokenDto = authService.login(loginFormDto);
-//        return ResponseEntity.ok(new ResponseData("로그인 완료!", tokenDto));
-//    }
-//
-//    @GetMapping("/me")
-//    public ResponseEntity<?> findMemberInfoById(@AuthenticationPrincipal UserDetails userDetails) {
-//
-//        String loginId = SecurityUtil.getCurrentMemberId();
-//        return ResponseEntity.ok(new ResponseData("dd", userDetails.getUsername()));
-//    }
-//
-//    //테스트 끝
+    /**
+     * authService 와 userService 나중에 합쳐야 함
+     */
+    
+    /**
+     * 회원가입
+     */
+    @PostMapping("/join")
+    public ResponseEntity<ResponseData> joinUser(@Valid @RequestBody JoinFormDto joinFormDto) {
+        Long savedUserId = authService.join(joinFormDto);
+        return new ResponseEntity<>(new ResponseData("회원가입 완료", savedUserId), HttpStatus.OK);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginFormDto loginFormDto) {
+        TokenDto tokenDto = authService.login(loginFormDto);
+        return ResponseEntity.ok(new ResponseData("로그인 완료!", tokenDto));
+    }
+
 
     /**
      * 회원가입시 같은 아이디가 있는지 중복체크

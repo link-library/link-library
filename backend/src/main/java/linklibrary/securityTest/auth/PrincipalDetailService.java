@@ -1,4 +1,4 @@
-package linklibrary.security.auth;
+package linklibrary.securityTest.auth;
 
 import linklibrary.dto.UserDto;
 import linklibrary.entity.User;
@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.EntityNotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +23,9 @@ public class PrincipalDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("loadUserByUsername 실행");
         User userEntity = userRepository.findByLoginId(username);
+        if(userEntity == null) {
+            throw new EntityNotFoundException("유저 엔티티가 없습니다.[loadUserByUsername]");
+        }
         UserDto userDto = new UserDto(userEntity.getId(), userEntity.getLoginId(), userEntity.getPassword(), userEntity.getRole());
         return new PrincipalDetails(userDto);
     }

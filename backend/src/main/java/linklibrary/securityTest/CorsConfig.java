@@ -1,4 +1,4 @@
-package linklibrary.security;
+package linklibrary.securityTest;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

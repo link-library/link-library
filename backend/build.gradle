@@ -55,6 +55,9 @@ dependencies {
 
 	implementation group: 'com.auth0', name: 'java-jwt', version: '4.2.1'
 
+	//json 변환 (JsonObject)
+	implementation 'org.json:json:20200518'
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
 	annotationProcessor 'org.projectlombok:lombok'

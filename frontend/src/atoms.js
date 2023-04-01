@@ -109,3 +109,8 @@ export const userCategoriesState = atom({
     },
   ],
 });
+
+export const selectedCategoryNameState = atom({
+  key: 'selectedCategoryNameState',
+  default: '헤더 테스트',
+});

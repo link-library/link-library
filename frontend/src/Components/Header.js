@@ -11,6 +11,7 @@ import FavoriteChecker from '../images/FavoriteChecker.png';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Grid } from '@mui/material';
 import { useSetRecoilState } from 'recoil';
+import SearchTab from './SearchTab';
 
 const MenuButton = ({ onClick }) => {
   return (
@@ -101,6 +102,10 @@ export const Header = ({ handleLogout: handleLogoutProp, handleMenuClick }) => {
         }}
       />
       <MenuButton onClick={handleMenuClick} />
+      <Grid Item sx={{ ml: 45 }}>
+        <SearchTab />
+      </Grid>
+
       <Grid
         container
         direction="row"

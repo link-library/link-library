@@ -20,11 +20,18 @@ export const Sidebar = () => {
         backgroundColor: '#FFFFFF',
         transition: 'left 0.5s ease-in-out',
         overflowY: 'auto',
-        '&::-webkit-scrollbar': {
-          width: '0.4em',
+        '&:hover': {
+          '&::-webkit-scrollbar': {
+            width: '0.4em',
+            transition: 'width 1.5s ease-in-out',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#4dabf7',
+            transition: 'background-color 1.5s ease-in-out',
+          },
         },
-        '&::-webkit-scrollbar-thumb': {
-          backgroundColor: '#4dabf7',
+        '&::-webkit-scrollbar': {
+          width: 0,
         },
       }}
     >

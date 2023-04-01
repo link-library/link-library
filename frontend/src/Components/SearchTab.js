@@ -11,7 +11,7 @@ const SearchTab = () => {
   };
 
   const handleSearchClick = () => {
-    // Implement search functionality based on searchValue
+    // 검색 버튼 핸들러
   };
 
   return (
@@ -20,25 +20,25 @@ const SearchTab = () => {
         display: 'flex',
         alignItems: 'center',
         borderBottom: '2px solid transparent',
-        borderColor: 'primary.main',
+        borderColor: '#74C0FC',
+        mt: 1.5,
       }}
     >
       <InputBase
         value={searchValue}
         onChange={handleInputChange}
-        placeholder="Search..."
+        placeholder="링크 검색"
         sx={{
           flex: 1,
           color: 'inherit',
-          borderBottom: '2px solid',
-          borderColor: 'primary.main',
-          pb: 0.5,
+          pt: 1,
+          pl: 0.5,
         }}
       />
       <IconButton
         onClick={handleSearchClick}
         sx={{
-          color: 'inherit',
+          color: '#74C0FC',
           p: 1,
         }}
       >

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState, usersState, isLoggedInState } from '../atoms';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -20,7 +20,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import LinkLibraryLogo from '../images/LinkLibraryLogo.png';
 
 export const LoginPage = () => {
-  const [users, setUsers] = useRecoilState(usersState);
+  const users = useRecoilValue(usersState);
   const setUser = useSetRecoilState(userState);
   const [isRegistered, setIsRegistered] = useRecoilState(isLoggedInState);
   const navigate = useNavigate();

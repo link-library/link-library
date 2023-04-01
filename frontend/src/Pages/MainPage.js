@@ -3,7 +3,7 @@ import { useRecoilState } from 'recoil';
 import { isLoggedInState, isSidebarOpenState } from '../atoms';
 import { useNavigate } from 'react-router-dom';
 import Header from '../Components/Header';
-import MainComponent from '../Components/MainComponent';
+import MainFrame from '../Components/MainFrame';
 
 export const MainPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
@@ -43,7 +43,7 @@ export const MainPage = () => {
       <Header handleLogout={handleLogout} handleMenuClick={handleMenuClick} />
       <div style={{ display: 'flex', flexGrow: 1 }}>
         {/* <Category isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} /> */}
-        <MainComponent />
+        <MainFrame />
       </div>
     </div>
   );

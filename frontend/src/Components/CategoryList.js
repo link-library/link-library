@@ -29,6 +29,7 @@ const CategoryList = ({ categories }) => {
   const setSelectedCategoryName = useSetRecoilState(selectedCategoryNameState);
 
   const handleExpandClick = (rootId) => {
+    // 카테고리 요소 열고 닫기 핸들러
     setExpandedCategories({
       ...expandedCategories,
       [rootId]: !expandedCategories[rootId],

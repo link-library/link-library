@@ -25,6 +25,9 @@ export const SortableList = ({
   setUserCategories,
   isCreatingNewCategory,
   setIsCreatingNewCategory,
+  selectedCategoryId,
+  handleCategoryClick,
+  setSelectedCategoryName,
 }) => {
   const setSelectedCategoryName = useSetRecoilState(selectedCategoryNameState); // 선택된 카테고리 정보 추적
   const [editingCategoryId, setEditingCategoryId] = useState(null); // 편집 중인 카테고리를 추적
@@ -196,6 +199,8 @@ export const SortableList = ({
                   inputRef={inputRef}
                   handleDeleteCategory={handleDeleteCategory}
                   root={root}
+                  handleCategoryClick={handleCategoryClick}
+                  selectedCategoryId={selectedCategoryId}
                 />
               </React.Fragment>
             )

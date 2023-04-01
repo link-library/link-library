@@ -16,6 +16,8 @@ export const SortableListItem = ({
   inputRef,
   handleDeleteCategory,
   root,
+  handleCategoryClick,
+  selectedCategoryId,
 }) => {
   const { attributes, listeners, setNodeRef, transform } = useSortable({
     id: category.id,
@@ -30,16 +32,18 @@ export const SortableListItem = ({
 
   return (
     <ListItemButton
-      onClick={handleItemClick}
+      onClick={() => handleCategoryClick(category.id, category.name)}
       ref={setNodeRef}
       style={style}
       {...attributes}
       {...listeners}
       sx={{
         padding: '20px',
+        backgroundColor:
+          selectedCategoryId === category.id ? '#E7F5FF' : 'inherit', // 선택된 카테고리 배경색 설정
         '&:hover': {
           backgroundColor:
-            editingCategoryId === category.id ? 'inherit' : '#E7F5FF',
+            editingCategoryId === category.id ? 'inherit' : '#E7F5FF', // 마우스 올라간 카테고리 배경색 설정
         },
         '&:hover .editIcon': {
           opacity: editingCategoryId === category.id ? 0 : 1,

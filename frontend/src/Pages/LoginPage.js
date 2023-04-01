@@ -24,22 +24,22 @@ export const LoginPage = () => {
   const setUser = useSetRecoilState(userState);
   const [isRegistered, setIsRegistered] = useRecoilState(isLoggedInState);
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
+  const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
+
   const [checkClicked, setCheckClicked] = useState(false);
 
   const handleLogin = (event) => {
     event.preventDefault();
     const user = users.find(
-      (u) => u.username === username && u.password === password
+      (u) => u.userId === userId && u.password === password
     );
     if (user) {
       // 입력한 정보가 DB에 있을 경우
-
       setUser(user);
-      setIsRegistered(username);
+      setIsRegistered(userId);
     } else {
-      alert('Invalid username or password');
+      alert('아이디 또는 비밀번호를 잘못 입력하셨습니다.');
     }
   };
 
@@ -68,13 +68,13 @@ export const LoginPage = () => {
             <BottomMargin />
             <Input
               type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(event) => setUsername(event.target.value)}
+              placeholder="아이디"
+              value={userId}
+              onChange={(event) => setUserId(event.target.value)}
             />
             <Input
               type="password"
-              placeholder="Password"
+              placeholder="비밀번호"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
             />

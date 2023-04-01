@@ -12,26 +12,32 @@ import {
 import { Button } from '../Style/LoginPageStyle';
 
 export const RegistrationPage = () => {
-  const [username, setUsername] = useState('');
+  const [userId, setUserId] = useState(''); // 이걸 아이디 스테이트로 쓰고
+  const [userName, setUserName] = useState(''); // 이걸 닉네임 스테이트로 바꿔야함.
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isRegistered, setIsRegistered] = useState(false);
   const navigate = useNavigate();
   const users = useRecoilValue(usersState);
   const setUsers = useSetRecoilState(usersState);
-  const [idCheck, setIdCheck] = useState(false);
+  const [idCheck, setIdCheck] = useState(false); // 이거를 아이디 체크로 쓰고
+  const [userNameCheck, setUserNameCheck] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!username || !password) {
-      alert('Please enter a username and password');
+    if (!userId || !password || !confirmPassword || !userName) {
+      alert('회원가입 양식을 맞춰주세요.');
       return;
     }
     if (password !== confirmPassword) {
-      alert('Passwords do not match');
+      alert('비밀번호가 일치하지 않습니다.');
       return;
     }
     if (idCheck === false) {
+      alert('아이디 중복 체크를 확인해주세요.');
+      return;
+    }
+    if (userNameCheck === false) {
       alert('아이디 중복 체크를 확인해주세요.');
       return;
     }
@@ -39,7 +45,7 @@ export const RegistrationPage = () => {
       { id: '1', name: '페이지 목록', categories: [] },
       { id: '2', name: '미구현', categories: [] },
     ];
-    const user = { username, password, categories: defaultCategories };
+    const user = { userId, password, userName, categories: defaultCategories };
     setUsers([...users, user]);
     setIsRegistered(true);
     saveUserToLocalStorage(user);
@@ -47,7 +53,7 @@ export const RegistrationPage = () => {
 
   const handleIdCheck = (event) => {
     event.preventDefault();
-    if (users.some((u) => u.username === username)) {
+    if (users.some((u) => u.userId === userId)) {
       // 아이디 중복 체크
       alert('중복된 아이디가 존재합니다.');
       setIdCheck(false);
@@ -60,10 +66,31 @@ export const RegistrationPage = () => {
     }
   };
 
-  const handleInputChange = (event) => {
+  const handleUsernameCheck = (event) => {
+    event.preventDefault();
+    if (users.some((u) => u.userName === userName)) {
+      // 닉네임 중복 체크
+      alert('중복된 닉네임이 존재합니다.');
+      setUserNameCheck(false);
+      return;
+    } else {
+      // 중복 없음 확인
+
+      alert('사용 가능한 닉네임입니다!');
+      setUserNameCheck(true);
+    }
+  };
+
+  const handleUserIdInputChange = (event) => {
     // id입력창에 입력을 받으면 idcheck를 false로 전환
-    setUsername(event.target.value);
+    setUserId(event.target.value);
     setIdCheck(false);
+  };
+
+  const handleUsernameInputChange = (event) => {
+    // id입력창에 입력을 받으면 idcheck를 false로 전환
+    setUserName(event.target.value);
+    setUserNameCheck(false);
   };
 
   useEffect(() => {
@@ -79,19 +106,38 @@ export const RegistrationPage = () => {
         <RegistBox>
           <h1 style={{ textAlign: 'center' }}>회원가입</h1>
           <RegistForm>
-            <label>ID</label>
+            <label>아이디</label>
             <br />
             <div style={{ display: 'flex' }}>
               <Input
                 type="text"
-                value={username}
-                onChange={handleInputChange}
+                value={userId}
+                onChange={handleUserIdInputChange}
               />
-              <Button small blue idCheck={idCheck} onClick={handleIdCheck}>
+              <Button small blue Check={idCheck} onClick={handleIdCheck}>
                 중복확인
               </Button>
             </div>
-            <label>Password</label>
+
+            <label>닉네임</label>
+            <br />
+            <div style={{ display: 'flex' }}>
+              <Input
+                type="text"
+                value={userName}
+                onChange={handleUsernameInputChange}
+              />
+              <Button
+                small
+                blue
+                Check={userNameCheck}
+                onClick={handleUsernameCheck}
+              >
+                중복확인
+              </Button>
+            </div>
+
+            <label>비밀번호</label>
             <br />
             <Input
               type="password"
@@ -99,7 +145,7 @@ export const RegistrationPage = () => {
               onChange={(event) => setPassword(event.target.value)}
             />
             <br />
-            <label>Confirm Password</label>
+            <label>비밀번호 확인</label>
             <br />
             <Input
               type="password"

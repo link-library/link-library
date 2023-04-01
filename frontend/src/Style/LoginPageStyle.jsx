@@ -152,7 +152,7 @@ export const Button = styled.button`
   width: 100%;
   box-sizing: border-box;
 
-  ${({ small, blue, idCheck }) =>
+  ${({ small, blue, Check }) =>
     small &&
     blue &&
     css`
@@ -160,7 +160,7 @@ export const Button = styled.button`
       width: 100px;
       height: 45px;
       font-size: 1rem;
-      background-color: ${idCheck ? '#51cf66' : '#339af0'};
+      background-color: ${Check ? '#51cf66' : '#339af0'};
     `}
 
   @media screen and (max-width: 768px) {

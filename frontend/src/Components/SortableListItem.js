@@ -4,8 +4,6 @@ import { ListItemButton, ListItemText } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { CSS } from '@dnd-kit/utilities';
-import { useSetRecoilState } from 'recoil';
-import { selectedCategoryNameState } from '../atoms';
 
 export const SortableListItem = ({
   category,
@@ -23,12 +21,6 @@ export const SortableListItem = ({
     id: category.id,
   });
   const style = { transform: CSS.Transform.toString(transform) };
-
-  const setSelectedCategoryName = useSetRecoilState(selectedCategoryNameState);
-
-  const handleItemClick = () => {
-    setSelectedCategoryName(category.name);
-  };
 
   return (
     <ListItemButton

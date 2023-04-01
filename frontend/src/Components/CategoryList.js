@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import { Typography } from '@mui/material';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import {
   expandedCategoryState,
   isCreatingNewCategoryState,
+  selectedCategoryNameState,
   userCategoriesState,
 } from '../atoms';
 import { List, ListItemButton, ListItemText, Collapse } from '@mui/material';
@@ -23,11 +24,21 @@ const CategoryList = ({ categories }) => {
     expandedCategoryState
   );
 
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null); // 선택된 카테고리 ID 추적
+
+  const setSelectedCategoryName = useSetRecoilState(selectedCategoryNameState);
+
   const handleExpandClick = (rootId) => {
     setExpandedCategories({
       ...expandedCategories,
       [rootId]: !expandedCategories[rootId],
     });
+  };
+
+  const handleCategoryClick = (categoryId, categoryName) => {
+    // 선택된 카테고리 id와 이름 변경 핸들러
+    setSelectedCategoryId(categoryId);
+    setSelectedCategoryName(categoryName);
   };
 
   const handleAddIconClick = (event, rootId) => {
@@ -90,6 +101,9 @@ const CategoryList = ({ categories }) => {
                 setUserCategories={setUserCategories}
                 isCreatingNewCategory={isCreatingNewCategory}
                 setIsCreatingNewCategory={setIsCreatingNewCategory}
+                selectedCategoryId={selectedCategoryId}
+                handleCategoryClick={handleCategoryClick}
+                setSelectedCategoryName={setSelectedCategoryName}
               />
             </Collapse>
           </React.Fragment>

@@ -4,9 +4,9 @@ spring:
       matching-strategy: ant_path_matcher # use swagger & css
   application:
     name: user-service
+
   main:
     allow-circular-references: true
-
   datasource:
     url: jdbc:h2:tcp://localhost/~/link-library
     username: sa
@@ -20,6 +20,10 @@ spring:
       hibernate:
         format_sql: true # sql 문 포맷
         default_batch_fetch_size: 100  # batch size 설정
+
+  redis:
+    host: localhost
+    port: 6379
 logging.level:
   org.hibernate.SQL: debug # 디버그 모드로 sql 출력
 
@@ -28,3 +32,4 @@ file:
 
 jwt:
   secret: c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXR1dG9yaWFsLWppd29vbi1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3QtdHV0b3JpYWwK
+

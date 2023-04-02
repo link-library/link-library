@@ -2,12 +2,15 @@ package linklibrary.securityTest.service;
 
 import linklibrary.dto.JoinFormDto;
 import linklibrary.dto.LoginFormDto;
+import linklibrary.dto.LogoutDto;
+import linklibrary.dto.ResponseData;
 import linklibrary.entity.Role;
 import linklibrary.entity.User;
 import linklibrary.repository.UserRepository;
 import linklibrary.securityTest.TokenProvider;
 import linklibrary.securityTest.dto.TokenDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -59,4 +62,15 @@ public class AuthService {
         }
     }
 
+    public ResponseEntity<?> logout(LogoutDto logoutDto) {
+        if(!tokenProvider.checkToken(logoutDto.getAccessToken())) {
+            return ResponseEntity.ok(new ResponseData("잘못된 요청입니다.",null));
+        }
+
+        // 2. Access Token 에서 authentication 가져옴
+        Authentication authentication = tokenProvider.getAuthentication(logoutDto.getAccessToken());
+
+        // 3. 해당 Access Token 유효시간을 갖고 와서 BlackList 로 저장
+        Long expiration = tokenProvider.getExpiration(logoutDto.getAccessToken());
+    }
 }

@@ -13,8 +13,6 @@ import org.springframework.web.filter.CorsFilter;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final TokenProvider tokenProvider;
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final CorsFilter corsFilter;
 
 
@@ -33,13 +31,7 @@ public class SecurityConfig {
                 .formLogin().disable()
                 .httpBasic().disable()
 
-                // exception handling 할 때 우리가 만든 클래스를 추가
-                .exceptionHandling()
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .accessDeniedHandler(jwtAccessDeniedHandler)
-
-                // h2-console 을 위한 설정을 추가
-                .and()
+//                // h2-console 을 위한 설정을 추가
                 .headers()
                 .frameOptions()
                 .sameOrigin()

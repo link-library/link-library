@@ -11,6 +11,7 @@ import linklibrary.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,40 +79,38 @@ public class PostService {
      * 포스트 목록 전체 조회
      */
     /**
-     * <p>
      * posts에 있는 각 앨범을 하나씩 하나씩 `PostMapper.converToDto`로 변화시킨 이후 리스트형태로 다시 모읍니다
      * `collect(Collectors.toList())`.
      */
 
-    public List<PostDto> getPostList(Long userId, String keyword, String sort, Boolean bookmark) {
-        List<Post> posts;
+    public List<PostDto> getPostList(Long userId, String keyword, String sort, Boolean bookmark, Pageable pageRequest) {
+        Slice<Post> posts;
         if (bookmark != null) { // 북마크 해준 경우
             if (Objects.equals(sort, "byName")) {
-                posts = postRepository.findByUserIdAndBookmarkAndTitleContainingOrderByTitleAsc(userId, bookmark, keyword);
+                 posts = postRepository.findByUserIdAndBookmarkAndTitleContainingOrderByTitleAsc(userId, bookmark, keyword, pageRequest);
             } else { // "byDate"를 기본값으로 사용
-                posts = postRepository.findByUserIdAndBookmarkAndTitleContainingOrderByCreatedAtDesc(userId, bookmark, keyword);
+                 posts = postRepository.findByUserIdAndBookmarkAndTitleContainingOrderByCreatedAtDesc(userId, bookmark, keyword,pageRequest);
             }
         } else { // 북마크 안 해준 경우
             if (Objects.equals(sort, "byName")) {
-                posts = postRepository.findByUserIdAndTitleContainingOrderByTitleAsc(userId, keyword);
+                posts = postRepository.findByUserIdAndTitleContainingOrderByTitleAsc(userId, keyword,pageRequest);
             } else { // "byDate"를 기본값으로 사용
-                posts = postRepository.findByUserIdAndTitleContainingOrderByCreatedAtDesc(userId, keyword);
+                posts = postRepository.findByUserIdAndTitleContainingOrderByCreatedAtDesc(userId, keyword,pageRequest);
             }
         }
-
-        return PostMapper.convertToDtoListAll(posts);
+        List<Post> content = posts.getContent();
+        return PostMapper.convertToDtoListAll(content);
     }
-
-
-    public List<PostDto> getPostListByCategoryName(Long userId, String keyword, String sort, String categoryName) {
-        List<Post> posts;
+    public List<PostDto> getPostListByCategoryId(Long userId, String keyword, String sort, Long categoryId,Pageable pageable) {
+        Slice<Post> posts;
 
         if (Objects.equals(sort, "byName")) {
-            posts = postRepository.findByUserIdAndCategoryNameAndTitleContainingOrderByTitleAsc(userId, categoryName, keyword);
+            posts = postRepository.findByUserIdAndCategoryIdAndTitleContainingOrderByTitleAsc(userId, categoryId, keyword,pageable);
         } else { // "byDate"를 기본값으로 사용
-            posts = postRepository.findByUserIdAndCategoryNameAndTitleContainingOrderByCreatedAtDesc(userId, categoryName, keyword);
+            posts = postRepository.findByUserIdAndCategoryIdAndTitleContainingOrderByCreatedAtDesc(userId, categoryId, keyword,pageable);
         }
-        return PostMapper.convertToDtoListAll(posts);
+        List<Post> content = posts.getContent();
+        return PostMapper.convertToDtoListAll(content);
     }
 
     public Integer findTotalPostNumberByUser(Long userId) {
@@ -128,10 +127,11 @@ public class PostService {
      * 포스트 전체 조회
      */
     public MainPageDto getPosts(Long userId, String bookmark, String sort, String keyword, Long categoryId, Pageable pageable) {
-        List<Category> categories = categoryRepository.findByUserId(userId);
-        List<CategoryDto> categoryDtoList = categories.stream()
+        List<Category> categories = categoryRepository.findByUserId(userId);   //  Id로 만든 카테고리들 찾아옴
+        List<CategoryDto> categoryDtoList = categories.stream()    // 카테고리 ->DTO시키기
                 .map(c -> new CategoryDto(c.getId(), c.getName()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());  //카테고리DTO에는  ID와 NAME만 있음.
+
         String current = "";
         if (bookmark != null) {
             current = bookmark.equals("true") ? "찜목록" : "전체 조회";  //bookmark 여부에 따라 currentCategory 이름 설정
@@ -142,14 +142,14 @@ public class PostService {
             current = category.getName(); //만약 Category 목록을 조회했다면 current 에 카테고리명
         }
 
-
+        //Response로 뿌려줄 화면
         Page<PostDto1> postDtos = postRepository.findPostDtos(userId, bookmark, sort, keyword, categoryId, pageable);
-        long totalPost = postDtos.getTotalElements();
+        long totalPost = postDtos.getTotalElements(); //포스트의 개수,
         MainPageDto mainPageDto = MainPageDto.builder()
-                .categoryDtoList(categoryDtoList)
-                .postDtoList(postDtos)
-                .total(totalPost)
-                .currentCategory(current)
+                .categoryDtoList(categoryDtoList) //카테고리 리스트
+                .postDtoList(postDtos)  //포스트 리스트
+                .total(totalPost) //총 포스트 개수
+                .currentCategory(current)  //현재 카테고리이름
                 .build();
         return mainPageDto;
     }

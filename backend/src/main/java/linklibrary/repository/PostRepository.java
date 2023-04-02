@@ -1,6 +1,9 @@
 package linklibrary.repository;
 
 import linklibrary.entity.Post;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -28,12 +31,15 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
     List<Post> findByUserIdAndBookmarkAndTitleContainingOrderByTitleAsc(Long userId, Boolean bookmark, String title);
 
     List<Post> findByUserIdAndBookmarkAndTitleContainingOrderByCreatedAtDesc(Long userId, Boolean bookmark, String title);
+/** 포스틑 이름으로 했었던거.*/
+//    // PostRepository.java
+//    List<Post> findByUserIdAndCategoryNameAndTitleContainingOrderByTitleAsc(Long userId, String categoryName, String keyword);
+//
+//    List<Post> findByUserIdAndCategoryNameAndTitleContainingOrderByCreatedAtDesc(Long userId, String categoryName, String keyword);
+   /** 포스트 아이디로 */
+    List<Post> findByUserIdAndCategoryIdAndTitleContainingOrderByTitleAsc(Long userId, Long categoryId, String keyword);
 
-    // PostRepository.java
-    List<Post> findByUserIdAndCategoryNameAndTitleContainingOrderByTitleAsc(Long userId, String categoryName, String keyword);
-
-    List<Post> findByUserIdAndCategoryNameAndTitleContainingOrderByCreatedAtDesc(Long userId, String categoryName, String keyword);
-
+    List<Post> findByUserIdAndCategoryIdAndTitleContainingOrderByCreatedAtDesc(Long userId, Long categoryId, String keyword);
 
     /**
      * 회원페이지에서 총 post 수 조회
@@ -41,4 +47,17 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
     @Query("select count(p) from Post p where p.user.id=:userId")
     Integer findTotalPostNumberByUser(@Param("userId") Long userId);
 
+    /** 페이징 추가 */
+    Slice<Post> findByUserIdAndTitleContainingOrderByTitleAsc(Long userId, String title, Pageable pageable);
+
+    Slice<Post> findByUserIdAndTitleContainingOrderByCreatedAtDesc(Long userId, String title,Pageable pageable);
+
+    Slice<Post> findByUserIdAndBookmarkAndTitleContainingOrderByTitleAsc(Long userId, Boolean bookmark, String title,Pageable pageable);
+
+    Slice<Post> findByUserIdAndBookmarkAndTitleContainingOrderByCreatedAtDesc(Long userId, Boolean bookmark, String title,Pageable pageable);
+
+
+    Slice<Post> findByUserIdAndCategoryIdAndTitleContainingOrderByTitleAsc(Long userId, Long categoryId, String keyword,Pageable pageable);
+
+    Slice<Post> findByUserIdAndCategoryIdAndTitleContainingOrderByCreatedAtDesc(Long userId, Long categoryId, String keyword,Pageable pageable);
 }

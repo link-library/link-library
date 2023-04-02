@@ -1,6 +1,5 @@
 package linklibrary.dto;
 
-import linklibrary.entity.Category;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,8 +17,10 @@ public class PostDto {
     String url;
     boolean bookmark;
 
-    Category category;
-    //    private User user;
+    private Long categoryId;
+
+    private String categoryName;
+
     private Long userId;
     private String nickname;
 

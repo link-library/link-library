@@ -102,7 +102,7 @@ export const Header = ({ handleLogout: handleLogoutProp, handleMenuClick }) => {
         }}
       />
       <MenuButton onClick={handleMenuClick} />
-      <Grid Item sx={{ ml: 45 }}>
+      <Grid item sx={{ ml: 45 }}>
         <SearchTab />
       </Grid>
 

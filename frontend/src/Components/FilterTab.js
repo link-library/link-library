@@ -2,6 +2,7 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import AddIcon from '@mui/icons-material/Add';
 import { Box, Grid, IconButton, Menu, MenuItem } from '@mui/material';
 import { useState } from 'react';
+import AddWebsiteDialog from './AddWebsiteDialog';
 
 const FilterOptions = ({ anchorEl, handleClose }) => {
   // 필터 옵션 설정
@@ -39,6 +40,16 @@ const FilterTab = () => {
     setAnchorEl(null);
   };
 
+  const [AddWebsiteDialogOpen, setAddWebsiteDialogOpen] = useState(false); // 웹 사이트 추가 팝업창 상태 관리
+
+  const handleAddWebsiteDialogOpen = () => {
+    setAddWebsiteDialogOpen(true);
+  };
+
+  const handleAddWebsiteDialogClose = () => {
+    setAddWebsiteDialogOpen(false);
+  };
+
   const FilterButton = () => {
     return (
       <>
@@ -59,21 +70,27 @@ const FilterTab = () => {
     );
   };
 
-  const AddPostButton = ({ onClick }) => {
+  const AddPostButton = () => {
     return (
-      <IconButton
-        onClick={onClick}
-        sx={{
-          color: '#FFFFFF',
-          fontWeight: 'bold',
-          backgroundColor: '#74c0fc',
-          borderRadius: '8px',
-          border: 'none',
-          padding: '3px',
-        }}
-      >
-        <AddIcon />
-      </IconButton>
+      <>
+        <IconButton
+          onClick={handleAddWebsiteDialogOpen}
+          sx={{
+            color: '#FFFFFF',
+            fontWeight: 'bold',
+            backgroundColor: '#74c0fc',
+            borderRadius: '8px',
+            border: 'none',
+            padding: '3px',
+          }}
+        >
+          <AddIcon />
+        </IconButton>
+        <AddWebsiteDialog
+          open={AddWebsiteDialogOpen}
+          handleClose={handleAddWebsiteDialogClose}
+        />
+      </>
     );
   };
   return (

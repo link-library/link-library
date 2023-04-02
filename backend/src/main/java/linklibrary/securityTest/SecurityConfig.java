@@ -3,6 +3,7 @@ package linklibrary.securityTest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -14,6 +15,7 @@ import org.springframework.web.filter.CorsFilter;
 public class SecurityConfig {
     private final TokenProvider tokenProvider;
     private final CorsFilter corsFilter;
+    private final RedisTemplate redisTemplate;
 
 
     // h2 database 테스트가 원활하도록 관련 API 들은 전부 무시
@@ -51,7 +53,7 @@ public class SecurityConfig {
 
                 // JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
                 .and()
-                .apply(new JwtSecurityConfig(tokenProvider));
+                .apply(new JwtSecurityConfig(tokenProvider, redisTemplate));
 
         return http.build();
     }

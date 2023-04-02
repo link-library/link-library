@@ -8,6 +8,7 @@ import linklibrary.securityTest.auth.PrincipalDetails;
 import linklibrary.securityTest.dto.TokenDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,7 +29,7 @@ public class TokenProvider {
     private static final String BEARER_TYPE = "Bearer";
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 20;            // 20일
     private PrincipalDetailService principalDetailService;
-    private RedisTemplate
+    private RedisTemplate redisTemplate;
 
     private final Key key;
 
@@ -136,5 +137,9 @@ public class TokenProvider {
     }
 
     public Long getExpiration(String accessToken) {
+        //access 토큰의 남은 유효 시간
+        Date expiration = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody().getExpiration();
+        Long now = new Date().getTime();
+        return (expiration.getTime() - now);
     }
 }

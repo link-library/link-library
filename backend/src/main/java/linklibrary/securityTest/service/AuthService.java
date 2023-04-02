@@ -10,6 +10,7 @@ import linklibrary.repository.UserRepository;
 import linklibrary.securityTest.TokenProvider;
 import linklibrary.securityTest.dto.TokenDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -18,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.concurrent.TimeUnit;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -25,6 +28,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
+    private final RedisTemplate redisTemplate;
 
     @Transactional
     public Long join(JoinFormDto joinFormDto) {
@@ -72,5 +76,9 @@ public class AuthService {
 
         // 3. 해당 Access Token 유효시간을 갖고 와서 BlackList 로 저장
         Long expiration = tokenProvider.getExpiration(logoutDto.getAccessToken());
+        redisTemplate.opsForValue()
+                .set(logoutDto.getAccessToken(), "logout", expiration, TimeUnit.MILLISECONDS);
+        return ResponseEntity.ok(new ResponseData("로그아웃 되었습니다", null));
+
     }
 }

@@ -70,8 +70,11 @@ public class PostController {
             @RequestParam(required = false, defaultValue = "") final String keyword, //포스트에 들어가는 글자
             @RequestParam(required = false, defaultValue = "byDate") final String sort,
             @RequestParam(required = false) final Boolean bookmark,
-            @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        List<PostDto> postDtos = postService.getPostList(principalDetails.getUserDto().getUserId(), keyword, sort, bookmark);
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestParam(required = false) int page) {
+        PageRequest pageRequest = PageRequest.of(page, 16);
+        // 포스트 정보
+        List<PostDto> postDtos = postService.getPostList(principalDetails.getUserDto().getUserId(), keyword, sort, bookmark, pageRequest);
         // 카테고리 정보를 가져옴.
         List<CategoryDto> categories = categoryService.findAll(principalDetails.getUserDto().getUserId());
 
@@ -80,11 +83,7 @@ public class PostController {
         resultData.put("categories", categories);
         resultData.put("posts", postDtos);
         resultData.put("PostTotal", postDtos.size());
-        // 응답 객체를 생성하고 데이터를 설정
-        ResponseData responseData = new ResponseData("포스트 조회(찜목록)", resultData);
-
-        // ResponseEntity 객체를 생성하여 반환
-        return new ResponseEntity<>(responseData, HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseData("포스트 조회(찜목록)", resultData), HttpStatus.OK);
     }
 
     /**
@@ -92,27 +91,25 @@ public class PostController {
      */
 //    @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.OK)
-//    @GetMapping("/posts/{categoryName}")
+//    @GetMapping("/posts/{categoryId}")
     public ResponseEntity<ResponseData> getPostList2(
             @RequestParam(required = false, defaultValue = "") final String keyword, //포스트에 들어가는 글자
             @RequestParam(required = false, defaultValue = "byDate") final String sort,
-            @PathVariable(required = true) final String categoryName,
-            @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        List<PostDto> postDtos = postService.getPostListByCategoryName(principalDetails.getUserDto().getUserId(), keyword, sort, categoryName);
+            @PathVariable(required = true) final Long categoryId,
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestParam(defaultValue = "0")int page) {
+        PageRequest pageRequest = PageRequest.of(page, 16);
+        // 포스트 정보
+        List<PostDto> postDtos = postService.getPostListByCategoryId(principalDetails.getUserDto().getUserId(), keyword, sort, categoryId, pageRequest);
         // 카테고리 정보를 가져옴.
         List<CategoryDto> categories = categoryService.findAll(principalDetails.getUserDto().getUserId());
-
         // 결과 데이터를 생성해주기
         Map<String, Object> resultData = new HashMap<>();
         resultData.put("categories", categories);
         resultData.put("posts", postDtos);
         resultData.put("PostTotal", postDtos.size());
-        resultData.put("currentCategory", categoryName);
-        // 응답 객체를 생성하고 데이터를 설정
-        ResponseData responseData = new ResponseData("포스트 조회(찜목록)", resultData);
-
-        // ResponseEntity 객체를 생성하여 반환
-        return new ResponseEntity<>(responseData, HttpStatus.OK);
+        resultData.put("currentCategory", categoryId);
+        return new ResponseEntity<>(new ResponseData("포스트 조회(찜목록)", resultData), HttpStatus.OK);
     }
 
     @GetMapping("/posts")
@@ -125,7 +122,7 @@ public class PostController {
         PageRequest pageable = PageRequest.of(page, 16);
         Long userId = principalDetails.getUserDto().getUserId();
         MainPageDto mainPageDto = postService.getPosts(userId, bookmark, sort, keyword, null, pageable);
-        return ResponseEntity.ok(new ResponseData("찜목록 or 전체페이지 조회 완료", mainPageDto));
+        return ResponseEntity.ok(new ResponseData("찜목록 or 전체페이지 조회 완료       ", mainPageDto));
     }
 
     @GetMapping("/posts/{categoryId}")

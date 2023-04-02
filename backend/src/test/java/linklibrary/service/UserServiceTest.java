@@ -3,6 +3,7 @@ package linklibrary.service;
 import linklibrary.dto.JoinFormDto;
 import linklibrary.entity.User;
 import linklibrary.repository.UserRepository;
+import linklibrary.securityTest.service.AuthService;
 import org.assertj.core.api.Assertions;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
@@ -19,16 +20,17 @@ class UserServiceTest {
 
     @Autowired
     UserRepository userRepository;
-
     @Autowired
     UserService userService;
+    @Autowired
+    AuthService authService;
 
     @Test
     public void 회원가입() throws Exception {
         //given
         JoinFormDto joinFormDto = getJoinFormDto();
         //when
-        Long joinUserId = userService.join(joinFormDto);
+        Long joinUserId = authService.join(joinFormDto);
         //then
         User findUser = userRepository.findById(joinUserId).get();
         assertThat(findUser.getLoginId()).isEqualTo(joinFormDto.getLoginId());
@@ -39,7 +41,7 @@ class UserServiceTest {
     public void 아이디중복체크() throws Exception {
         //given
         JoinFormDto joinFormDto1 = getJoinFormDto();
-        userService.join(joinFormDto1);
+        authService.join(joinFormDto1);
         JoinFormDto joinFormDto2 = getJoinFormDto(); //중복 아이디
         JoinFormDto joinFormDto3 = getJoinFormDto(); //중복되지 않은 아이디
         joinFormDto3.setLoginId("abcdef");

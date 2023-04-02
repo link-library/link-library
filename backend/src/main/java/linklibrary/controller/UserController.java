@@ -47,10 +47,21 @@ public class UserController {
         return new ResponseEntity<>(new ResponseData("회원가입 완료", savedUserId), HttpStatus.OK);
     }
 
+    /**
+     * 로그인
+     */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginFormDto loginFormDto) {
         TokenDto tokenDto = authService.login(loginFormDto);
         return ResponseEntity.ok(new ResponseData("로그인 완료!", tokenDto));
+    }
+
+    /**
+     * 로그아웃
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@Valid @RequestBody LogoutDto logoutDto) {
+        return authService.logout(logoutDto);
     }
 
 

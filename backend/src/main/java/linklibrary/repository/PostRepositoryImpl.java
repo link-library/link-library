@@ -1,14 +1,10 @@
 package linklibrary.repository;
 
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import linklibrary.dto.PostDto1;
 import linklibrary.dto.QPostDto1;
-import linklibrary.entity.Post;
-import linklibrary.entity.QPost;
-import linklibrary.entity.QUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -36,10 +32,10 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                         post.id,
                         post.title,
                         post.memo,
-                        post.url,
                         post.bookmark,
                         user.nickname,
-                        post.updatedAt))
+                        post.updatedAt
+                ))
                 .from(post)
                 .join(post.user, user)
                 .where(

@@ -11,13 +11,17 @@ export const MainComponent = () => {
   const selectedCategoryName = useRecoilValue(selectedCategoryNameState);
   const isSidebarOpen = useRecoilValue(isSidebarOpenState);
 
-  const [postcards, setPostcards] = useState([]);
+  const [postcards, setPostcards] = useState([]); // 포스트 카드의 저장소
+
   const handleAddPostcard = (postcardData) => {
+    // 포스트 카드 추가 헨들러
+
     const newPostcard = { id: Date.now(), ...postcardData };
     setPostcards((prevPostcards) => [...prevPostcards, newPostcard]);
   };
 
   const handleDelete = (id) => {
+    // 포스트 카드 삭제 헨들러
     setPostcards(postcards.filter((postcard) => postcard.id !== id));
   };
 
@@ -67,7 +71,7 @@ export const MainComponent = () => {
                 classNames="postcard"
               >
                 <Grid item>
-                  <PostCard
+                  <PostCard // 포스트 카드 배치
                     key={postcard.id}
                     id={postcard.id}
                     title={postcard.title}

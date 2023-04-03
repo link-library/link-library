@@ -49,7 +49,7 @@ const AddWebsiteDialog = ({ open, handleClose, onSubmit }) => {
   const handleSubmit = () => {
     // 팝업창에 입력된 값을 추적하는 핸들러
     onSubmit({
-      name: nameRef.current.value,
+      title: nameRef.current.value,
       url: urlRef.current.value,
       description: descriptionRef.current.value,
       category: selectedCategory,

@@ -59,7 +59,7 @@ public class UserController {
     /**
      * 로그아웃
      */
-    @PostMapping("/logout")
+    @PostMapping("/logoutout")
     public ResponseEntity<?> logout(@Valid @RequestBody LogoutDto logoutDto) {
         return authService.logout(logoutDto);
     }

@@ -24,7 +24,7 @@ public class PrincipalDetailService implements UserDetailsService {
         log.info("loadUserByUsername 실행");
         User userEntity = userRepository.findByLoginId(username);
         if(userEntity == null) {
-            throw new EntityNotFoundException("유저 엔티티가 없습니다.[loadUserByUsername]");
+            throw new EntityNotFoundException("아이디를 다시 학인해주세요");
         }
         UserDto userDto = new UserDto(userEntity.getId(), userEntity.getLoginId(), userEntity.getPassword(), userEntity.getRole());
         return new PrincipalDetails(userDto);

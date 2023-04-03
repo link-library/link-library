@@ -4,6 +4,7 @@ import linklibrary.dto.ResponseData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -40,6 +41,10 @@ public class ExceptionController {
 
     @ExceptionHandler(JsonParseException.class)
     public ResponseEntity<ResponseData> handleJsonParseException(JsonParseException e) {
+        return new ResponseEntity<>(new ResponseData(e.getMessage(), null), HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ResponseData> handleBadCredentialsException(BadCredentialsException e) {
         return new ResponseEntity<>(new ResponseData(e.getMessage(), null), HttpStatus.BAD_REQUEST);
     }
 }

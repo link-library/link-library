@@ -29,7 +29,7 @@ const FilterOptions = ({ anchorEl, handleClose }) => {
   );
 };
 
-const FilterTab = () => {
+const FilterTab = ({ handleAddPostcard }) => {
   const [anchorEl, setAnchorEl] = useState(null); // 필터 메뉴 객체 관리 스테이트
 
   const handleClick = (event) => {
@@ -71,6 +71,8 @@ const FilterTab = () => {
   };
 
   const AddPostButton = () => {
+    // Post link 추가 버튼
+
     return (
       <>
         <IconButton
@@ -89,6 +91,7 @@ const FilterTab = () => {
         <AddWebsiteDialog
           open={AddWebsiteDialogOpen}
           handleClose={handleAddWebsiteDialogClose}
+          onSubmit={handleAddPostcard}
         />
       </>
     );

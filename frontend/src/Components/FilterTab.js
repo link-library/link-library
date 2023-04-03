@@ -99,9 +99,9 @@ const FilterTab = ({ handleAddPostcard }) => {
   return (
     <Box
       sx={{
-        position: 'absolute',
-        top: '40px',
-        right: '100px',
+        position: 'fixed',
+        top: '100px',
+        right: '50px',
       }}
     >
       <Grid

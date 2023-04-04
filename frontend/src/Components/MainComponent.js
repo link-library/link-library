@@ -16,7 +16,11 @@ export const MainComponent = () => {
   const handleAddPostcard = (postcardData) => {
     // 포스트 카드 추가 헨들러
 
-    const newPostcard = { id: Date.now(), ...postcardData };
+    const newPostcard = {
+      id: Date.now(),
+      creationTime: Date.now(),
+      ...postcardData,
+    };
     setPostcards((prevPostcards) => [...prevPostcards, newPostcard]);
   };
 
@@ -55,8 +59,8 @@ export const MainComponent = () => {
           sx={{
             display: 'grid',
             gridTemplateColumns: isSidebarOpen
-              ? 'repeat(5, minmax(230px, 1fr))'
-              : 'repeat(6, minmax(230px, 1fr))',
+              ? 'repeat(5, minmax(260px, 1fr))'
+              : 'repeat(6, minmax(260px, 1fr))',
             gap: '10px',
             paddingTop: '30px',
             paddingLeft: '50px',
@@ -79,6 +83,7 @@ export const MainComponent = () => {
                     description={postcard.description}
                     category={postcard.category}
                     onDelete={handleDelete}
+                    creationTime={postcard.creationTime}
                   />
                 </Grid>
               </CSSTransition>

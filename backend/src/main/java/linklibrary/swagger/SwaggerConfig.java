@@ -95,7 +95,7 @@ public class SwaggerConfig {
         return Arrays.asList(new SecurityReference("Authorization", authorizationScopes));
     }
 
-    // 헤더에 JWT 토큰을 포함하는 ApiKey 객체 생성
+    // 헤더에 JWT 토큰을 포함하는 ApiKey 객체 생성.
     private ApiKey apiKey() {
         return new ApiKey("Authorization", "Authorization", "header");
     }

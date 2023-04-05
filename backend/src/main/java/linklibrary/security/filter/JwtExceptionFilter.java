@@ -1,4 +1,4 @@
-package linklibrary.security;
+package linklibrary.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.JwtException;

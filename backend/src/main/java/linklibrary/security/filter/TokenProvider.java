@@ -1,4 +1,4 @@
-package linklibrary.security;
+package linklibrary.security.filter;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;

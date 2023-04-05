@@ -7,7 +7,7 @@ import linklibrary.dto.ResponseData;
 import linklibrary.entity.Role;
 import linklibrary.entity.User;
 import linklibrary.repository.UserRepository;
-import linklibrary.security.TokenProvider;
+import linklibrary.security.filter.TokenProvider;
 import linklibrary.security.dto.TokenDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -23,7 +23,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.concurrent.TimeUnit;
 
-import static linklibrary.security.JwtFilter.BEARER_PREFIX;
+import static linklibrary.security.filter.JwtFilter.BEARER_PREFIX;
 
 @Service
 @RequiredArgsConstructor

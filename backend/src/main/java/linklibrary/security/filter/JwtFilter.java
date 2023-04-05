@@ -1,4 +1,4 @@
-package linklibrary.security;
+package linklibrary.security.filter;
 
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;

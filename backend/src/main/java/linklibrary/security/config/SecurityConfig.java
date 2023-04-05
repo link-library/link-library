@@ -1,5 +1,6 @@
-package linklibrary.securityTest;
+package linklibrary.security.config;
 
+import linklibrary.security.filter.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +30,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // CSRF 설정 Disable
         http.csrf().disable()
+                .cors()
+                .and()
                 .addFilter(corsFilter) //인증이 있을 땐 cors 해결 필터를 여기 걸어줘야 함
                 .formLogin().disable()
                 .httpBasic().disable()

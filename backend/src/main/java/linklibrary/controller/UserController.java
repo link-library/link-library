@@ -2,10 +2,9 @@ package linklibrary.controller;
 
 import linklibrary.dto.*;
 import linklibrary.entity.ProfileImg;
-import linklibrary.securityTest.auth.PrincipalDetails;
-import linklibrary.securityTest.SecurityUtil;
-import linklibrary.securityTest.dto.TokenDto;
-import linklibrary.securityTest.service.AuthService;
+import linklibrary.security.auth.PrincipalDetails;
+import linklibrary.security.dto.TokenDto;
+import linklibrary.security.service.AuthService;
 import linklibrary.service.PostService;
 import linklibrary.service.ProfileImgService;
 import linklibrary.service.UserService;
@@ -15,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -59,7 +57,7 @@ public class UserController {
     /**
      * 로그아웃
      */
-    @PostMapping("/logoutout")
+    @PostMapping("/logoutUser")
     public ResponseEntity<?> logout(@Valid @RequestBody LogoutDto logoutDto) {
         return authService.logout(logoutDto);
     }

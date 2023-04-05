@@ -1,9 +1,6 @@
-package linklibrary.securityTest;
+package linklibrary.security.filter;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
-import linklibrary.securityTest.TokenProvider;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -37,18 +34,20 @@ public class JwtFilter extends OncePerRequestFilter {
         // 1. Request Header 에서 토큰을 꺼냄
         String token = resolveToken(request);
         log.info("JwtFilter 들어옴");
+
         // 2. validateToken 으로 토큰 유효성 검사
         // 정상 토큰이면 해당 토큰으로 Authentication 을 가져와서 SecurityContext 에 저장
         if (StringUtils.hasText(token) && tokenProvider.validateToken(token)) {
             String isLogout = (String) redisTemplate.opsForValue().get(token);
+            log.info("블랙리스트에 토큰이 있는지 확인");
 
             //블랙리스트에 올라가지 않은 경우에만 authentication 객체를 securityContext 에 저장
             if(ObjectUtils.isEmpty(isLogout)) {
                 Authentication authentication = tokenProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                throw new JwtException("로그아웃 되었습니다. 다시 로그인 해주세요");
             }
-
-
         }
         filterChain.doFilter(request,response);
     }

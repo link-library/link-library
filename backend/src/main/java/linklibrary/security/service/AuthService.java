@@ -1,4 +1,4 @@
-package linklibrary.securityTest.service;
+package linklibrary.security.service;
 
 import linklibrary.dto.JoinFormDto;
 import linklibrary.dto.LoginFormDto;
@@ -7,8 +7,8 @@ import linklibrary.dto.ResponseData;
 import linklibrary.entity.Role;
 import linklibrary.entity.User;
 import linklibrary.repository.UserRepository;
-import linklibrary.securityTest.TokenProvider;
-import linklibrary.securityTest.dto.TokenDto;
+import linklibrary.security.TokenProvider;
+import linklibrary.security.dto.TokenDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +19,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.concurrent.TimeUnit;
+
+import static linklibrary.security.JwtFilter.BEARER_PREFIX;
 
 @Service
 @RequiredArgsConstructor
@@ -73,18 +76,25 @@ public class AuthService {
     }
 
     public ResponseEntity<?> logout(LogoutDto logoutDto) {
-        if(!tokenProvider.checkToken(logoutDto.getAccessToken())) {
+        String token = resolveToken(logoutDto.getAccessToken());
+        if(!tokenProvider.checkToken(token)) {
             return ResponseEntity.ok(new ResponseData("잘못된 요청입니다.",null));
         }
 
         // 2. Access Token 에서 authentication 가져옴
-        Authentication authentication = tokenProvider.getAuthentication(logoutDto.getAccessToken());
+        Authentication authentication = tokenProvider.getAuthentication(token);
 
         // 3. 해당 Access Token 유효시간을 갖고 와서 BlackList 로 저장
-        Long expiration = tokenProvider.getExpiration(logoutDto.getAccessToken());
+        Long expiration = tokenProvider.getExpiration(token);
         redisTemplate.opsForValue()
-                .set(logoutDto.getAccessToken(), "logout", expiration, TimeUnit.MILLISECONDS);
+                .set(token, "logout", expiration, TimeUnit.MILLISECONDS);
         return ResponseEntity.ok(new ResponseData("로그아웃 되었습니다", null));
+    }
 
+    private String resolveToken(String bearerToken) {
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
 }

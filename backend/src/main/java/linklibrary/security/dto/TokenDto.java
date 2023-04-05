@@ -1,4 +1,4 @@
-package linklibrary.securityTest.dto;
+package linklibrary.security.dto;
 
 import lombok.*;
 

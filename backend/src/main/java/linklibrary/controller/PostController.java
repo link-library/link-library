@@ -1,7 +1,7 @@
 package linklibrary.controller;
 
 import linklibrary.dto.*;
-import linklibrary.securityTest.auth.PrincipalDetails;
+import linklibrary.security.auth.PrincipalDetails;
 import linklibrary.service.CategoryService;
 import linklibrary.service.PostService;
 import lombok.RequiredArgsConstructor;

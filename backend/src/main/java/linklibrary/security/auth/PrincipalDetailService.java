@@ -1,4 +1,4 @@
-package linklibrary.securityTest.auth;
+package linklibrary.security.auth;
 
 import linklibrary.dto.UserDto;
 import linklibrary.entity.User;

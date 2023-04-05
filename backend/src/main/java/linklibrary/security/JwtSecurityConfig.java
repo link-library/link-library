@@ -1,4 +1,4 @@
-package linklibrary.securityTest;
+package linklibrary.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;

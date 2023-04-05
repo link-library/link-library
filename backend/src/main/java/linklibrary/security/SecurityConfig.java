@@ -1,73 +1,60 @@
-//package linklibrary.security;
-//
-//import linklibrary.repository.UserRepository;
-//import linklibrary.security.jwt.JwtAuthenticationFilter;
-//import linklibrary.security.jwt.JwtAuthorizationFilter;
-//import lombok.AllArgsConstructor;
-//import org.springframework.context.annotation.Bean;
-//import org.springframework.context.annotation.Configuration;
-//import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-//import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-//import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-//import org.springframework.security.config.http.SessionCreationPolicy;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-//import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-//import org.springframework.web.filter.CorsFilter;
-//
-//import javax.servlet.http.HttpServletResponse;
-//
-//@Configuration
-//@EnableWebSecurity
-//@AllArgsConstructor
-//public class SecurityConfig extends WebSecurityConfigurerAdapter {
-//
-//    private final CorsFilter corsFilter;
-//    private final UserRepository userRepository;
-//
-//    /**
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http.csrf().disable()
-//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) //세션 방식을 쓰지 않겠다.
-//                .and()
-//                .addFilter(corsFilter) //인증이 있을 땐 cors 해결 필터를 여기 걸어줘야 함
-//                .formLogin().disable()
-//                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-//                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
-//                .httpBasic().disable()
-//                .authorizeRequests()
-//                .antMatchers("/joinCheck").authenticated()
-//                .antMatchers("/**").permitAll()
-//                .anyRequest().authenticated();
-//    }
-//*/
-//
-//    //기존의 설정과 로그아웃 관련 설정을 함께 사용
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http.csrf().disable()
-//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) //세션 방식을 쓰지 않겠다.
-//                .and()
-//                .addFilter(corsFilter) //인증이 있을 땐 cors 해결 필터를 여기 걸어줘야 함
-//                .formLogin().disable()
-////                .addFilterBefore(new ExceptionHandlerFilter(), UsernamePasswordAuthenticationFilter.class) //예외처리 핸들러 추가
-//                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-//                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
-//                .httpBasic().disable()
-//                .authorizeRequests()
-//                .antMatchers("/joinCheck").authenticated()
-//                .antMatchers("/**").permitAll()
-//                .anyRequest().authenticated()
-//                .and()
-//                .logout()
-//                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST"))
-//                .logoutSuccessHandler((request, response, authentication) -> {
-//                    response.setStatus(HttpServletResponse.SC_OK);
-//                    response.setContentType("application/json");
-//                    response.setCharacterEncoding("UTF-8");
-//                    response.getWriter().write("{\"message\":\"로그아웃 성공\"}");
-//                })
-//                .permitAll();
-//    }
-//
-//}
+package linklibrary.security;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.filter.CorsFilter;
+
+@Configuration
+@RequiredArgsConstructor
+public class SecurityConfig {
+    private final TokenProvider tokenProvider;
+    private final CorsFilter corsFilter;
+    private final RedisTemplate redisTemplate;
+
+
+    // h2 database 테스트가 원활하도록 관련 API 들은 전부 무시
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring()
+                .antMatchers("/h2-console/**", "/favicon.ico");
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        // CSRF 설정 Disable
+        http.csrf().disable()
+                .addFilter(corsFilter) //인증이 있을 땐 cors 해결 필터를 여기 걸어줘야 함
+                .formLogin().disable()
+                .httpBasic().disable()
+
+//                // h2-console 을 위한 설정을 추가
+                .headers()
+                .frameOptions()
+                .sameOrigin()
+
+                // 시큐리티는 기본적으로 세션을 사용
+                // 여기서는 세션을 사용하지 않기 때문에 세션 설정을 Stateless 로 설정
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+                // 로그인, 회원가입 API 는 토큰이 없는 상태에서 요청이 들어오기 때문에 permitAll 설정
+                .and()
+                .authorizeRequests()
+                .antMatchers("/joinCheck").authenticated()
+                .antMatchers("/**").permitAll()
+                .anyRequest().authenticated()
+
+                // JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
+                .and()
+                .apply(new JwtSecurityConfig(tokenProvider, redisTemplate));
+
+        return http.build();
+    }
+}

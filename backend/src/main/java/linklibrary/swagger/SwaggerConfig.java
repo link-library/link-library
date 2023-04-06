@@ -23,7 +23,7 @@ import static linklibrary.security.filter.JwtFilter.AUTHORIZATION_HEADER;
 
 /**
  * Swagger 문서로 만들고 싶지 않을 경우 해당 컨트롤러에 @ApiIgnore 어노테이션을 추가하여 제외시킬 수 있음.
- * http://localhost:8090/swagger-ui/index.html# 로 접속
+ * http://localhost:8080/swagger-ui/index.html
  */
 
 //@Configuration

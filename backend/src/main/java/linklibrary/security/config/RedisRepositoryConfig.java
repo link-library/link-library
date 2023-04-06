@@ -1,4 +1,4 @@
-package linklibrary.securityTest.redis;
+package linklibrary.security.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;

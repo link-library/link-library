@@ -1,8 +1,6 @@
-package linklibrary.securityTest.auth;
+package linklibrary.security.auth;
 
 import linklibrary.dto.UserDto;
-import linklibrary.entity.User;
-import lombok.Data;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

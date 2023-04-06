@@ -3,16 +3,13 @@ package linklibrary.service;
 import linklibrary.dto.JoinFormDto;
 import linklibrary.entity.User;
 import linklibrary.repository.UserRepository;
-import linklibrary.securityTest.service.AuthService;
-import org.assertj.core.api.Assertions;
-import org.jetbrains.annotations.NotNull;
+import linklibrary.security.service.AuthService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional

@@ -1,11 +1,11 @@
-package linklibrary.securityTest;
+package linklibrary.security.filter;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import linklibrary.securityTest.auth.PrincipalDetailService;
-import linklibrary.securityTest.auth.PrincipalDetails;
-import linklibrary.securityTest.dto.TokenDto;
+import linklibrary.security.auth.PrincipalDetailService;
+import linklibrary.security.auth.PrincipalDetails;
+import linklibrary.security.dto.TokenDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;

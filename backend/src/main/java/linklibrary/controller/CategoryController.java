@@ -3,7 +3,7 @@ package linklibrary.controller;
 import linklibrary.dto.CategoryDto;
 import linklibrary.dto.CategoryFormDto;
 import linklibrary.dto.ResponseData;
-import linklibrary.securityTest.auth.PrincipalDetails;
+import linklibrary.security.auth.PrincipalDetails;
 import linklibrary.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

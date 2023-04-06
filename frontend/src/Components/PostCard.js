@@ -24,10 +24,13 @@ const StyledCard = styled(Card)({
   height: 300,
   position: 'relative',
   borderRadius: '10px',
-  transition: 'box-shadow 0.2 ease-in-out',
+  transition: 'box-shadow 0.2s ease-in-out',
   '&:hover': {
     boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
     cursor: 'pointer',
+  },
+  '&.custom-card': {
+    borderRadius: '10px',
   },
 });
 
@@ -113,7 +116,7 @@ i 플래그는 대소문자를 구분하지 않는 패턴을 만들어 대소문
 
   return (
     <Paper elevation={0}>
-      <StyledCard onClick={handlePostCardClick}>
+      <StyledCard className="custom-card" onClick={handlePostCardClick}>
         <CardHeader
           avatar={
             <Avatar sx={{ bgcolor: red[500], width: 30, height: 30 }}>M</Avatar>
@@ -142,7 +145,7 @@ i 플래그는 대소문자를 구분하지 않는 패턴을 만들어 대소문
             fontWeight: 'bold',
           }}
           subheaderTypographyProps={{
-            fonstSize: '1rem',
+            fontSize: '0.8rem',
             fontWeight: 'normal',
           }}
         />

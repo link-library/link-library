@@ -131,10 +131,8 @@ public class PostService {
                 .map(c -> new CategoryDto(c.getId(), c.getName()))
                 .collect(Collectors.toList());  //카테고리DTO에는  ID와 NAME만 있음.
 
-        String current = "";
-        if (bookmark != null) {
-            current = bookmark.equals("true") ? "찜목록" : "전체 조회";  //bookmark 여부에 따라 currentCategory 이름 설정
-        }
+        String current = bookmark == null ? "전체조회" : "찜목록"; //bookmark 여부에 따라 currentCategory 이름 설정
+
         if (categoryId != null) {
             Category category = categoryRepository.findById(categoryId)
                     .orElseThrow(() -> new EntityNotFoundException("카테고리 아이디에 해당하는 엔티티가 없습니다. [PostService]"));

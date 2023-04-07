@@ -1,5 +1,8 @@
 package linklibrary.controller;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import linklibrary.dto.*;
 import linklibrary.security.auth.PrincipalDetails;
 import linklibrary.service.CategoryService;
@@ -28,6 +31,7 @@ public class PostController {
     /**
      * 포스트 생성,
      */
+    @ApiOperation(value = "포스트 생성", notes = "필수값: title, url, categoryId (없을 시 예외 메세지 전송)")
     @PostMapping("/post")
     public ResponseEntity<ResponseData> createPost(@Valid @RequestBody final PostFormDto postFormDto,
                                                    @AuthenticationPrincipal PrincipalDetails principalDetails) throws IOException {
@@ -97,7 +101,7 @@ public class PostController {
             @RequestParam(required = false, defaultValue = "byDate") final String sort,
             @PathVariable(required = true) final Long categoryId,
             @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @RequestParam(defaultValue = "0")int page) {
+            @RequestParam(defaultValue = "0") int page) {
         PageRequest pageRequest = PageRequest.of(page, 16);
         // 포스트 정보
         List<PostDto> postDtos = postService.getPostListByCategoryId(principalDetails.getUserDto().getUserId(), keyword, sort, categoryId, pageRequest);
@@ -112,6 +116,7 @@ public class PostController {
         return new ResponseEntity<>(new ResponseData("포스트 조회(찜목록)", resultData), HttpStatus.OK);
     }
 
+    @ApiOperation(value = "포스트 전체 or 찜목록 조회", notes = "bookmark 값이 null이면 전체조회 null이 아니면 찜목록 조회  sort=\"byDate\"이면 시간순, sort=\"byTitle\"이면 제목순")
     @GetMapping("/posts")
     public ResponseEntity<?> getPosts(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
@@ -122,7 +127,7 @@ public class PostController {
         PageRequest pageable = PageRequest.of(page, 16);
         Long userId = principalDetails.getUserDto().getUserId();
         MainPageDto mainPageDto = postService.getPosts(userId, bookmark, sort, keyword, null, pageable);
-        return ResponseEntity.ok(new ResponseData("찜목록 or 전체페이지 조회 완료       ", mainPageDto));
+        return ResponseEntity.ok(new ResponseData("찜목록 or 전체페이지 조회 완료", mainPageDto));
     }
 
     @GetMapping("/posts/{categoryId}")

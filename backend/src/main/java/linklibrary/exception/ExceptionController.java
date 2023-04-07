@@ -20,6 +20,7 @@ public class ExceptionController {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ResponseData> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        log.info("validation 예외 캐치");
         String errorMessage = e.getBindingResult()
                 .getAllErrors()
                 .get(0)

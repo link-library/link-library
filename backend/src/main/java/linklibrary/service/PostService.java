@@ -41,7 +41,6 @@ public class PostService {
         Post post = Post.builder().title(postFormDto.getTitle())
                 .memo(postFormDto.getMemo())
                 .url(postFormDto.getUrl())
-//                .category(postFormDto.getCategory())
                 .category(category)
                 .user(user)
                 .bookmark(postFormDto.getBookmark())
@@ -66,14 +65,13 @@ public class PostService {
     public Long change(Long postId, PostFormDto postFormDto) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException("포스트 엔티티가 없습니다"));
         Category category = categoryRepository.findById(postFormDto.getCategoryId())
-                .orElseThrow(() -> new EntityNotFoundException("카테고리 엔티티가 없습니다"));
-
+                .orElseThrow(() -> new EntityNotFoundException("카테고리 엔티티가 없습니다. [postService]"));
         post.setTitle(postFormDto.getTitle());
         post.setMemo(postFormDto.getMemo());
         post.setUrl(postFormDto.getUrl());
         post.setCategory(category);
+        post.setBookmark(postFormDto.getBookmark());
         return post.getId();
-
     }
     /**
      * 포스트 목록 전체 조회
@@ -87,27 +85,28 @@ public class PostService {
         Slice<Post> posts;
         if (bookmark != null) { // 북마크 해준 경우
             if (Objects.equals(sort, "byName")) {
-                 posts = postRepository.findByUserIdAndBookmarkAndTitleContainingOrderByTitleAsc(userId, bookmark, keyword, pageRequest);
+                posts = postRepository.findByUserIdAndBookmarkAndTitleContainingOrderByTitleAsc(userId, bookmark, keyword, pageRequest);
             } else { // "byDate"를 기본값으로 사용
-                 posts = postRepository.findByUserIdAndBookmarkAndTitleContainingOrderByCreatedAtDesc(userId, bookmark, keyword,pageRequest);
+                posts = postRepository.findByUserIdAndBookmarkAndTitleContainingOrderByCreatedAtDesc(userId, bookmark, keyword, pageRequest);
             }
         } else { // 북마크 안 해준 경우
             if (Objects.equals(sort, "byName")) {
-                posts = postRepository.findByUserIdAndTitleContainingOrderByTitleAsc(userId, keyword,pageRequest);
+                posts = postRepository.findByUserIdAndTitleContainingOrderByTitleAsc(userId, keyword, pageRequest);
             } else { // "byDate"를 기본값으로 사용
-                posts = postRepository.findByUserIdAndTitleContainingOrderByCreatedAtDesc(userId, keyword,pageRequest);
+                posts = postRepository.findByUserIdAndTitleContainingOrderByCreatedAtDesc(userId, keyword, pageRequest);
             }
         }
         List<Post> content = posts.getContent();
         return PostMapper.convertToDtoListAll(content);
     }
-    public List<PostDto> getPostListByCategoryId(Long userId, String keyword, String sort, Long categoryId,Pageable pageable) {
+
+    public List<PostDto> getPostListByCategoryId(Long userId, String keyword, String sort, Long categoryId, Pageable pageable) {
         Slice<Post> posts;
 
         if (Objects.equals(sort, "byName")) {
-            posts = postRepository.findByUserIdAndCategoryIdAndTitleContainingOrderByTitleAsc(userId, categoryId, keyword,pageable);
+            posts = postRepository.findByUserIdAndCategoryIdAndTitleContainingOrderByTitleAsc(userId, categoryId, keyword, pageable);
         } else { // "byDate"를 기본값으로 사용
-            posts = postRepository.findByUserIdAndCategoryIdAndTitleContainingOrderByCreatedAtDesc(userId, categoryId, keyword,pageable);
+            posts = postRepository.findByUserIdAndCategoryIdAndTitleContainingOrderByCreatedAtDesc(userId, categoryId, keyword, pageable);
         }
         List<Post> content = posts.getContent();
         return PostMapper.convertToDtoListAll(content);

@@ -5,6 +5,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import linklibrary.dto.PostDto1;
 import linklibrary.dto.QPostDto1;
+import linklibrary.entity.QCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,7 @@ import javax.persistence.EntityManager;
 
 import java.util.List;
 
+import static linklibrary.entity.QCategory.*;
 import static linklibrary.entity.QPost.*;
 import static linklibrary.entity.QUser.*;
 
@@ -32,12 +34,15 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                         post.id,
                         post.title,
                         post.memo,
+                        post.url,
                         post.bookmark,
                         user.nickname,
-                        post.updatedAt
+                        post.updatedAt,
+                        category.name
                 ))
                 .from(post)
                 .join(post.user, user)
+                .leftJoin(post.category, category) //카테고리는 null 일수도 있어서
                 .where(
                         userIdEq(userId),
                         postTitleEq(keyword),

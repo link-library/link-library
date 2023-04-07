@@ -6,33 +6,32 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Lob;
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder  //조회용
 public class PostDto1 {
     private Long postId;
     private String title;
+    @Lob
     private String memo;
     private String url;
     private boolean bookmark;
-//    private Long categoryId; //진수1 추가
-//    private String categoryName; //진수1 추가
     private String nickname;
-    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private String categoryName;
 
     @QueryProjection
-    public PostDto1(Long postId, String title, String memo, boolean bookmark, String nickname, LocalDateTime createdAt) {
+    public PostDto1(Long postId, String title, String memo, String url, boolean bookmark, String nickname, LocalDateTime updatedAt, String categoryName) {
         this.postId = postId;
         this.title = title;
         this.memo = memo;
         this.url = url;
-//        this.categoryId =categoryId;  //진수1 추가
-//        this.categoryName=categoryName;//진수1 추가
         this.bookmark = bookmark;
         this.nickname = nickname;
-        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.categoryName = categoryName;
     }
 }

@@ -23,6 +23,10 @@ public class PrincipalDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("loadUserByUsername 실행");
         User userEntity = userRepository.findByLoginId(username);
+        /**
+         * 여기서 유저 엔티티를 조회하면 profileImg 조회 쿼리까지 같이 나가는데 왜 그런지 모르겠음..
+         */
+        log.info("유저 엔티티 조회 완료");
         if(userEntity == null) {
             throw new EntityNotFoundException("아이디를 다시 학인해주세요");
         }

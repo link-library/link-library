@@ -1,5 +1,6 @@
 package linklibrary.controller;
 
+import io.swagger.annotations.ApiOperation;
 import linklibrary.dto.CategoryDto;
 import linklibrary.dto.CategoryFormDto;
 import linklibrary.dto.ResponseData;
@@ -20,13 +21,13 @@ import java.util.List;
 public class CategoryController {
 
     private final CategoryService categoryService;
-
+    @ApiOperation(value = "카테고리 생성", notes = "필수값: name (없을 시 예외 메세지 전송)")
     @PostMapping("/category")
     public ResponseEntity<?> createCategory(@Valid @RequestBody CategoryFormDto categoryFormDto, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         Long savedCategoryId = categoryService.createCategory(categoryFormDto, principalDetails.getUserDto().getUserId());
         return ResponseEntity.ok(new ResponseData("카테고리 생성 완료", savedCategoryId));
     }
-
+    @ApiOperation(value = "카테고리 수정", notes = "필수값: name (없을 시 예외 메세지 전송)")
     @PutMapping("/category/{categoryId}")
     public ResponseEntity<?> editCategory(@Valid @RequestBody CategoryFormDto categoryFormDto, @PathVariable final Long categoryId) {
         Long editedCategoryId = categoryService.editCategory(categoryFormDto, categoryId);
@@ -37,12 +38,5 @@ public class CategoryController {
     public ResponseEntity<?> editCategory(@PathVariable final Long categoryId) {
         categoryService.deleteCategory(categoryId);
         return ResponseEntity.ok(new ResponseData("카테고리 삭제 완료", null));
-    }
-
-    @GetMapping("/categories")
-    public ResponseEntity<?> findCategoryByUser(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        Long userId = principalDetails.getUserDto().getUserId();
-        List<CategoryDto> categoryDtoList = categoryService.findAll(userId);
-        return ResponseEntity.ok(new ResponseData("카테고리 반환", categoryDtoList));
     }
 }

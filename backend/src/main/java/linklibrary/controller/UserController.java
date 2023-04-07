@@ -1,5 +1,6 @@
 package linklibrary.controller;
 
+import io.swagger.annotations.ApiOperation;
 import linklibrary.dto.*;
 import linklibrary.entity.ProfileImg;
 import linklibrary.security.auth.PrincipalDetails;
@@ -39,6 +40,7 @@ public class UserController {
     /**
      * 회원가입
      */
+    @ApiOperation(value = "유저 생성", notes = "전부 필수값 (없을 시 예외 메세지 전송)")
     @PostMapping("/join")
     public ResponseEntity<ResponseData> joinUser(@Valid @RequestBody JoinFormDto joinFormDto) {
         Long savedUserId = authService.join(joinFormDto);
@@ -57,6 +59,7 @@ public class UserController {
     /**
      * 로그아웃
      */
+    @ApiOperation(value = "로그아웃", notes = "필수값: accessToken (없을 시 예외 메세지 전송, 로그인 했을 때 받은 토큰 보내주세요")
     @PostMapping("/logoutUser")
     public ResponseEntity<?> logout(@Valid @RequestBody LogoutDto logoutDto) {
         return authService.logout(logoutDto);
@@ -66,6 +69,7 @@ public class UserController {
     /**
      * 회원가입시 같은 아이디가 있는지 중복체크
      */
+    @ApiOperation(value = "ID 중복 체크", notes = "아이디는 영어 소문자와 숫자만 사용하여 4~20자리여야 합니다.")
     @PostMapping("/validation-id")
     public ResponseEntity<ResponseData> validateUserId(@Valid @RequestBody ValidateIdForm validateIdForm) {
         Boolean useful = userService.validLoginId(validateIdForm.getLoginId());
@@ -81,6 +85,7 @@ public class UserController {
     /**
      * 회원가입시 같은 닉네임이 있는지 중복체크
      */
+    @ApiOperation(value = "닉네임 중복 체크", notes = "닉네임은 최대 8글자까지 가능합니다.")
     @PostMapping("/validation-nickname")
     public ResponseEntity<?> validateNickname(@Valid @RequestBody ValidateNicknameForm validateNicknameForm) {
         Boolean useful = userService.validNickname(validateNicknameForm.getNickname());

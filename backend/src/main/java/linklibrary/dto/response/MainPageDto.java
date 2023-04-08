@@ -13,12 +13,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(title = "메인 페이지 요청", description = "카테고리 리스트,게시글 리스트 및 전체 수,현재 카테고리 요청 ")
+@Schema(title = "메인 페이지 응답", description = "카테고리 리스트,게시글 리스트 및 전체 수,현재 카테고리 응답  ")
 public class MainPageDto {
     //@Schema 어노테이션은 Swagger 문서에서 해당 객체에 대한 정보를 제공
     //    @ApiModelProperty(example = "abcde1") 이거 로그인폼DTO에 있는데 이거랑 같은 기능인듯 ?
     //찾아봤더니 @Schema가 최신 swagger버전에 어울린다함.
-
     private List<CategoryDto> categoryDtoList;
     private Page<PostDto1> postDtoList;
     private Long total;

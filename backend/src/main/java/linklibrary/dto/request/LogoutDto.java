@@ -14,5 +14,6 @@ public class LogoutDto {
     //    @ApiModelProperty(example = "abcde1") 이거 로그인폼DTO에 있는데 이거랑 같은 기능인듯 ?
     //찾아봤더니 @Schema가 최신 swagger버전에 어울린다함.
     @NotEmpty(message = "잘못된 요청입니다")
+    @Schema(title = "로그아웃 요청", example = "쫘르르.. 로그인된 토큰 가져옴. 직접 입력하지 않음. ")
     private String accessToken;
 }

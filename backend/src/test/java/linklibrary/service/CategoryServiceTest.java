@@ -1,20 +1,15 @@
 package linklibrary.service;
 
-import linklibrary.dto.CategoryDto;
-import linklibrary.dto.CategoryFormDto;
-import linklibrary.dto.PostFormDto;
+import linklibrary.dto.response.CategoryDto;
+import linklibrary.dto.request.CategoryFormDto;
 import linklibrary.entity.Category;
-import linklibrary.entity.Post;
-import linklibrary.entity.Role;
 import linklibrary.entity.User;
 import linklibrary.repository.CategoryRepository;
-import linklibrary.repository.PostRepository;
 import linklibrary.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;

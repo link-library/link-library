@@ -1,8 +1,7 @@
 package linklibrary.service;
 
-import linklibrary.dto.JoinFormDto;
-import linklibrary.dto.LoginFormDto;
-import linklibrary.dto.UserPageDto;
+import linklibrary.dto.request.JoinFormDto;
+import linklibrary.dto.response.UserPageDto;
 import linklibrary.entity.Role;
 import linklibrary.entity.User;
 import linklibrary.repository.UserRepository;

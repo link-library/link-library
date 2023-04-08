@@ -1,9 +1,9 @@
 package linklibrary.security.service;
 
-import linklibrary.dto.JoinFormDto;
-import linklibrary.dto.LoginFormDto;
-import linklibrary.dto.LogoutDto;
-import linklibrary.dto.ResponseData;
+import linklibrary.dto.request.JoinFormDto;
+import linklibrary.dto.request.LoginFormDto;
+import linklibrary.dto.request.LogoutDto;
+import linklibrary.dto.response.ResponseData;
 import linklibrary.entity.Role;
 import linklibrary.entity.User;
 import linklibrary.repository.UserRepository;

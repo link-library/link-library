@@ -1,7 +1,9 @@
 package linklibrary.controller;
 
 import io.swagger.annotations.ApiOperation;
-import linklibrary.dto.*;
+import linklibrary.dto.request.*;
+import linklibrary.dto.response.ResponseData;
+import linklibrary.dto.response.UserPageDto;
 import linklibrary.entity.ProfileImg;
 import linklibrary.security.auth.PrincipalDetails;
 import linklibrary.security.dto.TokenDto;

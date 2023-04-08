@@ -1,7 +1,7 @@
 //package linklibrary.security.jwt;
 //
 //import com.fasterxml.jackson.databind.ObjectMapper;
-//import linklibrary.dto.ResponseData;
+//import linklibrary.dto.response.ResponseData;
 //import linklibrary.entity.User;
 //import linklibrary.exception.JsonParseException;
 //import linklibrary.securityTest.auth.PrincipalDetails;

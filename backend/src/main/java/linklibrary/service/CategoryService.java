@@ -1,7 +1,7 @@
 package linklibrary.service;
 
-import linklibrary.dto.CategoryDto;
-import linklibrary.dto.CategoryFormDto;
+import linklibrary.dto.response.CategoryDto;
+import linklibrary.dto.request.CategoryFormDto;
 import linklibrary.entity.Category;
 import linklibrary.entity.User;
 import linklibrary.repository.CategoryRepository;
@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

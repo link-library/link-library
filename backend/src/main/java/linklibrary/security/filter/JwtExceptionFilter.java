@@ -2,7 +2,7 @@ package linklibrary.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.JwtException;
-import linklibrary.dto.ResponseData;
+import linklibrary.dto.response.ResponseData;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;

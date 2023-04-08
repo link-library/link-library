@@ -1,6 +1,10 @@
 package linklibrary.service;
 
-import linklibrary.dto.*;
+import linklibrary.dto.request.PostFormDto;
+import linklibrary.dto.response.CategoryDto;
+import linklibrary.dto.response.MainPageDto;
+import linklibrary.dto.response.PostDto;
+import linklibrary.dto.response.PostDto1;
 import linklibrary.entity.Category;
 import linklibrary.entity.Post;
 import linklibrary.entity.User;
@@ -19,7 +23,6 @@ import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

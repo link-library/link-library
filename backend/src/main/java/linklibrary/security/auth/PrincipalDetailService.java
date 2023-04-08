@@ -1,6 +1,6 @@
 package linklibrary.security.auth;
 
-import linklibrary.dto.UserDto;
+import linklibrary.dto.response.UserDto;
 import linklibrary.entity.User;
 import linklibrary.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

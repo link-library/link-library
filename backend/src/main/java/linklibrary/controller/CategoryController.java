@@ -1,9 +1,8 @@
 package linklibrary.controller;
 
 import io.swagger.annotations.ApiOperation;
-import linklibrary.dto.CategoryDto;
-import linklibrary.dto.CategoryFormDto;
-import linklibrary.dto.ResponseData;
+import linklibrary.dto.request.CategoryFormDto;
+import linklibrary.dto.response.ResponseData;
 import linklibrary.security.auth.PrincipalDetails;
 import linklibrary.service.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +12,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @Slf4j

@@ -1,6 +1,6 @@
 package linklibrary.security.auth;
 
-import linklibrary.dto.UserDto;
+import linklibrary.dto.response.UserDto;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

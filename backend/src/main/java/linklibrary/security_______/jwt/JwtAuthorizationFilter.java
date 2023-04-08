@@ -1,6 +1,6 @@
 //package linklibrary.security.jwt;
 //
-//import linklibrary.dto.UserDto;
+//import linklibrary.dto.response.UserDto;
 //import linklibrary.entity.User;
 //import linklibrary.repository.UserRepository;
 //import linklibrary.securityTest.auth.PrincipalDetails;

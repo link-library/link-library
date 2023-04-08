@@ -1,7 +1,7 @@
 //package linklibrary.mapper;
 //
-//import linklibrary.dto.PostDto;
-//import linklibrary.dto.PostFormDto;
+//import linklibrary.dto.response.PostDto;
+//import linklibrary.dto.request.PostFormDto;
 //import linklibrary.entity.Post;
 //import linklibrary.entity.User;
 //
@@ -66,8 +66,8 @@
 //}
 package linklibrary.mapper;
 
-import linklibrary.dto.PostDto;
-import linklibrary.dto.PostFormDto;
+import linklibrary.dto.response.PostDto;
+import linklibrary.dto.request.PostFormDto;
 import linklibrary.entity.Post;
 
 import java.util.List;

@@ -39,6 +39,7 @@ public class AuthServiceTest {
     private final RedisTemplate redisTemplate;
 
 
+    // 이런 방법도 있어서. 한번 소개해보고싶어서 test로 넣어놨어요
     @Transactional
     public CommonResponseDto<Object> join2(JoinFormDto request) {
         log.debug("[join] join: {}", request);

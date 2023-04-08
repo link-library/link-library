@@ -74,6 +74,8 @@ import lombok.Builder;
 import java.util.List;
 import java.util.stream.Collectors;
 
+//레거시
+
 public class PostMapper {
     /**
      * Mapper는 온전히 값을 매핑해주는 용도이기 때문에 객체를 만들 필요가 없으니 static 메서드로 만듬.

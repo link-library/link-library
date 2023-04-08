@@ -6,7 +6,9 @@ import javax.persistence.*;
 
 @Entity
 @AllArgsConstructor
-@Data
+@ToString
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class Post extends BaseEntity{

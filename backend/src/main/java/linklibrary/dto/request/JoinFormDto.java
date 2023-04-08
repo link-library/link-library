@@ -24,6 +24,12 @@ public class JoinFormDto {
             message = "비밀번호는 8~16자리수여야 합니다. 영문 대소문자, 숫자, 특수문자를 1개 이상 포함해야 합니다.")
     private String password;
 
+    //비밀 번호 다시 한번 맞는지 확인. 이거는 그냥 제가 코드 주석으로 처리했는데요. 마음에 안들면 그냥 지워도 되요
+//    @Schema(description = "로그인 패스워드2")
+//    @NotBlank(message = "확인 비밀번호는 필수 입력 값입니다.")
+//    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,16}$",
+//            message = "비밀번호는 8~16자리수여야 합니다. 영문 대소문자, 숫자, 특수문자를 1개 이상 포함해야 합니다.")
+//    private String password2;
 
     @Schema(title = "닉네임 작성", example = "nickname1")
     @NotBlank(message = "닉네임을 입력해주세요")

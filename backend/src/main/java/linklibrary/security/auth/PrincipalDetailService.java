@@ -25,6 +25,10 @@ public class PrincipalDetailService implements UserDetailsService {
         User userEntity = userRepository.findByLoginId(username);
         /**
          * 여기서 유저 엔티티를 조회하면 profileImg 조회 쿼리까지 같이 나가는데 왜 그런지 모르겠음..
+         *
+         * A :    (? ,?) 이렇게 인쿼리로 나가서 조회하게 되는거면
+         *  application.yml 에서  default_batch_fetch_size: 100  # batch size 설정
+         *  이거 때문에  모든 엔티티에 패치 조인 적용되서 그런걸로 알고있어요.
          */
         log.info("유저 엔티티 조회 완료");
         if(userEntity == null) {

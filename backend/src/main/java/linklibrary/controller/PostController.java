@@ -1,6 +1,9 @@
 package linklibrary.controller;
 
 import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import linklibrary.dto.request.PostFormDto;
 import linklibrary.dto.response.CategoryDto;
 import linklibrary.dto.response.MainPageDto;
@@ -23,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Tag(name = "포스트", description = "카테고리/생성/삭제/수정/조회(전체or찜목록)/조회(카테고리 달린)")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -30,10 +34,12 @@ public class PostController {
     private final PostService postService;
     private final CategoryService categoryService;
 
-    /**
-     * 포스트 생성,
-     */
-    @ApiOperation(value = "포스트 생성", notes = "필수값: title, url, categoryId (없을 시 예외 메세지 전송)")
+
+    @Operation(summary = "포스트 생성", description = "포스트 생성 폼 제출,필수값: title, url, categoryId (없을 시 예외 메세지 전송)",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "포스트 생성 성공"),
+                    @ApiResponse(responseCode = "400", description = "포스트 생성 실패")
+    })
     @PostMapping("/post")
     public ResponseEntity<ResponseData> createPost(@Valid @RequestBody final PostFormDto postFormDto,
                                                    @AuthenticationPrincipal PrincipalDetails principalDetails) throws IOException {
@@ -45,6 +51,11 @@ public class PostController {
     /**
      * 포스트 삭제하기
      */
+    @Operation(summary = "포스트 삭제", description = "포스트ID를 받아와서 조회후. 매치되면 삭제",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "포스트 삭제 성공"),
+                    @ApiResponse(responseCode = "400", description = "포스트 삭제 실패")
+    })
     @DeleteMapping("post/{postId}")
     public ResponseEntity<ResponseData> deletePost(@PathVariable final long postId) {
         postService.deletePost(postId);
@@ -54,6 +65,11 @@ public class PostController {
     /**
      * 포스트 수정
      */
+    @Operation(summary = "포스트 수정", description = "포스트 수정 폼 제출",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "포스트 삭제 성공"),
+                    @ApiResponse(responseCode = "400", description = "포스트 삭제 실패")
+    })
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("post/{postId}")
     public ResponseEntity<ResponseData> updatePost(@PathVariable final long postId,
@@ -117,8 +133,12 @@ public class PostController {
         resultData.put("currentCategory", categoryId);
         return new ResponseEntity<>(new ResponseData("포스트 조회(찜목록)", resultData), HttpStatus.OK);
     }
-
-    @ApiOperation(value = "포스트 전체 or 찜목록 조회", notes = "bookmark 값이 null이면 전체조회 null이 아니면 찜목록 조회  sort=\"byDate\"이면 시간순, sort=\"byTitle\"이면 제목순")
+    @Operation(summary = "포스트 전체 or 찜목록 조회", description = "bookmark 값이 null이면 전체조회 null이 아니면 찜목록 조회 sort=\"byDate\"이면 시간순, sort=\"byTitle\"이면 제목순",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "포스트 조회 성공"),
+                    @ApiResponse(responseCode = "400", description = "포스트 조회 실패")
+    })
+//    @ApiOperation(value = "포스트 전체 or 찜목록 조회", notes = "bookmark 값이 null이면 전체조회 null이 아니면 찜목록 조회  sort=\"byDate\"이면 시간순, sort=\"byTitle\"이면 제목순")
     @GetMapping("/posts")
     public ResponseEntity<?> getPosts(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
@@ -131,7 +151,11 @@ public class PostController {
         MainPageDto mainPageDto = postService.getPosts(userId, bookmark, sort, keyword, null, pageable);
         return ResponseEntity.ok(new ResponseData("찜목록 or 전체페이지 조회 완료", mainPageDto));
     }
-
+    @Operation(summary = "카테고리에 속한 포스트 조회", description = "포스트 찜/전체 조회 기능에 단지 카테고리Id만 추가해서 받아옴",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "카테고리에 속한 포스트 조회 성공"),
+                    @ApiResponse(responseCode = "400", description = "카테고리에 속한 포스트 조회 실패")
+            })
     @GetMapping("/posts/{categoryId}")
     public ResponseEntity<?> getPostsByCategory(
             @AuthenticationPrincipal PrincipalDetails principalDetails,

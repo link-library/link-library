@@ -1,6 +1,7 @@
 package linklibrary.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @Schema(title = "포스트 응답", description ="포스트가 가진 정보들로 응답한다")
+@Builder
 public class PostDto {
     //@Schema 어노테이션은 Swagger 문서에서 해당 객체에 대한 정보를 제공
     //    @ApiModelProperty(example = "abcde1") 이거 로그인폼DTO에 있는데 이거랑 같은 기능인듯 ?

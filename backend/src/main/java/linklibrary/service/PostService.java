@@ -8,6 +8,9 @@ import linklibrary.dto.response.PostDto1;
 import linklibrary.entity.Category;
 import linklibrary.entity.Post;
 import linklibrary.entity.User;
+import linklibrary.mapper.Post.ChangePostMapper;
+import linklibrary.mapper.Post.CreatePostMapper;
+import linklibrary.mapper.Post.MainPageMapper;
 import linklibrary.mapper.PostMapper;
 import linklibrary.repository.CategoryRepository;
 import linklibrary.repository.PostRepository;
@@ -41,14 +44,15 @@ public class PostService {
                 .orElseThrow(() -> new EntityNotFoundException("회원 엔티티가 없습니다. [postService]"));
         Category category = categoryRepository.findById(postFormDto.getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("카테고리 엔티티가 없습니다. [postService]"));
-        Post post = Post.builder().title(postFormDto.getTitle())
-                .memo(postFormDto.getMemo())
-                .url(postFormDto.getUrl())
-                .category(category)
-                .user(user)
-                .bookmark(postFormDto.getBookmark())
-                .createdBy(user.getNickname())
-                .build();
+//        Post post = Post.builder().title(postFormDto.getTitle())
+//                .memo(postFormDto.getMemo())
+//                .url(postFormDto.getUrl())
+//                .category(category)
+//                .user(user)
+//                .bookmark(postFormDto.getBookmark())
+//                .createdBy(user.getNickname())
+//                .build();
+        Post post = CreatePostMapper.convertToEntity(user,category,postFormDto);
         this.postRepository.save(post);
         return post.getId();
 
@@ -69,11 +73,12 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException("포스트 엔티티가 없습니다"));
         Category category = categoryRepository.findById(postFormDto.getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("카테고리 엔티티가 없습니다. [postService]"));
-        post.setTitle(postFormDto.getTitle());
-        post.setMemo(postFormDto.getMemo());
-        post.setUrl(postFormDto.getUrl());
-        post.setCategory(category);
-        post.setBookmark(postFormDto.getBookmark());
+//        post.setTitle(postFormDto.getTitle());
+//        post.setMemo(postFormDto.getMemo());
+//        post.setUrl(postFormDto.getUrl());
+//        post.setCategory(category);
+//        post.setBookmark(postFormDto.getBookmark());
+        ChangePostMapper.convertToEntity(category, postFormDto);
         return post.getId();
     }
     /**
@@ -145,12 +150,13 @@ public class PostService {
         //Response로 뿌려줄 화면
         Page<PostDto1> postDtos = postRepository.findPostDtos(userId, bookmark, sort, keyword, categoryId, pageable);
         long totalPost = postDtos.getTotalElements(); //포스트의 개수,
-        MainPageDto mainPageDto = MainPageDto.builder()
-                .categoryDtoList(categoryDtoList) //카테고리 리스트
-                .postDtoList(postDtos)  //포스트 리스트
-                .total(totalPost) //총 포스트 개수
-                .currentCategory(current)  //현재 카테고리이름
-                .build();
+//        MainPageDto mainPageDto = MainPageDto.builder()
+//                .categoryDtoList(categoryDtoList) //카테고리 리스트
+//                .postDtoList(postDtos)  //포스트 리스트
+//                .total(totalPost) //총 포스트 개수
+//                .currentCategory(current)  //현재 카테고리이름
+//                .build();
+        MainPageDto mainPageDto = MainPageMapper.convertToDto(categoryDtoList, postDtos, totalPost, current);
         return mainPageDto;
     }
 }

@@ -10,6 +10,7 @@ import linklibrary.repository.UserRepository;
 import linklibrary.security.filter.TokenProvider;
 import linklibrary.security.dto.TokenDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -27,6 +28,8 @@ import static linklibrary.security.filter.JwtFilter.BEARER_PREFIX;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
+@Slf4j
 public class AuthService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserRepository userRepository;
@@ -34,8 +37,11 @@ public class AuthService {
     private final TokenProvider tokenProvider;
     private final RedisTemplate redisTemplate;
 
+
     @Transactional
     public Long join(JoinFormDto joinFormDto) {
+        String password = joinFormDto.getPassword();
+
         User user = User.builder()
                 .loginId(joinFormDto.getLoginId())
                 .password(passwordEncoder.encode(joinFormDto.getPassword())) //비밀번호 인코딩
@@ -44,6 +50,7 @@ public class AuthService {
                 .build();
         validateDuplicateUser(user); // 중복회원 검사
         userRepository.save(user);
+
         return user.getId();
     }
 

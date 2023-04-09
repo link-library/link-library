@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,5 +17,6 @@ public class CategoryFormDto {
     //    @ApiModelProperty(example = "abcde1") 이거 로그인폼DTO에 있는데 이거랑 같은 기능인듯 ?
     //찾아봤더니 @Schema가 최신 swagger버전에 어울린다함.
     @Schema(title = "제목", example = "카테고리1")
+    @NotBlank(message = "카테고리명을 입력해주세요.")
     private String name;
 }

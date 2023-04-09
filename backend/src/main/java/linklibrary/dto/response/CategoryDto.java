@@ -19,7 +19,6 @@ public class CategoryDto {
     @Schema(title = " 카테고리 ID", example = "1")
     private Long categoryId;
     @Schema(title = " 카테고리 이름", example = "카테고리1")
-    @NotBlank(message = "카테고리명을 입력해주세요.") //응답인데 이건 없어도 되는 애노테이션이지 않을까요?
     private String name;
 
 }

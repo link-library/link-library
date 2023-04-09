@@ -21,15 +21,3 @@ public class ValidateNicknameForm {
     @Schema(title = "사용자 닉네임 중복확인 요청", example = "nickname1")
     private String nickname;
 }
-
-//@Data
-//@NoArgsConstructor
-//public class ValidateNicknameForm {
-//    @NotBlank(message = "아이디는 필수 입력 값입니다.")
-//    private String nickname;
-//
-//    @JsonCreator
-//    public ValidateNicknameForm(@JsonProperty("nickname") String nickname) {
-//        this.nickname = nickname;
-//    }
-//}

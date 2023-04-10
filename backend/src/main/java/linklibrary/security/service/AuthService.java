@@ -37,11 +37,8 @@ public class AuthService {
     private final TokenProvider tokenProvider;
     private final RedisTemplate redisTemplate;
 
-
     @Transactional
     public Long join(JoinFormDto joinFormDto) {
-        String password = joinFormDto.getPassword();
-
         User user = User.builder()
                 .loginId(joinFormDto.getLoginId())
                 .password(passwordEncoder.encode(joinFormDto.getPassword())) //비밀번호 인코딩
@@ -50,7 +47,6 @@ public class AuthService {
                 .build();
         validateDuplicateUser(user); // 중복회원 검사
         userRepository.save(user);
-
         return user.getId();
     }
 

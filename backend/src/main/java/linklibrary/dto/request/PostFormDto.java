@@ -24,8 +24,7 @@ public class PostFormDto { //포스트 생성 폼
     //    @ApiModelProperty(example = "abcde1") 이거 로그인폼DTO에 있는데 이거랑 같은 기능인듯 ?
     //찾아봤더니 @Schema가 최신 swagger버전에 어울린다함.
 
-    @Schema(title = "포스트 ID", example = "로그인된 토큰의 남은 유효 시간동안 블랙리스트에 올림 ")
-    private Long postId;
+
 
     @Schema(title = "포스트 제목", example = "이거 나중에 볼 영화")
     @NotBlank(message = "제목을 입력해주세요")
@@ -43,8 +42,7 @@ public class PostFormDto { //포스트 생성 폼
 
     @Schema(title = "북마크 on/off", example = "true")
     private Boolean bookmark;
-    @Schema(title = "생성 날짜", example = "2023-03-12T04:00:16.000+00:00")
-    LocalDateTime createdAt;
+
 
 
 

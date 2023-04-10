@@ -84,11 +84,9 @@ public class PostMapper {
     @Builder
     public static PostFormDto convertToDto (Post post) {
         return PostFormDto.builder()
-                .postId(post.getId())
                 .title(post.getTitle())
                 .url(post.getUrl())
                 .categoryId(post.getCategory().getId())
-                .createdAt(post.getCreatedAt())
                 .build();
     }
     public static List<PostFormDto> convertToDtoList(List<Post> posts) {

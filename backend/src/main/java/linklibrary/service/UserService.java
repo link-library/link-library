@@ -28,13 +28,12 @@ public class UserService {
      */
     public Long join(JoinFormDto joinFormDto) {
         String encode = encoder.encode(joinFormDto.getPassword());
-//        User user = User.builder()
-//                .loginId(joinFormDto.getLoginId())
-//                .password(encoder.encode(joinFormDto.getPassword())) //비밀번호 인코딩
-//                .nickname(joinFormDto.getNickname())
-//                .role(Role.ROLE_USER) //user 등급으로 회원가입
-//                .build();
-        User user = JoinMapper.convertToEntity(joinFormDto, encode);
+        User user = User.builder()
+                .loginId(joinFormDto.getLoginId())
+                .password(encoder.encode(joinFormDto.getPassword())) //비밀번호 인코딩
+                .nickname(joinFormDto.getNickname())
+                .role(Role.ROLE_USER) //user 등급으로 회원가입
+                .build();
         validateDuplicateUser(user); // 중복회원 검사
         userRepository.save(user);
         return user.getId();
@@ -80,14 +79,12 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("유저 엔티티가 없습니다"));
         String storeFileName =
                 (user.getProfileImg() != null) ? user.getProfileImg().getStoreFileName() : null;
-//        UserPageDto userPageDto = UserPageDto.builder()
-//                .userId(user.getId())
-//                .nickname(user.getNickname())
-//                .storeFileName(storeFileName)
-//                .totalPost(totalPost)
-//                .build();
-        UserPageDto userPageDto = UserPageMapper.convertToDto(storeFileName, user, totalPost);
-
+        UserPageDto userPageDto = UserPageDto.builder()
+                .userId(user.getId())
+                .nickname(user.getNickname())
+                .storeFileName(storeFileName)
+                .totalPost(totalPost)
+                .build();
         return userPageDto;
     }
 }

@@ -15,10 +15,6 @@ import java.time.LocalDateTime;
 @Builder  //조회용
 @Schema(title = "포스트 응답", description ="포스트가 가진 정보들로 응답한다")
 public class PostDto1 {
-    //@Schema 어노테이션은 Swagger 문서에서 해당 객체에 대한 정보를 제공
-    //    @ApiModelProperty(example = "abcde1") 이거 로그인폼DTO에 있는데 이거랑 같은 기능인듯 ?
-    //찾아봤더니 @Schema가 최신 swagger버전에 어울린다함.
-
     @Schema(title = "포스트 ID", example="1")
     private Long postId;
     @Schema(title = "포스트 제목", example="제목1")

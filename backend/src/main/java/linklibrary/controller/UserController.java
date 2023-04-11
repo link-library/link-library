@@ -100,7 +100,7 @@ public class UserController {
     /**
      * 회원 프로필 이미지 업로드
      */
-    @PostMapping("/profileImg")
+    @PostMapping(path = "/profileImg", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadImg(@AuthenticationPrincipal PrincipalDetails principalDetails, ProfileImgDto profileImgDto) throws IOException {
         Long userId = principalDetails.getUserDto().getUserId();
         ProfileImg profileImg = profileImgService.uploadImg(profileImgDto.getProfileImg(), userId);

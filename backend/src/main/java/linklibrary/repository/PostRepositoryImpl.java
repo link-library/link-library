@@ -5,6 +5,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import linklibrary.dto.response.PostDto1;
 import linklibrary.dto.response.QPostDto1;
+import linklibrary.entity.QProfileImg;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import java.util.List;
 
 import static linklibrary.entity.QCategory.*;
 import static linklibrary.entity.QPost.*;
+import static linklibrary.entity.QProfileImg.*;
 import static linklibrary.entity.QUser.*;
 
 public class PostRepositoryImpl implements PostRepositoryCustom{
@@ -37,11 +39,13 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                         post.bookmark,
                         user.nickname,
                         post.updatedAt,
-                        category.name
+                        category.name,
+                        profileImg.storeFileName
                 ))
                 .from(post)
                 .join(post.user, user)
-                .leftJoin(post.category, category) //카테고리는 null 일수도 있어서
+                .join(post.category, category)
+                .leftJoin(post.user.profileImg, profileImg) //profileImg 는 null 일수도 있기 때문에 leftJoin
                 .where(
                         userIdEq(userId),
                         postTitleEq(keyword),

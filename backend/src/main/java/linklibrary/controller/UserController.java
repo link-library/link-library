@@ -123,6 +123,7 @@ public class UserController {
     /**
      * 로컬 경로에 해당하는 이미지 불러오기
      */
+    @ApiOperation(value = "프로필 이미지 불러오기", notes = "프로필 이미지 업로드 할 때 반환되었던 파일명 fileName 파라미티에 넣고 요청")
     @GetMapping("/images/{fileName}")
     public ResponseEntity<byte[]> getImage(@PathVariable String fileName) throws IOException {
         // 로컬 경로에 있는 이미지 파일을 읽어와서 byte 배열로 변환합니다.

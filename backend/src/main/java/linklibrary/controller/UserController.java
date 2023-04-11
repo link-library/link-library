@@ -104,7 +104,7 @@ public class UserController {
     public ResponseEntity<?> uploadImg(@AuthenticationPrincipal PrincipalDetails principalDetails, ProfileImgDto profileImgDto) throws IOException {
         Long userId = principalDetails.getUserDto().getUserId();
         ProfileImg profileImg = profileImgService.uploadImg(profileImgDto.getProfileImg(), userId);
-        return ResponseEntity.ok(new ResponseData("이미지 업로드 완료", null));
+        return ResponseEntity.ok(new ResponseData("이미지 업로드 완료", profileImg.getStoreFileName()));
     }
 
     /**

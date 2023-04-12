@@ -26,6 +26,7 @@ import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,6 +63,7 @@ public class PostService {
      */
     public void deletePost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException("포스트 엔티티가 없습니다"));
+        Optional<Category> byId = categoryRepository.findById(4L);
         postRepository.delete(post);
     }
 

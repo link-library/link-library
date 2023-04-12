@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityNotFoundException;
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -33,6 +32,20 @@ public class ProfileImgService {
             throw new IllegalArgumentException("업로드할 파일이 넘어오지 않았습니다.");
         }
 
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("엔티티를 찾을 수 없습니다.[ProfileImgService]"));
+        //기존에 프로필 사진이 있다면
+        //로컬 저장소에서 삭제, db에서 삭제
+        if (user.getProfileImg() != null) {
+            log.info("기존 프로필 사진 있음");
+            ProfileImg deleteImg = user.getProfileImg();
+            profileImgRepository.deleteById(deleteImg.getId());
+
+            File file = new File(getFullPath(deleteImg.getStoreFileName()));
+            boolean delete = file.delete();
+            if (delete) log.info("기존 파일 로컬에서 삭제 완료");
+            else log.info("기존 파일 로컬에서 삭제 실패");
+        }
+
         String originalFileName = multipartFile.getOriginalFilename();
         log.info("originalFileName= " + originalFileName);
         String storeFileName = createStoreFileName(originalFileName);
@@ -40,24 +53,12 @@ public class ProfileImgService {
         multipartFile.transferTo(new File(getFullPath(storeFileName))); //fileDir 경로 파일에 사진 저장
         log.info("저장 경로= " + getFullPath(storeFileName) + " , 저장 완료");
 
-        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("엔티티를 찾을 수 없습니다.[ProfileImgService]"));
-//        기존에 프로필 사진이 있다면
-//        로컬 저장소에서 삭제, db에서 삭제
-        if (user.getProfileImg() != null) {
-            log.info("삭제 시작");
-            profileImgRepository.deleteById(user.getProfileImg().getId());
-            log.info("삭제 끝");
-            File file = new File(getFullPath(user.getProfileImg().getStoreFileName()));
-            boolean delete = file.delete();
-            if (delete) log.info("기존 파일 로컬에서 삭제 완료");
-            else log.info("기존 파일 로컬에서 삭제 실패");
-        }
-
-        ProfileImg profileImg = ProfileImg.builder().storeFileName(storeFileName).user(user).build();
+        ProfileImg profileImg = ProfileImg.builder().user(user).storeFileName(storeFileName).build();
         profileImgRepository.save(profileImg);
+
+        user.setProfileImg(profileImg);
         return profileImg;
     }
-
 
     /**
      * ex) C:/Users/(storeFileName).jpg 반환

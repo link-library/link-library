@@ -10,9 +10,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProfileImgRepository extends JpaRepository<ProfileImg, Long> {
 
-    @Modifying
-    @Query("delete from ProfileImg p where p.id = :id")
-    void deleteById(@Param("id") Long id);
+//    @Modifying
+//    @Query("delete from ProfileImg p where p.id = :id")
+//    void deleteById(@Param("id") Long id);
 
 }
 

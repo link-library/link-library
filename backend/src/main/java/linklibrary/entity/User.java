@@ -35,14 +35,13 @@ public class User extends BaseEntity{
 
     @Builder.Default
     @JsonIgnore
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Category> categories = new ArrayList<>();
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL) //이건 무조건 REMOVE 만 됨 //이제 상관 없음
     private ProfileImg profileImg;
-
 }

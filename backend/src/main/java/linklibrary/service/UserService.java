@@ -87,4 +87,8 @@ public class UserService {
                 .build();
         return userPageDto;
     }
+
+    public void delete(Long userId) {
+        userRepository.deleteById(userId);
+    }
 }

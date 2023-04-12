@@ -53,10 +53,7 @@ public class CategoryService {
         return categoryDtoList;
     }
 
-    public void deleteCategory(Long categoryId) {
-        //카테고리에 해당하는 post 전부 삭제
-        postRepository.deleteByCategoryId(categoryId);
-        
+    public void deleteCategory(Long categoryId, Long id) {
         categoryRepository.deleteById(categoryId);
     }
 }

@@ -143,6 +143,12 @@ public class UserController {
                 .body(imageBytes);
     }
 
+    @DeleteMapping("delete-user")
+    public ResponseEntity<?> delete(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        userService.delete(principalDetails.getUserDto().getUserId());
+        return ResponseEntity.ok(new ResponseData("회원삭제완료", null));
+    }
+
     @GetMapping("/joinCheck")
     public String test(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         return principalDetails.getUsername();

@@ -5,6 +5,7 @@ import linklibrary.dto.request.CategoryFormDto;
 import linklibrary.entity.Category;
 import linklibrary.entity.User;
 import linklibrary.repository.CategoryRepository;
+import linklibrary.repository.PostRepository;
 import linklibrary.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
 
     public Long createCategory(CategoryFormDto categoryFormDto, Long userId) {
         User user = userRepository.findById(userId)
@@ -52,6 +54,9 @@ public class CategoryService {
     }
 
     public void deleteCategory(Long categoryId) {
+        //카테고리에 해당하는 post 전부 삭제
+        postRepository.deleteByCategoryId(categoryId);
+        
         categoryRepository.deleteById(categoryId);
     }
 }

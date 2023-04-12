@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityNotFoundException;
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -40,26 +41,23 @@ public class ProfileImgService {
         log.info("저장 경로= " + getFullPath(storeFileName) + " , 저장 완료");
 
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("엔티티를 찾을 수 없습니다.[ProfileImgService]"));
-        ProfileImg profileImg = ProfileImg.builder().storeFileName(storeFileName).user(user).build();
-        profileImgRepository.save(profileImg);
-
-        //기존에 프로필 사진이 있다면
-        //로컬 저장소에서 삭제, db에서 삭제
+//        기존에 프로필 사진이 있다면
+//        로컬 저장소에서 삭제, db에서 삭제
         if (user.getProfileImg() != null) {
-            log.info("기존 프로필 사진 있음");
-            ProfileImg deleteImg = user.getProfileImg();
-            try {
-                profileImgRepository.deleteById(deleteImg.getId());
-            } catch (Exception e) {
-                throw new EntityNotFoundException("존재하지 않는 엔티티 삭제 시도");
-            }
-            File file = new File(getFullPath(deleteImg.getStoreFileName()));
+            log.info("삭제 시작");
+            profileImgRepository.deleteById(user.getProfileImg().getId());
+            log.info("삭제 끝");
+            File file = new File(getFullPath(user.getProfileImg().getStoreFileName()));
             boolean delete = file.delete();
             if (delete) log.info("기존 파일 로컬에서 삭제 완료");
             else log.info("기존 파일 로컬에서 삭제 실패");
         }
+
+        ProfileImg profileImg = ProfileImg.builder().storeFileName(storeFileName).user(user).build();
+        profileImgRepository.save(profileImg);
         return profileImg;
     }
+
 
     /**
      * ex) C:/Users/(storeFileName).jpg 반환

@@ -30,7 +30,7 @@ spring:
       max-file-size: 50MB
       max-request-size: 50MB
 logging.level:
-  org.hibernate.SQL: debug # 디버그 모드로 sql 출력
+  org.hibernate.SQL: trace # 디버그 모드로 sql 출력
 
 file:
   dir: C:/Users/김진수/link-library/

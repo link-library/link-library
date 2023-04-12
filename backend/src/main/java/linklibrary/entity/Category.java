@@ -34,7 +34,4 @@ public class Category {
     @Builder.Default
     @OneToMany(mappedBy = "category")
     private List<Post> posts = new ArrayList<>();
-
-
-
 }

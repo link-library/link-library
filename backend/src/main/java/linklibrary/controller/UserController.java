@@ -5,6 +5,7 @@ import linklibrary.dto.request.*;
 import linklibrary.dto.response.ResponseData;
 import linklibrary.dto.response.UserPageDto;
 import linklibrary.entity.ProfileImg;
+import linklibrary.entity.User;
 import linklibrary.security.auth.PrincipalDetails;
 import linklibrary.security.dto.TokenDto;
 import linklibrary.security.service.AuthService;
@@ -103,6 +104,8 @@ public class UserController {
     @PostMapping(path = "/profileImg", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadImg(@AuthenticationPrincipal PrincipalDetails principalDetails, ProfileImgDto profileImgDto) throws IOException {
         Long userId = principalDetails.getUserDto().getUserId();
+        User user = userService.findUser(principalDetails.getUserDto().getLoginId());
+
         ProfileImg profileImg = profileImgService.uploadImg(profileImgDto.getProfileImg(), userId);
         return ResponseEntity.ok(new ResponseData("이미지 업로드 완료", profileImg.getStoreFileName()));
     }

@@ -26,6 +26,7 @@ import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,6 +63,7 @@ public class PostService {
      */
     public void deletePost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException("포스트 엔티티가 없습니다"));
+        Optional<Category> byId = categoryRepository.findById(4L);
         postRepository.delete(post);
     }
 
@@ -133,6 +135,8 @@ public class PostService {
      */
     public MainPageDto getPosts(Long userId, String bookmark, String sort, String keyword, Long categoryId, Pageable pageable) {
         List<Category> categories = categoryRepository.findByUserId(userId);   //  Id로 만든 카테고리들 찾아옴
+
+
         List<CategoryDto> categoryDtoList = categories.stream()    // 카테고리 ->DTO시키기
                 .map(c -> new CategoryDto(c.getId(), c.getName()))
                 .collect(Collectors.toList());  //카테고리DTO에는  ID와 NAME만 있음.
@@ -145,7 +149,7 @@ public class PostService {
             current = category.getName(); //만약 Category 목록을 조회했다면 current 에 카테고리명
         }
 
-        //Response로 뿌려줄 화면
+        //Response 로 뿌려줄 화면
         Page<PostDto1> postDtos = postRepository.findPostDtos(userId, bookmark, sort, keyword, categoryId, pageable);
         long totalPost = postDtos.getTotalElements(); //포스트의 개수,
         MainPageDto mainPageDto = MainPageDto.builder()

@@ -71,8 +71,8 @@ public class SwaggerConfig {
     public Docket api() {
         return new Docket(DocumentationType.OAS_30)
                 // 인증 설정
-                .securityContexts(Arrays.asList(securityContext()))
-                .securitySchemes(Arrays.asList(apiKey()))
+                .securityContexts(Arrays.asList(securityContext())) // SecurityContext 객체 설정
+                .securitySchemes(Arrays.asList(apiKey())) // ApiKey 객체 설정
                 .select()
                 // API 문서를 생성할 대상 선택
                 .apis(RequestHandlerSelectors.basePackage("linklibrary.controller"))
@@ -89,13 +89,17 @@ public class SwaggerConfig {
 
     // 인증에 대한 정보 설정
     private List<SecurityReference> defaultAuth() {
-        AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
+        AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything"); // 인증 범위 객체 생성
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
         authorizationScopes[0] = authorizationScope;
+        // "Authorization"이라는 이름의 보안 참조 객체를 생성하여 반환
         return Arrays.asList(new SecurityReference("Authorization", authorizationScopes));
     }
 
     // 헤더에 JWT 토큰을 포함하는 ApiKey 객체 생성.
+    // 이 객체는 JWT 토큰을 헤더에 포함하는 역할을 함
+    // 주의) keyname : jwt 설정에서 쓴 헤더 이름으로 작성해야 함
+    // AUTHORIZATION_HEADER 값
     private ApiKey apiKey() {
         return new ApiKey("Authorization", "Authorization", "header");
     }

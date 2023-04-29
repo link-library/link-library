@@ -14,4 +14,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     @Query("select c from Category c where c.user.id=:userId")
     List<Category> findByUserId(@Param("userId") Long userId);
+
+    @Modifying
+    @Query("delete from Category c where c.id=:id")
+    void deleteById(@Param("id") Long id);
 }

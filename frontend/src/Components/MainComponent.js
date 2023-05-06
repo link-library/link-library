@@ -2,12 +2,18 @@ import React, { useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { isSidebarOpenState, selectedCategoryNameState } from '../atoms';
 import FilterTab from './FilterTab';
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { PostCard } from './PostCard';
 import '../Animations/postcard-transitions.css';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 export const MainComponent = () => {
+  const theme = useTheme();
+  const isXs = useMediaQuery(theme.breakpoints.down('xs'));
+  const isSm = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+  const isMd = useMediaQuery(theme.breakpoints.between('md', 'lg'));
+  const isLg = useMediaQuery(theme.breakpoints.up('lg'));
+
   const selectedCategoryName = useRecoilValue(selectedCategoryNameState);
   const isSidebarOpen = useRecoilValue(isSidebarOpenState);
 
@@ -29,8 +35,26 @@ export const MainComponent = () => {
     setPostcards(postcards.filter((postcard) => postcard.id !== id));
   };
 
+  const getGridTemplateColumns = () => {
+    if (isXs) return 'repeat(1, minmax(260px, 1fr))';
+    if (isSm) return 'repeat(2, minmax(260px, 1fr))';
+    if (isMd) return 'repeat(3, minmax(260px, 1fr))';
+    if (isLg) {
+      return isSidebarOpen
+        ? 'repeat(4, minmax(260px, 1fr))'
+        : 'repeat(5, minmax(260px, 1fr))';
+    }
+  };
+
   return (
-    <Box sx={{ overflow: 'hidden' }}>
+    <Box
+      sx={{
+        overflow: 'auto',
+        minHeight: '100vh',
+        width: '100%',
+        overflowX: 'auto',
+      }}
+    >
       <Box
         sx={{
           flexGrow: 1,
@@ -58,12 +82,11 @@ export const MainComponent = () => {
           spacing={2}
           sx={{
             display: 'grid',
-            gridTemplateColumns: isSidebarOpen
-              ? 'repeat(5, minmax(260px, 1fr))'
-              : 'repeat(6, minmax(260px, 1fr))',
+            gridTemplateColumns: getGridTemplateColumns(),
             gap: '10px',
             paddingTop: '30px',
             paddingLeft: '50px',
+            maxWidth: '100%',
             transition: 'grid-template-columns 0.5s ease-in-out',
           }}
         >

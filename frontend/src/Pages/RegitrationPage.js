@@ -10,6 +10,7 @@ import {
   RegistForm,
 } from '../Style/LoginPageStyle';
 import { Button } from '../Style/LoginPageStyle';
+import { validateId } from './Async';
 
 export const RegistrationPage = () => {
   const [userId, setUserId] = useState(''); // 이걸 아이디 스테이트로 쓰고
@@ -51,17 +52,19 @@ export const RegistrationPage = () => {
     saveUserToLocalStorage(user);
   };
 
-  const handleIdCheck = (event) => {
+  const handleIdCheck = async (event) => {
     event.preventDefault();
-    if (users.some((u) => u.userId === userId)) {
+    const message = await validateId(userId);
+
+    if (message === '이미 사용중인 아이디 입니다.') {
       // 아이디 중복 체크
-      alert('중복된 아이디가 존재합니다.');
+      alert('이미 사용중인 아이디 입니다.');
       setIdCheck(false);
       return;
     } else {
       // 중복 없음 확인
 
-      alert('사용 가능한 아이디입니다!');
+      alert('사용 가능한 아이디입니다.');
       setIdCheck(true);
     }
   };

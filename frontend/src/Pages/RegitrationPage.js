@@ -10,7 +10,7 @@ import {
   RegistForm,
 } from '../Style/LoginPageStyle';
 import { Button } from '../Style/LoginPageStyle';
-import { validateId } from './Async';
+import { registUser, validateId, validateNickname } from './Async';
 
 export const RegistrationPage = () => {
   const [userId, setUserId] = useState(''); // 이걸 아이디 스테이트로 쓰고
@@ -24,8 +24,9 @@ export const RegistrationPage = () => {
   const [idCheck, setIdCheck] = useState(false); // 이거를 아이디 체크로 쓰고
   const [userNameCheck, setUserNameCheck] = useState(false);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+
     if (!userId || !password || !confirmPassword || !userName) {
       alert('회원가입 양식을 맞춰주세요.');
       return;
@@ -39,9 +40,26 @@ export const RegistrationPage = () => {
       return;
     }
     if (userNameCheck === false) {
-      alert('아이디 중복 체크를 확인해주세요.');
+      alert('닉네임 중복 체크를 확인해주세요.');
       return;
     }
+    const msg = await registUser(userId, userName, password);
+    if (
+      msg ===
+      '비밀번호는 8~16자리수여야 합니다. 영문 대소문자, 숫자, 특수문자를 1개 이상 포함해야 합니다.'
+    ) {
+      alert(msg);
+      return;
+    }
+    if (msg === '회원가입 완료') {
+      alert(msg);
+      return;
+    }
+    if (msg === '이미 존재하는 회원입니다') {
+      alert(msg);
+      return;
+    }
+
     const defaultCategories = [
       { id: '1', name: '페이지 목록', categories: [] },
       { id: '2', name: '미구현', categories: [] },
@@ -69,17 +87,21 @@ export const RegistrationPage = () => {
     }
   };
 
-  const handleUsernameCheck = (event) => {
+  const handleUsernameCheck = async (event) => {
     event.preventDefault();
-    if (users.some((u) => u.userName === userName)) {
-      // 닉네임 중복 체크
-      alert('중복된 닉네임이 존재합니다.');
+    const msg = await validateNickname(userName);
+
+    if (
+      msg === '이미 사용중인 닉네임 입니다.' ||
+      msg === '닉네임은 8글자 이하로 작성해 주세요.'
+    ) {
+      // 닉네임 중복 체크 or 조건 만족 확인
+      alert(msg);
       setUserNameCheck(false);
       return;
     } else {
       // 중복 없음 확인
-
-      alert('사용 가능한 닉네임입니다!');
+      alert(msg); // 사용 가능한 닉네임 입니다.
       setUserNameCheck(true);
     }
   };
@@ -91,7 +113,7 @@ export const RegistrationPage = () => {
   };
 
   const handleUsernameInputChange = (event) => {
-    // id입력창에 입력을 받으면 idcheck를 false로 전환
+    // 닉네임입력창에 입력을 받으면 namecheck를 false로 전환
     setUserName(event.target.value);
     setUserNameCheck(false);
   };
@@ -117,7 +139,7 @@ export const RegistrationPage = () => {
                 value={userId}
                 onChange={handleUserIdInputChange}
               />
-              <Button small blue Check={idCheck} onClick={handleIdCheck}>
+              <Button small blue check={idCheck} onClick={handleIdCheck}>
                 중복확인
               </Button>
             </div>
@@ -133,7 +155,7 @@ export const RegistrationPage = () => {
               <Button
                 small
                 blue
-                Check={userNameCheck}
+                check={userNameCheck}
                 onClick={handleUsernameCheck}
               >
                 중복확인

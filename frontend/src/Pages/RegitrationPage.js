@@ -11,6 +11,7 @@ import {
 } from '../Style/LoginPageStyle';
 import { Button } from '../Style/LoginPageStyle';
 import { registUser, validateId, validateNickname } from './Async';
+import { Box } from '@material-ui/core';
 
 export const RegistrationPage = () => {
   const [userId, setUserId] = useState(''); // 이걸 아이디 스테이트로 쓰고
@@ -72,11 +73,14 @@ export const RegistrationPage = () => {
 
   const handleIdCheck = async (event) => {
     event.preventDefault();
-    const message = await validateId(userId);
+    const msg = await validateId(userId);
 
-    if (message === '이미 사용중인 아이디 입니다.') {
+    if (
+      msg === '이미 사용중인 아이디 입니다.' ||
+      msg === '아이디는 영어 소문자와 숫자만 사용하여 4~20자리여야 합니다.'
+    ) {
       // 아이디 중복 체크
-      alert('이미 사용중인 아이디 입니다.');
+      alert(msg);
       setIdCheck(false);
       return;
     } else {
@@ -138,6 +142,7 @@ export const RegistrationPage = () => {
                 type="text"
                 value={userId}
                 onChange={handleUserIdInputChange}
+                placeholder="영어 소문자, 숫자 4~20자리"
               />
               <Button small blue check={idCheck} onClick={handleIdCheck}>
                 중복확인
@@ -151,6 +156,7 @@ export const RegistrationPage = () => {
                 type="text"
                 value={userName}
                 onChange={handleUsernameInputChange}
+                placeholder="8자리 이하"
               />
               <Button
                 small
@@ -168,6 +174,7 @@ export const RegistrationPage = () => {
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
+              placeholder="영문 대소문자, 숫자, 특수문자를 1개 이상 포함 8~16자리"
             />
             <br />
             <label>비밀번호 확인</label>
@@ -179,7 +186,12 @@ export const RegistrationPage = () => {
             />
 
             <br />
-            <Button onClick={handleSubmit}>회원가입</Button>
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <Button blue onClick={handleSubmit}>
+                회원가입
+              </Button>
+              <Button onClick={() => navigate('/login')}>취소</Button>
+            </Box>
           </RegistForm>
         </RegistBox>
       </Container>

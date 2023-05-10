@@ -1,5 +1,14 @@
 import { atom } from 'recoil';
 
+export const authState = atom({
+  key: 'authState',
+  default: {
+    grantType: null,
+    accessToken: null,
+    accessTokenExpiresIn: null,
+  },
+});
+
 export const userState = atom({
   // 현재 로그인된 유저 정보
   key: 'userState',

@@ -54,6 +54,7 @@ export const RegistrationPage = () => {
     }
     if (msg === '회원가입 완료') {
       alert(msg);
+      navigate('/login');
       return;
     }
     if (msg === '이미 존재하는 회원입니다') {
@@ -187,7 +188,7 @@ export const RegistrationPage = () => {
 
             <br />
             <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button blue onClick={handleSubmit}>
+              <Button big blue onClick={handleSubmit}>
                 회원가입
               </Button>
               <Button onClick={() => navigate('/login')}>취소</Button>

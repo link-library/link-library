@@ -43,3 +43,23 @@ export const registUser = async (userId, nickname, userPw) => {
     return result.message;
   }
 };
+
+export const login = async (userId, userPw) => {
+  try {
+    const response = await instance.post('/login', {
+      loginId: userId,
+      password: userPw,
+    });
+
+    const result = response.data;
+    return {
+      message: result.message,
+      grantType: result.data.grantType,
+      accessToken: result.data.accessToken,
+      accessTokenExpiresIn: result.data.accessTokenExpiresIn,
+    };
+  } catch (error) {
+    const result = error.response.data;
+    return { message: result.message };
+  }
+};

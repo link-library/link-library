@@ -163,7 +163,8 @@ export const Button = styled.button`
       background-color: ${check ? '#51cf66' : '#339af0'};
     `}
 
-  ${({ blue }) =>
+  ${({ big, blue }) =>
+    big &&
     blue &&
     css`
       background-color: #339af0;

@@ -44,22 +44,34 @@ export const registUser = async (userId, nickname, userPw) => {
   }
 };
 
-export const login = async (userId, userPw) => {
+export const login = async (loginId, password) => {
   try {
     const response = await instance.post('/login', {
-      loginId: userId,
-      password: userPw,
+      loginId: loginId,
+      password: password,
     });
 
     const result = response.data;
     return {
       message: result.message,
-      grantType: result.data.grantType,
       accessToken: result.data.accessToken,
-      accessTokenExpiresIn: result.data.accessTokenExpiresIn,
     };
   } catch (error) {
     const result = error.response.data;
     return { message: result.message };
+  }
+};
+
+export const logoutUser = async (accessToken) => {
+  try {
+    const response = await instance.post('/logoutUser', {
+      accessToken: accessToken,
+    });
+
+    const result = response.data;
+    return result.message;
+  } catch (error) {
+    const result = error.response.data;
+    return result.message;
   }
 };

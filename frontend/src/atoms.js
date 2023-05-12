@@ -2,11 +2,18 @@ import { atom } from 'recoil';
 
 export const authState = atom({
   key: 'authState',
-  default: {
-    grantType: null,
-    accessToken: null,
-    accessTokenExpiresIn: null,
+  default: JSON.parse(localStorage.getItem('authState')) || {
+    headers: {
+      Authorization: null,
+    },
   },
+  effects_UNSTABLE: [
+    ({ onSet }) => {
+      onSet((newValue) => {
+        localStorage.setItem('authState', JSON.stringify(newValue));
+      });
+    },
+  ],
 });
 
 export const userState = atom({

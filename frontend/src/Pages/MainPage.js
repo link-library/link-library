@@ -1,17 +1,26 @@
 import React, { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
-import { isLoggedInState, isSidebarOpenState } from '../atoms';
+import { isSidebarOpenState } from '../atoms';
 import { useNavigate } from 'react-router-dom';
 import Header from '../Components/Header';
 import MainFrame from '../Components/MainFrame';
+import { logoutUser } from './Async';
 
 export const MainPage = () => {
-  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
   const navigate = useNavigate();
-  const handleLogout = () => {
-    setIsLoggedIn(null);
-    navigate('/', { replace: true });
-    window.location.reload();
+
+  const handleLogout = async () => {
+    const msg = await logoutUser(localStorage.getItem('accessToken'));
+    if (msg === '잘못된 요청입니다.') {
+      alert(msg);
+      return;
+    }
+    if (msg === '로그아웃 되었습니다') {
+      alert(msg);
+      localStorage.removeItem('accessToken');
+      navigate('/login', { replace: true });
+      window.location.reload();
+    }
   };
 
   const [isSidebarOpen, setIsSidebarOpen] = useRecoilState(isSidebarOpenState); // 사이드바 관리 State
@@ -21,15 +30,12 @@ export const MainPage = () => {
   };
 
   useEffect(() => {
-    if (isLoggedIn === null) {
+    console.log(1);
+    if (localStorage.getItem('accessToken') === null) {
       navigate('/login', { replace: true });
       window.location.reload();
     }
-  }, [isLoggedIn, navigate]);
-
-  if (isLoggedIn === null) {
-    return null;
-  }
+  }, [navigate]);
 
   return (
     <div

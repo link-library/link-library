@@ -16,7 +16,12 @@ import { v4 as uuidv4 } from 'uuid';
 import React, { useEffect, useRef, useState } from 'react';
 import SortableListItem from './SortableListItem';
 import NewCategoryInput from './NewCategoryInput';
-import { categoryCreate, categoryDelete, postCreate } from '../Pages/Async';
+import {
+  categoryCreate,
+  categoryDelete,
+  categoryEdit,
+  postCreate,
+} from '../Pages/Async';
 
 export const SortableList = ({
   root,
@@ -89,7 +94,10 @@ export const SortableList = ({
   const handleSaveEdit = async (event, rootId, categoryId) => {
     // 편집된 카테고리 값을 db에 적용.
     const newName = event.target.textContent.trim();
-
+    const msg = await categoryEdit(newName, categoryId);
+    if (msg === '카테고리 수정 완료') {
+      console.log('카테고리 수정 완료');
+    }
     if (newName) {
       const newUserCategories = userCategories.map((root) =>
         root.id === rootId
@@ -164,9 +172,6 @@ export const SortableList = ({
           : root
       );
       setUserCategories(newUserCategories);
-
-      // const loggedInUserId = JSON.parse(localStorage.getItem('isLoggedIn'));
-      // updateUserCategories(newUserCategories, loggedInUserId);
 
       setIsCreatingNewCategory(null);
     }

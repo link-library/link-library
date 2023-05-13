@@ -92,7 +92,7 @@ export const categoryCreate = async (categoryName) => {
     );
 
     const result = response.data;
-    return result.message;
+    return { message: result.message, receivedId: result.data };
   } catch (error) {
     const result = error.response.data;
     return result.message;

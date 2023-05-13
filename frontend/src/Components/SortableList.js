@@ -148,13 +148,13 @@ export const SortableList = ({
   const handleCreateNewCategory = async (newCategoryName, rootId) => {
     // const msg = await postCreate(newCategoryName);
     // console.log(msg);
+    const { msg, receivedId } = await categoryCreate(newCategoryName.trim());
     if (newCategoryName.trim()) {
       const newCategory = {
-        id: uuidv4(),
+        categoryId: receivedId,
         name: newCategoryName,
       };
 
-      const msg = await categoryCreate(newCategoryName.trim());
       if (msg === '카테고리 생성 완료') {
         console.log('카테고리 생성 완료');
       }

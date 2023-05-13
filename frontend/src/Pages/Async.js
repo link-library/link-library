@@ -75,3 +75,110 @@ export const logoutUser = async (accessToken) => {
     return result.message;
   }
 };
+
+export const categoryCreate = async (categoryName) => {
+  try {
+    const accessToken = localStorage.getItem('accessToken');
+    const response = await instance.post(
+      '/category',
+      {
+        name: categoryName,
+      },
+      {
+        headers: {
+          Authorization: accessToken,
+        },
+      }
+    );
+
+    const result = response.data;
+    return result.message;
+  } catch (error) {
+    const result = error.response.data;
+    return result.message;
+  }
+};
+
+export const categoryEdit = async (categoryName, categoryId) => {
+  try {
+    const accessToken = localStorage.getItem('accessToken');
+    const response = await instance.put(
+      `/category/${categoryId}`,
+      {
+        name: categoryName,
+      },
+      {
+        headers: {
+          Authorization: accessToken,
+        },
+      }
+    );
+
+    const result = response.data;
+    return result.message;
+  } catch (error) {
+    const result = error.response.data;
+    return result.message;
+  }
+};
+
+export const categoryDelete = async (categoryId) => {
+  try {
+    const accessToken = localStorage.getItem('accessToken');
+    const response = await instance.delete(`/category/${categoryId}`, {
+      headers: {
+        Authorization: accessToken,
+      },
+    });
+
+    const result = response.data;
+    return result.message;
+  } catch (error) {
+    const result = error.response.data;
+    return result.message;
+  }
+};
+
+export const postCreate = async (categoryName) => {
+  try {
+    const accessToken = localStorage.getItem('accessToken');
+    const response = await instance.post(
+      '/post',
+      {
+        name: categoryName,
+      },
+      {
+        headers: {
+          Authorization: accessToken,
+        },
+      }
+    );
+
+    const result = response.data;
+    return result.message;
+  } catch (error) {
+    const result = error.response.data;
+    return result.message;
+  }
+};
+
+export const getCategoryAndPostData = async () => {
+  try {
+    const accessToken = localStorage.getItem('accessToken');
+    const response = await instance.get('/posts', {
+      headers: {
+        Authorization: accessToken,
+      },
+    });
+
+    const result = response.data;
+    return {
+      message: result.message,
+      categoryData: result.data.categoryDtoList,
+      postData: result.data.postDtoList,
+    };
+  } catch (error) {
+    const result = error.response.data;
+    return result.message;
+  }
+};

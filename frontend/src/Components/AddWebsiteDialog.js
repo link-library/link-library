@@ -10,12 +10,12 @@ import {
   TextField,
 } from '@mui/material';
 import { useRecoilValue } from 'recoil';
-import { userCategoriesState } from '../atoms';
 import { useRef, useState } from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
+import { categoryDataState } from '../atoms';
 
 const AddWebsiteDialog = ({ open, handleClose, onSubmit }) => {
-  const userCategories = useRecoilValue(userCategoriesState); // 카테고리 관리 atom 불러오기
+  const userCategories = useRecoilValue(categoryDataState); // 카테고리 관리 atom 불러오기
 
   const [anchorEl, setAnchorEl] = useState(null); // 메뉴바 위치 추적
 

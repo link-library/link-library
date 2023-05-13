@@ -14,9 +14,9 @@ import {
 import { List, ListItemButton } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 import React, { useEffect, useRef, useState } from 'react';
-import { updateUserCategories } from '../atoms';
 import SortableListItem from './SortableListItem';
 import NewCategoryInput from './NewCategoryInput';
+import { categoryCreate, categoryDelete, postCreate } from '../Pages/Async';
 
 export const SortableList = ({
   root,
@@ -43,20 +43,24 @@ export const SortableList = ({
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
-    if (active.id !== over.id) {
+    if (active.categoryId !== over.categoryId) {
       const activeRoot = userCategories.find((root) =>
-        root.categories.some((category) => category.id === active.id)
+        root.categories.some(
+          (category) => category.categoryId === active.categoryId
+        )
       );
       const overRoot = userCategories.find((root) =>
-        root.categories.some((category) => category.id === over.id)
+        root.categories.some(
+          (category) => category.categoryId === over.categoryId
+        )
       );
 
       if (activeRoot.id === overRoot.id) {
         const oldIndex = activeRoot.categories.findIndex(
-          (category) => category.id === active.id
+          (category) => category.categoryId === active.categoryId
         );
         const newIndex = overRoot.categories.findIndex(
-          (category) => category.id === over.id
+          (category) => category.categoryId === over.categoryId
         );
 
         const updatedCategories = arrayMove(
@@ -82,16 +86,17 @@ export const SortableList = ({
     setEditingCategoryId(categoryId);
   };
 
-  const handleSaveEdit = (event, rootId, categoryId) => {
+  const handleSaveEdit = async (event, rootId, categoryId) => {
     // 편집된 카테고리 값을 db에 적용.
     const newName = event.target.textContent.trim();
+
     if (newName) {
       const newUserCategories = userCategories.map((root) =>
         root.id === rootId
           ? {
               ...root,
               categories: root.categories.map((category) =>
-                category.id === categoryId
+                category.categoryId === categoryId
                   ? { ...category, name: newName }
                   : category
               ),
@@ -100,8 +105,8 @@ export const SortableList = ({
       );
       setUserCategories(newUserCategories);
 
-      const loggedInUserId = JSON.parse(localStorage.getItem('isLoggedIn'));
-      updateUserCategories(newUserCategories, loggedInUserId);
+      // const loggedInUserId = JSON.parse(localStorage.getItem('isLoggedIn'));
+      // updateUserCategories(newUserCategories);
       setEditingCategoryId(null);
       setSelectedCategoryName(newName);
     }
@@ -114,15 +119,25 @@ export const SortableList = ({
     }
   };
 
-  const handleDeleteCategory = (event, rootId, categoryId) => {
+  const handleDeleteCategory = async (
+    event,
+    rootId,
+    categoryId,
+    categoryName
+  ) => {
     event.stopPropagation();
+    const msg = await categoryDelete(categoryId);
+    console.log(`categoryId: ${categoryId}`);
+    if (msg === '카테고리 삭제 완료') {
+      console.log('카테고리 삭제 완료');
+    }
     setUserCategories(
       userCategories.map((root) =>
         root.id === rootId
           ? {
               ...root,
               categories: root.categories.filter(
-                (category) => category.id !== categoryId
+                (category) => category.categoryId !== categoryId
               ),
             }
           : root
@@ -130,13 +145,19 @@ export const SortableList = ({
     );
   };
 
-  const handleCreateNewCategory = (newCategoryName, rootId) => {
+  const handleCreateNewCategory = async (newCategoryName, rootId) => {
+    // const msg = await postCreate(newCategoryName);
+    // console.log(msg);
     if (newCategoryName.trim()) {
       const newCategory = {
         id: uuidv4(),
         name: newCategoryName,
       };
 
+      const msg = await categoryCreate(newCategoryName.trim());
+      if (msg === '카테고리 생성 완료') {
+        console.log('카테고리 생성 완료');
+      }
       const newUserCategories = userCategories.map((root) =>
         root.id === rootId
           ? { ...root, categories: [...root.categories, newCategory] }
@@ -144,8 +165,8 @@ export const SortableList = ({
       );
       setUserCategories(newUserCategories);
 
-      const loggedInUserId = JSON.parse(localStorage.getItem('isLoggedIn'));
-      updateUserCategories(newUserCategories, loggedInUserId);
+      // const loggedInUserId = JSON.parse(localStorage.getItem('isLoggedIn'));
+      // updateUserCategories(newUserCategories, loggedInUserId);
 
       setIsCreatingNewCategory(null);
     }
@@ -174,12 +195,12 @@ export const SortableList = ({
       sensors={sensors}
       collisionDetection={closestCenter}
       onDragStart={({ active }) => {
-        setActiveId(active.id);
+        setActiveId(active.categoryId);
       }}
       onDragEnd={handleDragEnd}
     >
       <SortableContext
-        items={root.categories.map((category) => category.id)}
+        items={root.categories.map((category) => category.categoryId)}
         strategy={verticalListSortingStrategy}
       >
         <List>
@@ -187,7 +208,7 @@ export const SortableList = ({
             (
               category // 하위 카테고리
             ) => (
-              <React.Fragment key={category.id}>
+              <React.Fragment key={category.categoryId}>
                 <SortableListItem
                   category={category}
                   editingCategoryId={editingCategoryId}
@@ -217,7 +238,11 @@ export const SortableList = ({
       <DragOverlay>
         {activeId ? (
           <ListItemButton>
-            {root.categories.find((category) => category.id === activeId)?.name}
+            {
+              root.categories.find(
+                (category) => category.categoryId === activeId
+              )?.name
+            }
           </ListItemButton>
         ) : null}
       </DragOverlay>

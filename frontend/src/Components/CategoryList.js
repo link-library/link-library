@@ -4,17 +4,16 @@ import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import { Typography } from '@mui/material';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import {
+  categoryDataState,
   expandedCategoryState,
   isCreatingNewCategoryState,
   selectedCategoryNameState,
-  userCategoriesState,
 } from '../atoms';
 import { List, ListItemButton, ListItemText, Collapse } from '@mui/material';
 import SortableList from './SortableList';
 
 const CategoryList = ({ categories }) => {
-  const [userCategories, setUserCategories] =
-    useRecoilState(userCategoriesState);
+  const [userCategories, setUserCategories] = useRecoilState(categoryDataState);
 
   const [isCreatingNewCategory, setIsCreatingNewCategory] = useRecoilState(
     isCreatingNewCategoryState

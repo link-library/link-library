@@ -130,6 +130,11 @@ export const selectedCategoryNameState = atom({
   default: '헤더 테스트',
 });
 
+export const selectedCategoryIdState = atom({
+  key: 'selectedCategoryIdState',
+  default: '헤더 테스트',
+});
+
 export const activeCategoryPostsAtom = atom({
   // 클릭한 카테고리 정보를 비동기 통신으로 받아올 저장소
   key: 'activeCategoryList',

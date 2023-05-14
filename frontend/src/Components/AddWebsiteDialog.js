@@ -13,6 +13,7 @@ import { useRecoilValue } from 'recoil';
 import { useRef, useState } from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
 import { categoryDataState } from '../atoms';
+import { postCreate } from '../Pages/Async';
 
 const AddWebsiteDialog = ({ open, handleClose, onSubmit }) => {
   const userCategories = useRecoilValue(categoryDataState); // 카테고리 관리 atom 불러오기
@@ -25,7 +26,14 @@ const AddWebsiteDialog = ({ open, handleClose, onSubmit }) => {
   const handleMenuClose = (categoryName) => {
     setAnchorEl(null);
     if (typeof categoryName === 'string') {
-      setSelectedCategory(categoryName);
+      const selectedCategory = pageListSubcategories.find(
+        (subcategory) => subcategory.name === categoryName
+      );
+      setSelectedCategoryName(categoryName);
+      setSelectedCategoryId(selectedCategory?.categoryId || null);
+      console.log(
+        `categoryName: ${categoryName}, categoryId: ${selectedCategory?.categoryId}`
+      );
     }
   };
 
@@ -38,22 +46,36 @@ const AddWebsiteDialog = ({ open, handleClose, onSubmit }) => {
     ? pageListCategory.categories
     : [];
 
-  const [selectedCategory, setSelectedCategory] = useState(
-    pageListSubcategories.length > 0 ? pageListSubcategories[0].name : ''
+  const [selectedCategoryName, setSelectedCategoryName] = useState(
+    // pageListSubcategories.length > 0 ? pageListSubcategories[0].name : ''
+    '카테고리를 선택하세요.'
   );
+
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
 
   const nameRef = useRef();
   const urlRef = useRef();
   const descriptionRef = useRef();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // 팝업창에 입력된 값을 추적하는 핸들러
-    onSubmit({
-      title: nameRef.current.value,
-      url: urlRef.current.value,
-      description: descriptionRef.current.value,
-      category: selectedCategory,
-    });
+
+    const msg = await postCreate(
+      false,
+      selectedCategoryId,
+      descriptionRef.current.value,
+      nameRef.current.value,
+      urlRef.current.value
+    );
+    if (msg === '포스터 생성 완료. 전체 조회 화면으로 이동') {
+      console.log(msg);
+      onSubmit({
+        title: nameRef.current.value,
+        url: urlRef.current.value,
+        description: descriptionRef.current.value,
+        category: selectedCategoryName,
+      });
+    }
     handleClose();
   };
 
@@ -83,7 +105,7 @@ const AddWebsiteDialog = ({ open, handleClose, onSubmit }) => {
         />
         <TextField
           label="카테고리"
-          value={selectedCategory}
+          value={selectedCategoryName}
           fullWidth
           margin="normal"
           onClick={handleMenuClick}

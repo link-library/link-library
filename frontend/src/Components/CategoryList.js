@@ -7,6 +7,7 @@ import {
   categoryDataState,
   expandedCategoryState,
   isCreatingNewCategoryState,
+  selectedCategoryIdState,
   selectedCategoryNameState,
 } from '../atoms';
 import { List, ListItemButton, ListItemText, Collapse } from '@mui/material';
@@ -23,7 +24,9 @@ const CategoryList = ({ categories }) => {
     expandedCategoryState
   );
 
-  const [selectedCategoryId, setSelectedCategoryId] = useState(null); // 선택된 카테고리 ID 추적
+  const [selectedCategoryId, setSelectedCategoryId] = useRecoilState(
+    selectedCategoryIdState
+  ); // 선택된 카테고리 ID 추적
 
   const setSelectedCategoryName = useSetRecoilState(selectedCategoryNameState);
 
@@ -38,6 +41,7 @@ const CategoryList = ({ categories }) => {
   const handleCategoryClick = (categoryId, categoryName) => {
     // 선택된 카테고리 id와 이름 변경 핸들러
     setSelectedCategoryId(categoryId);
+    console.log(`categoryName: ${categoryName}, categoryId: ${categoryId}`);
     setSelectedCategoryName(categoryName);
   };
 

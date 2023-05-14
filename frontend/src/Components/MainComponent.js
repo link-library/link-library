@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
-import { useRecoilValue } from 'recoil';
-import { isSidebarOpenState, selectedCategoryNameState } from '../atoms';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import {
+  isSidebarOpenState,
+  postDataState,
+  selectedCategoryIdState,
+  selectedCategoryNameState,
+} from '../atoms';
 import FilterTab from './FilterTab';
 import { Box, Grid, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { PostCard } from './PostCard';
@@ -15,9 +20,10 @@ export const MainComponent = () => {
   const isLg = useMediaQuery(theme.breakpoints.up('lg'));
 
   const selectedCategoryName = useRecoilValue(selectedCategoryNameState);
+  const selectedCategoryId = useRecoilValue(selectedCategoryIdState);
   const isSidebarOpen = useRecoilValue(isSidebarOpenState);
 
-  const [postcards, setPostcards] = useState([]); // 포스트 카드의 저장소
+  const [postcards, setPostcards] = useRecoilState(postDataState); // 포스트 카드의 저장소
 
   const handleAddPostcard = (postcardData) => {
     // 포스트 카드 추가 헨들러
@@ -91,26 +97,30 @@ export const MainComponent = () => {
           }}
         >
           <TransitionGroup component={null}>
-            {postcards.map((postcard) => (
-              <CSSTransition
-                key={postcard.id}
-                timeout={500}
-                classNames="postcard"
-              >
-                <Grid item>
-                  <PostCard // 포스트 카드 배치
-                    key={postcard.id}
-                    id={postcard.id}
-                    title={postcard.title}
-                    url={postcard.url}
-                    description={postcard.description}
-                    category={postcard.category}
-                    onDelete={handleDelete}
-                    creationTime={postcard.creationTime}
-                  />
-                </Grid>
-              </CSSTransition>
-            ))}
+            {postcards
+              .filter(
+                (postcard) => postcard.categoryName === selectedCategoryName
+              )
+              .map((postcard) => (
+                <CSSTransition
+                  key={postcard.postId}
+                  timeout={500}
+                  classNames="postcard"
+                >
+                  <Grid item>
+                    <PostCard // 포스트 카드 배치
+                      key={postcard.postId}
+                      id={postcard.postId}
+                      title={postcard.title}
+                      url={postcard.url}
+                      description={postcard.memo}
+                      category={postcard.categoryName}
+                      onDelete={handleDelete}
+                      creationTime={postcard.updatedAt}
+                    />
+                  </Grid>
+                </CSSTransition>
+              ))}
           </TransitionGroup>
         </Grid>
       </Box>

@@ -139,13 +139,17 @@ export const categoryDelete = async (categoryId) => {
   }
 };
 
-export const postCreate = async (categoryName) => {
+export const postCreate = async (bookmark, categoryId, memo, title, url) => {
   try {
     const accessToken = localStorage.getItem('accessToken');
     const response = await instance.post(
       '/post',
       {
-        name: categoryName,
+        bookmark: bookmark,
+        categoryId: categoryId,
+        memo: memo,
+        title: title,
+        url: url,
       },
       {
         headers: {
@@ -175,7 +179,7 @@ export const getCategoryAndPostData = async () => {
     return {
       message: result.message,
       categoryData: result.data.categoryDtoList,
-      postData: result.data.postDtoList,
+      postData: result.data.postDtoList.content,
     };
   } catch (error) {
     const result = error.response.data;

@@ -32,7 +32,7 @@ public class Category {
     private User user;
 
     @Builder.Default
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL) //  2023.05.18 cascade 추가 
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true) //  2023.05.18 cascade 추가
     private List<Post> posts = new ArrayList<>();
 
 

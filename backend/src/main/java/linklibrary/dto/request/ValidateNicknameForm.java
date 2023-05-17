@@ -10,26 +10,11 @@ import javax.validation.constraints.Size;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor //기본 생성자가 없어서 나는 오류였어요. 수정했습니다
+@NoArgsConstructor
 @Schema(title = "사용자 닉네임 중복확인 요청", description = "사용자 닉네임 중복확인 요청")
 public class ValidateNicknameForm {
-    //@Schema 어노테이션은 Swagger 문서에서 해당 객체에 대한 정보를 제공
-    //    @ApiModelProperty(example = "abcde1") 이거 로그인폼DTO에 있는데 이거랑 같은 기능인듯 ?
-    //찾아봤더니 @Schema가 최신 swagger버전에 어울린다함.
     @NotBlank(message = "닉네임은 필수 입력 값입니다.")
-    @Size(max = 8)
+    @Size(max = 8, message = "닉네임은 8글자 이하로 작성해 주세요.")
     @Schema(title = "사용자 닉네임 중복확인 요청", example = "nickname1")
     private String nickname;
 }
-
-//@Data
-//@NoArgsConstructor
-//public class ValidateNicknameForm {
-//    @NotBlank(message = "아이디는 필수 입력 값입니다.")
-//    private String nickname;
-//
-//    @JsonCreator
-//    public ValidateNicknameForm(@JsonProperty("nickname") String nickname) {
-//        this.nickname = nickname;
-//    }
-//}

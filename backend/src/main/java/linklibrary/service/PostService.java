@@ -26,6 +26,7 @@ import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,15 +45,14 @@ public class PostService {
                 .orElseThrow(() -> new EntityNotFoundException("회원 엔티티가 없습니다. [postService]"));
         Category category = categoryRepository.findById(postFormDto.getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("카테고리 엔티티가 없습니다. [postService]"));
-//        Post post = Post.builder().title(postFormDto.getTitle())
-//                .memo(postFormDto.getMemo())
-//                .url(postFormDto.getUrl())
-//                .category(category)
-//                .user(user)
-//                .bookmark(postFormDto.getBookmark())
-//                .createdBy(user.getNickname())
-//                .build();
-        Post post = CreatePostMapper.convertToEntity(user,category,postFormDto);
+        Post post = Post.builder().title(postFormDto.getTitle())
+                .memo(postFormDto.getMemo())
+                .url(postFormDto.getUrl())
+                .category(category)
+                .user(user)
+                .bookmark(postFormDto.getBookmark())
+                .createdBy(user.getNickname())
+                .build();
         this.postRepository.save(post);
         return post.getId();
 
@@ -63,6 +63,7 @@ public class PostService {
      */
     public void deletePost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException("포스트 엔티티가 없습니다"));
+        Optional<Category> byId = categoryRepository.findById(4L);
         postRepository.delete(post);
     }
 
@@ -73,12 +74,11 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException("포스트 엔티티가 없습니다"));
         Category category = categoryRepository.findById(postFormDto.getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("카테고리 엔티티가 없습니다. [postService]"));
-//        post.setTitle(postFormDto.getTitle());
-//        post.setMemo(postFormDto.getMemo());
-//        post.setUrl(postFormDto.getUrl());
-//        post.setCategory(category);
-//        post.setBookmark(postFormDto.getBookmark());
-        ChangePostMapper.convertToEntity(category, postFormDto);
+        post.setTitle(postFormDto.getTitle());
+        post.setMemo(postFormDto.getMemo());
+        post.setUrl(postFormDto.getUrl());
+        post.setCategory(category);
+        post.setBookmark(postFormDto.getBookmark());
         return post.getId();
     }
     /**
@@ -135,6 +135,8 @@ public class PostService {
      */
     public MainPageDto getPosts(Long userId, String bookmark, String sort, String keyword, Long categoryId, Pageable pageable) {
         List<Category> categories = categoryRepository.findByUserId(userId);   //  Id로 만든 카테고리들 찾아옴
+
+
         List<CategoryDto> categoryDtoList = categories.stream()    // 카테고리 ->DTO시키기
                 .map(c -> new CategoryDto(c.getId(), c.getName()))
                 .collect(Collectors.toList());  //카테고리DTO에는  ID와 NAME만 있음.
@@ -147,16 +149,15 @@ public class PostService {
             current = category.getName(); //만약 Category 목록을 조회했다면 current 에 카테고리명
         }
 
-        //Response로 뿌려줄 화면
+        //Response 로 뿌려줄 화면
         Page<PostDto1> postDtos = postRepository.findPostDtos(userId, bookmark, sort, keyword, categoryId, pageable);
         long totalPost = postDtos.getTotalElements(); //포스트의 개수,
-//        MainPageDto mainPageDto = MainPageDto.builder()
-//                .categoryDtoList(categoryDtoList) //카테고리 리스트
-//                .postDtoList(postDtos)  //포스트 리스트
-//                .total(totalPost) //총 포스트 개수
-//                .currentCategory(current)  //현재 카테고리이름
-//                .build();
-        MainPageDto mainPageDto = MainPageMapper.convertToDto(categoryDtoList, postDtos, totalPost, current);
+        MainPageDto mainPageDto = MainPageDto.builder()
+                .categoryDtoList(categoryDtoList) //카테고리 리스트
+                .postDtoList(postDtos)  //포스트 리스트
+                .total(totalPost) //총 포스트 개수
+                .currentCategory(current)  //현재 카테고리이름
+                .build();
         return mainPageDto;
     }
 }

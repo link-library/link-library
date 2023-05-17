@@ -126,6 +126,7 @@ public class PostController {
             @RequestParam(required = false, defaultValue = "byDate") String sort,
             @RequestParam(required = false, defaultValue = "") String keyword,
             @RequestParam(defaultValue = "0") int page) {
+        log.info("컨트롤러 진입");
         PageRequest pageable = PageRequest.of(page, 16);
         Long userId = principalDetails.getUserDto().getUserId();
         MainPageDto mainPageDto = postService.getPosts(userId, bookmark, sort, keyword, null, pageable);

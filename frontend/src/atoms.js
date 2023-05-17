@@ -85,13 +85,13 @@ export const saveUserToLocalStorage = (user) => {
 export const isSidebarOpenState = atom({
   // 사이드바 열림/닫힘 상태
   key: 'isSidebarOpenState',
-  default: false,
+  default: true,
 });
 
 export const expandedCategoryState = atom({
   // 카테고리 열림/닫힘 상태
   key: 'expandedCategoryState',
-  default: [],
+  default: [true],
 });
 
 export const isCreatingNewCategoryState = atom({

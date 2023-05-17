@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import React, { useEffect, useState } from 'react';
+import {
+  useRecoilState,
+  useRecoilTransactionObserver_UNSTABLE,
+  useRecoilValue,
+} from 'recoil';
 import {
   isSidebarOpenState,
   postDataState,
-  selectedCategoryIdState,
   selectedCategoryNameState,
 } from '../atoms';
 import FilterTab from './FilterTab';
@@ -20,21 +23,27 @@ export const MainComponent = () => {
   const isLg = useMediaQuery(theme.breakpoints.up('lg'));
 
   const selectedCategoryName = useRecoilValue(selectedCategoryNameState);
-  const selectedCategoryId = useRecoilValue(selectedCategoryIdState);
   const isSidebarOpen = useRecoilValue(isSidebarOpenState);
 
   const [postcards, setPostcards] = useRecoilState(postDataState); // 포스트 카드의 저장소
 
-  const handleAddPostcard = (postcardData) => {
-    // 포스트 카드 추가 헨들러
+  // const handleAddPostcard = (postcardData) => {
+  //   // 포스트 카드 추가 헨들러
+  //   const newPostcard = {
+  //     postId: postcardData.postId,
+  //     title: postcardData.title,
+  //     url: postcardData.url,
+  //     memo: postcardData.memo,
+  //     categoryName: postcardData.categoryName,
+  //     updatedAt: postcardData.updatedAt,
+  //   };
+  //   setPostcards((prevPostcards) => [...prevPostcards, newPostcard]);
+  // };
 
-    const newPostcard = {
-      id: Date.now(),
-      creationTime: Date.now(),
-      ...postcardData,
-    };
-    setPostcards((prevPostcards) => [...prevPostcards, newPostcard]);
-  };
+  // useRecoilTransactionObserver_UNSTABLE(({ snapshot }) => {
+  //   const newPostcards = snapshot.getLoadable(postDataState).contents;
+  //   setPostcards(newPostcards);
+  // });
 
   const handleDelete = (id) => {
     // 포스트 카드 삭제 헨들러
@@ -74,7 +83,7 @@ export const MainComponent = () => {
           {selectedCategoryName}
         </Typography>
         <Typography>링크 카드 배치</Typography>
-        <FilterTab handleAddPostcard={handleAddPostcard} />
+        <FilterTab />
       </Box>
       <Box
         sx={{

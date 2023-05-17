@@ -159,7 +159,7 @@ export const postCreate = async (bookmark, categoryId, memo, title, url) => {
     );
 
     const result = response.data;
-    return result.message;
+    return { message: result.message, postId: result.data };
   } catch (error) {
     const result = error.response.data;
     return result.message;

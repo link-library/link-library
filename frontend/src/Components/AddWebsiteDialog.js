@@ -9,13 +9,13 @@ import {
   MenuItem,
   TextField,
 } from '@mui/material';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { useRef, useState } from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
-import { categoryDataState } from '../atoms';
+import { categoryDataState, postDataState } from '../atoms';
 import { postCreate } from '../Pages/Async';
 
-const AddWebsiteDialog = ({ open, handleClose, onSubmit }) => {
+const AddWebsiteDialog = ({ open, handleClose }) => {
   const userCategories = useRecoilValue(categoryDataState); // 카테고리 관리 atom 불러오기
 
   const [anchorEl, setAnchorEl] = useState(null); // 메뉴바 위치 추적
@@ -47,11 +47,13 @@ const AddWebsiteDialog = ({ open, handleClose, onSubmit }) => {
     : [];
 
   const [selectedCategoryName, setSelectedCategoryName] = useState(
-    // pageListSubcategories.length > 0 ? pageListSubcategories[0].name : ''
-    '카테고리를 선택하세요.'
+    pageListSubcategories.length > 0 ? pageListSubcategories[0].name : ''
   );
 
-  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(
+    pageListSubcategories.length > 0 ? pageListSubcategories[0].categoryId : ''
+  );
+  const [prevPostcardData, setPostcardData] = useRecoilState(postDataState);
 
   const nameRef = useRef();
   const urlRef = useRef();
@@ -60,21 +62,33 @@ const AddWebsiteDialog = ({ open, handleClose, onSubmit }) => {
   const handleSubmit = async () => {
     // 팝업창에 입력된 값을 추적하는 핸들러
 
-    const msg = await postCreate(
+    const { msg, postId } = await postCreate(
       false,
       selectedCategoryId,
       descriptionRef.current.value,
       nameRef.current.value,
       urlRef.current.value
     );
+    console.log(msg);
     if (msg === '포스터 생성 완료. 전체 조회 화면으로 이동') {
-      console.log(msg);
-      onSubmit({
+      const newPostcardData = {
+        bookmark: false,
+        // 닉네임도 넣어야함
+        postId: postId,
+        memo: descriptionRef.current.value,
         title: nameRef.current.value,
         url: urlRef.current.value,
-        description: descriptionRef.current.value,
-        category: selectedCategoryName,
-      });
+        categoryName: selectedCategoryId,
+        updateAt: Date.now(),
+      };
+      setPostcardData((prevPostcards) => [...prevPostcards, newPostcardData]);
+    } else if (
+      msg === '카테고리는 필수 선택 사항입니다.' ||
+      msg === '제목을 입력해주세요' ||
+      msg === '주소를 입력해주세요'
+    ) {
+      alert(msg);
+      return;
     }
     handleClose();
   };
@@ -105,7 +119,11 @@ const AddWebsiteDialog = ({ open, handleClose, onSubmit }) => {
         />
         <TextField
           label="카테고리"
-          value={selectedCategoryName}
+          value={
+            selectedCategoryName
+              ? selectedCategoryName
+              : '카테고리를 선택하세요.'
+          }
           fullWidth
           margin="normal"
           onClick={handleMenuClick}

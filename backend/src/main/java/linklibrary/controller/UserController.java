@@ -5,6 +5,7 @@ import linklibrary.dto.request.*;
 import linklibrary.dto.response.ResponseData;
 import linklibrary.dto.response.UserPageDto;
 import linklibrary.entity.ProfileImg;
+import linklibrary.entity.User;
 import linklibrary.security.auth.PrincipalDetails;
 import linklibrary.security.dto.TokenDto;
 import linklibrary.security.service.AuthService;
@@ -100,11 +101,13 @@ public class UserController {
     /**
      * 회원 프로필 이미지 업로드
      */
-    @PostMapping("/profileImg")
+    @PostMapping(path = "/profileImg", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadImg(@AuthenticationPrincipal PrincipalDetails principalDetails, ProfileImgDto profileImgDto) throws IOException {
         Long userId = principalDetails.getUserDto().getUserId();
+        User user = userService.findUser(principalDetails.getUserDto().getLoginId());
+
         ProfileImg profileImg = profileImgService.uploadImg(profileImgDto.getProfileImg(), userId);
-        return ResponseEntity.ok(new ResponseData("이미지 업로드 완료", null));
+        return ResponseEntity.ok(new ResponseData("이미지 업로드 완료", profileImg.getStoreFileName()));
     }
 
     /**
@@ -123,6 +126,7 @@ public class UserController {
     /**
      * 로컬 경로에 해당하는 이미지 불러오기
      */
+    @ApiOperation(value = "프로필 이미지 불러오기", notes = "프로필 이미지 업로드 할 때 반환되었던 파일명 fileName 파라미티에 넣고 요청")
     @GetMapping("/images/{fileName}")
     public ResponseEntity<byte[]> getImage(@PathVariable String fileName) throws IOException {
         // 로컬 경로에 있는 이미지 파일을 읽어와서 byte 배열로 변환합니다.
@@ -137,6 +141,12 @@ public class UserController {
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG) //메서드는 응답 바디의 타입을 image/jpeg 로 설정
                 .body(imageBytes);
+    }
+
+    @DeleteMapping("delete-user")
+    public ResponseEntity<?> delete(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        userService.delete(principalDetails.getUserDto().getUserId());
+        return ResponseEntity.ok(new ResponseData("회원삭제완료", null));
     }
 
     @GetMapping("/joinCheck")

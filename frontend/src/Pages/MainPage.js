@@ -1,17 +1,28 @@
 import React, { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
-import { isLoggedInState, isSidebarOpenState } from '../atoms';
+import { categoryDataState, isSidebarOpenState, postDataState } from '../atoms';
 import { useNavigate } from 'react-router-dom';
 import Header from '../Components/Header';
 import MainFrame from '../Components/MainFrame';
+import { getCategoryAndPostData, logoutUser } from './Async';
 
 export const MainPage = () => {
-  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
   const navigate = useNavigate();
-  const handleLogout = () => {
-    setIsLoggedIn(null);
-    navigate('/', { replace: true });
-    window.location.reload();
+  const [categoryData, setCategoryData] = useRecoilState(categoryDataState);
+  const [postData, setPostData] = useRecoilState(postDataState);
+
+  const handleLogout = async () => {
+    const msg = await logoutUser(localStorage.getItem('accessToken'));
+    if (msg === '잘못된 요청입니다.') {
+      alert(msg);
+      return;
+    }
+    if (msg === '로그아웃 되었습니다') {
+      alert(msg);
+      localStorage.removeItem('accessToken');
+      navigate('/login', { replace: true });
+      window.location.reload();
+    }
   };
 
   const [isSidebarOpen, setIsSidebarOpen] = useRecoilState(isSidebarOpenState); // 사이드바 관리 State
@@ -21,15 +32,43 @@ export const MainPage = () => {
   };
 
   useEffect(() => {
-    if (isLoggedIn === null) {
+    console.log(1);
+    const fetchData = async () => {
+      const { message, categoryData, postData } =
+        await getCategoryAndPostData();
+      if (message === '찜목록 or 전체페이지 조회 완료') {
+        console.log(message);
+        setCategoryData((prevCategoryData) => {
+          const filteredCategories = prevCategoryData.filter(
+            (category) => category.name !== '페이지 목록'
+          );
+
+          return [
+            ...filteredCategories,
+            {
+              id: '0', // Assign a unique key such as '0'
+              name: '페이지 목록',
+              categories: categoryData,
+            },
+          ];
+        });
+        setPostData(postData);
+      } else {
+        console.error('Failed to fetch post data');
+      }
+    };
+    if (localStorage.getItem('accessToken') === null) {
       navigate('/login', { replace: true });
       window.location.reload();
+    } else {
+      fetchData();
     }
-  }, [isLoggedIn, navigate]);
+  }, []);
 
-  if (isLoggedIn === null) {
-    return null;
-  }
+  useEffect(() => {
+    console.log(categoryData);
+    console.log(postData);
+  }, [categoryData, postData]);
 
   return (
     <div

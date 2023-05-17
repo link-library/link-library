@@ -15,7 +15,8 @@ public class Post extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id",unique = true, nullable = false)
+//    @Column(name = "post_id",unique = true, nullable = false)
+    @Column(name = "post_id")
     private Long id;
 
     @Column(unique = false, nullable = false)
@@ -35,19 +36,9 @@ public class Post extends BaseEntity{
     @JoinColumn(name = "category_id")
     private Category category;
 
-//    @Column(name="created_at", unique = false, nullable = true)
-//    @CreationTimestamp
-//    private LocalDateTime createdAt;
-//
-//    @Column(name="updated_at", unique = false, nullable = true)
-//    @CreationTimestamp
-//    private LocalDateTime updatedAt;
-
     private String createdBy; //생성자 닉네임
 
-
-
-   // ==연관관계 메서드 ==//
+//    ==연관관계 메서드 ==//
     public void setUser(User user){
         this.user = user;
         user.getPosts().add(this);
@@ -56,6 +47,5 @@ public class Post extends BaseEntity{
         this.category = category;
         category.getPosts().add(this);
     }
-
 
 }

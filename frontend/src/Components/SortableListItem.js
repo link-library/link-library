@@ -24,7 +24,7 @@ export const SortableListItem = ({
 
   return (
     <ListItemButton
-      onClick={() => handleCategoryClick(category.id, category.name)}
+      onClick={() => handleCategoryClick(category.categoryId, category.name)}
       ref={setNodeRef}
       style={style}
       {...attributes}
@@ -32,27 +32,27 @@ export const SortableListItem = ({
       sx={{
         padding: '20px',
         backgroundColor:
-          selectedCategoryId === category.id ? '#E7F5FF' : 'inherit', // 선택된 카테고리 배경색 설정
+          selectedCategoryId === category.categoryId ? '#E7F5FF' : 'inherit', // 선택된 카테고리 배경색 설정
         '&:hover': {
           backgroundColor:
-            editingCategoryId === category.id ? 'inherit' : '#E7F5FF', // 마우스 올라간 카테고리 배경색 설정
+            editingCategoryId === category.categoryId ? 'inherit' : '#E7F5FF', // 마우스 올라간 카테고리 배경색 설정
         },
         '&:hover .editIcon': {
-          opacity: editingCategoryId === category.id ? 0 : 1,
+          opacity: editingCategoryId === category.categoryId ? 0 : 1,
         },
         '&:hover .deleteIcon': {
-          opacity: editingCategoryId === category.id ? 0 : 1,
+          opacity: editingCategoryId === category.categoryId ? 0 : 1,
         },
       }}
     >
-      {editingCategoryId === category.id ? ( // 카테고리 수정 활성화인 경우
+      {editingCategoryId === category.categoryId ? ( // 카테고리 수정 활성화인 경우
         <ListItemText
           primary={category.name}
           contentEditable
           suppressContentEditableWarning
           onBlur={(
             event // 포커스를 잃었을 때 동작. handleKeyPress내에서 blur를 실행시키고 있음.
-          ) => handleSaveEdit(event, root.id, category.id)}
+          ) => handleSaveEdit(event, root.id, category.categoryId)}
           ref={inputRef}
           onKeyPress={handleKeyPress}
           style={{
@@ -71,7 +71,7 @@ export const SortableListItem = ({
         // 카테고리 수정 버튼
         className="editIcon"
         onClick={(event) => {
-          handleEditIconClick(event, category.id);
+          handleEditIconClick(event, category.categoryId);
         }}
         sx={{
           display: { xs: 'none', sm: 'block' },
@@ -89,7 +89,7 @@ export const SortableListItem = ({
         // 카테고리 삭제 버튼
         className="deleteIcon"
         onClick={(event) => {
-          handleDeleteCategory(event, root.id, category.id);
+          handleDeleteCategory(event, root.id, category.categoryId);
         }}
         sx={{
           display: { xs: 'none', sm: 'block' },

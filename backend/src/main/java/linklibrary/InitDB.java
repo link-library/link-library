@@ -41,19 +41,19 @@ public class InitDB {
             User user1 = User.builder()
                     .loginId("abcde1")
                     .password(encoder.encode("abcdefg1!"))
-                    .nickname("nickname1")
+                    .nickname("nick1")
                     .role(Role.ROLE_USER)
                     .build();
             User user2 = User.builder()
                     .loginId("abcde2")
                     .password(encoder.encode("abcdefg1!"))
-                    .nickname("nickname2")
+                    .nickname("nick2")
                     .role(Role.ROLE_USER)
                     .build();
             User user3 = User.builder()
                     .loginId("abcde3")
                     .password(encoder.encode("abcdefg1!"))
-                    .nickname("nickname3")
+                    .nickname("nick3")
                     .role(Role.ROLE_USER)
                     .build();
             em.persist(user1);

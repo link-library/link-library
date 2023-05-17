@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,7 +54,18 @@ public class CategoryService {
         return categoryDtoList;
     }
 
+    // 2023-05-18 삭제카테고리 로직 일부 추가 
     public void deleteCategory(Long categoryId, Long id) {
-        categoryRepository.deleteById(categoryId);
+        Optional<Category> byId = categoryRepository.findById(categoryId);
+        Category category = byId.get();
+        category.getPosts().clear();
+
+//        categoryRepository.deleteById(categoryId);
+        categoryRepository.delete(category);
     }
+
+//    public void deleteCategory(Long categoryId, Long id) {
+//
+////        categoryRepository.deleteById(categoryId);
+//    }
 }

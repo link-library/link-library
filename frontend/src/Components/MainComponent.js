@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  useRecoilState,
-  useRecoilTransactionObserver_UNSTABLE,
-  useRecoilValue,
-} from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   isSidebarOpenState,
   postDataState,
@@ -14,6 +10,7 @@ import { Box, Grid, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { PostCard } from './PostCard';
 import '../Animations/postcard-transitions.css';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import { postDelete } from '../Pages/Async';
 
 export const MainComponent = () => {
   const theme = useTheme();
@@ -45,9 +42,15 @@ export const MainComponent = () => {
   //   setPostcards(newPostcards);
   // });
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     // 포스트 카드 삭제 헨들러
-    setPostcards(postcards.filter((postcard) => postcard.id !== id));
+    console.log(id);
+    const message = await postDelete(id);
+    console.log(message);
+    if (message === '포스트 삭제 완료') {
+      console.log(message);
+      setPostcards(postcards.filter((postcard) => postcard.postId !== id));
+    }
   };
 
   const getGridTemplateColumns = () => {

@@ -62,32 +62,36 @@ const AddWebsiteDialog = ({ open, handleClose }) => {
   const handleSubmit = async () => {
     // 팝업창에 입력된 값을 추적하는 핸들러
 
-    const { msg, postId } = await postCreate(
+    const { message, postId } = await postCreate(
       false,
       selectedCategoryId,
       descriptionRef.current.value,
       nameRef.current.value,
       urlRef.current.value
     );
-    console.log(msg);
-    if (msg === '포스터 생성 완료. 전체 조회 화면으로 이동') {
+    console.log(message);
+    if (message === '포스터 생성 완료. 전체 조회 화면으로 이동') {
       const newPostcardData = {
         bookmark: false,
-        // 닉네임도 넣어야함
+        nickname: 'test',
         postId: postId,
         memo: descriptionRef.current.value,
         title: nameRef.current.value,
         url: urlRef.current.value,
-        categoryName: selectedCategoryId,
-        updateAt: Date.now(),
+        categoryName: selectedCategoryName,
+        updatedAt: Date.now(),
       };
-      setPostcardData((prevPostcards) => [...prevPostcards, newPostcardData]);
+      setPostcardData((prevPostcardData) => [
+        ...prevPostcardData,
+        newPostcardData,
+      ]);
+      console.log([...prevPostcardData, newPostcardData]);
     } else if (
-      msg === '카테고리는 필수 선택 사항입니다.' ||
-      msg === '제목을 입력해주세요' ||
-      msg === '주소를 입력해주세요'
+      message === '카테고리는 필수 선택 사항입니다.' ||
+      message === '제목을 입력해주세요' ||
+      message === '주소를 입력해주세요'
     ) {
-      alert(msg);
+      alert(message);
       return;
     }
     handleClose();

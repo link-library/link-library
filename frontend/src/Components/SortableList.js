@@ -12,7 +12,6 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { List, ListItemButton } from '@mui/material';
-import { v4 as uuidv4 } from 'uuid';
 import React, { useEffect, useRef, useState } from 'react';
 import SortableListItem from './SortableListItem';
 import NewCategoryInput from './NewCategoryInput';

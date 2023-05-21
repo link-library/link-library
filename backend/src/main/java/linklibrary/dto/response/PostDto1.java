@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder  //조회용
 public class PostDto1 {
     private Long postId;
@@ -24,6 +25,7 @@ public class PostDto1 {
     private LocalDateTime updatedAt;
     private String categoryName;
     private String storeFileName;
+    private Long categoryId; //게시글 생성,수정 후 카테고리 아이디까지 반환
 
     @QueryProjection
     public PostDto1(Long postId, String title, String memo, String url, boolean bookmark, String nickname, LocalDateTime updatedAt, String categoryName, String storeFileName) {

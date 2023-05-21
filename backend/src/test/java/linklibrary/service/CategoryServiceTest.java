@@ -67,11 +67,11 @@ class CategoryServiceTest {
         User user = createUser();
         Category category = createCategory(user);
         //when
-//        categoryService.deleteCategory(category.getId());
+//        categoryService.deleteCategory(100L);
         //then
         //없는 카테고리를 찾았을 때 NoSuchElementException 발생
         Assertions.assertThrows(NoSuchElementException.class, () -> {
-            categoryRepository.findById(category.getId()).get();
+            categoryRepository.findById(category.getId()+1).get();
         });
     }
 

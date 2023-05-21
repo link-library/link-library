@@ -54,18 +54,14 @@ public class CategoryService {
         return categoryDtoList;
     }
 
+
     // 2023-05-18 삭제카테고리 로직 일부 추가 
     public void deleteCategory(Long categoryId, Long id) {
-        Optional<Category> byId = categoryRepository.findById(categoryId);
-        Category category = byId.get();
+            Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(()-> new EntityNotFoundException("카테고리 엔티티가 없습니다."));
         category.getPosts().clear();
 
-//        categoryRepository.deleteById(categoryId);
         categoryRepository.delete(category);
     }
 
-//    public void deleteCategory(Long categoryId, Long id) {
-//
-////        categoryRepository.deleteById(categoryId);
-//    }
 }

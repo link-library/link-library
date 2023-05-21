@@ -18,6 +18,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import styled from 'styled-components';
+import EditIcon from '@mui/icons-material/Edit';
 
 const StyledCard = styled(Card)({
   maxWidth: 260,
@@ -42,10 +43,16 @@ export const PostCard = ({
   category,
   onDelete,
   creationTime,
+  onEdit,
 }) => {
   const handleDeleteClick = (event) => {
     event.stopPropagation();
     onDelete(id); // 포스트 카드 삭제
+  };
+
+  const handlePostEdit = (event) => {
+    event.stopPropagation();
+    onEdit(id); // 포스트 카드 삭제
   };
 
   const formattedCreationTime = new Intl.DateTimeFormat('en-US', {
@@ -191,6 +198,8 @@ i 플래그는 대소문자를 구분하지 않는 패턴을 만들어 대소문
             position: 'absolute',
             bottom: 0,
             width: '100%',
+            display: 'flex',
+            justifyContent: 'space-between',
           }}
         >
           <Box>
@@ -205,6 +214,19 @@ i 플래그는 대소문자를 구분하지 않는 패턴을 만들어 대소문
             </IconButton>
             <IconButton sx={{ padding: '8px' }} onClick={handleCopyClick}>
               <ContentCopyIcon sx={{ fontSize: '1.2rem', color: '#000000' }} />
+            </IconButton>
+          </Box>
+          <Box>
+            <IconButton
+              sx={{ padding: '5px', marginRight: '14px' }}
+              onClick={handlePostEdit}
+            >
+              <EditIcon
+                sx={{
+                  fontSize: '1.5rem',
+                  color: '#000000',
+                }}
+              />
             </IconButton>
           </Box>
         </CardActions>

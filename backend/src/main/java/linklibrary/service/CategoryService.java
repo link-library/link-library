@@ -49,17 +49,18 @@ public class CategoryService {
         List<Category> categoryList = categoryRepository.findByUserId(userId);//회원에 해당하는 카테고리들 반환
         List<CategoryDto> categoryDtoList =
                 categoryList.stream()
-                .map(c -> new CategoryDto(c.getId(), c.getName()))
-                .collect(Collectors.toList());
+                        .map(c -> new CategoryDto(c.getId(), c.getName()))
+                        .collect(Collectors.toList());
         return categoryDtoList;
     }
 
 
     // 2023-05-18 삭제카테고리 로직 일부 추가 
     public void deleteCategory(Long categoryId, Long id) {
-            Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(()-> new EntityNotFoundException("카테고리 엔티티가 없습니다."));
-        category.getPosts().clear();
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new EntityNotFoundException("카테고리 엔티티가 없습니다."));
+        postRepository.deleteByCategoryId(category.getId());
+//        category.getPosts().clear(); //쿼리 N 개 나가서 위 로직으로 변경
 
         categoryRepository.delete(category);
     }

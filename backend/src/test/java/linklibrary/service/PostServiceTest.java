@@ -2,6 +2,7 @@ package linklibrary.service;
 
 import linklibrary.dto.request.PostFormDto;
 import linklibrary.dto.response.PostDto;
+import linklibrary.dto.response.PostDto1;
 import linklibrary.entity.Category;
 import linklibrary.entity.Post;
 import linklibrary.entity.Role;
@@ -35,7 +36,7 @@ class PostServiceTest {
         Category category = createCategory(user);
         PostFormDto postFormDto = createPostForm(category);
         //when
-        PostDto postDto = postService.createPost(postFormDto, user.getId());
+        PostDto1 postDto = postService.createPost(postFormDto, user.getId());
         //then
         em.flush();
         em.clear();
@@ -55,7 +56,7 @@ class PostServiceTest {
         PostFormDto postForm = createPostForm(category);
         postForm.setTitle("바뀐제목1");
         //when
-        PostDto postDto = postService.change(post.getId(), postForm);
+        PostDto1 postDto = postService.change(post.getId(), postForm);
         //then
         em.flush();
         em.clear();

@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { userState, usersState, isLoggedInState } from '../atoms';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Container,
@@ -18,28 +16,37 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import LockIcon from '@mui/icons-material/Lock';
 import LinkLibraryLogo from '../images/LinkLibraryLogo.png';
+import { login } from './Async';
 
 export const LoginPage = () => {
-  const users = useRecoilValue(usersState);
-  const setUser = useSetRecoilState(userState);
-  const [isRegistered, setIsRegistered] = useRecoilState(isLoggedInState);
   const navigate = useNavigate();
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
 
   const [checkClicked, setCheckClicked] = useState(false);
 
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
-    const user = users.find(
-      (u) => u.userId === userId && u.password === password
-    );
-    if (user) {
-      // 입력한 정보가 DB에 있을 경우
-      setUser(user);
-      setIsRegistered(userId);
-    } else {
-      alert('아이디 또는 비밀번호를 잘못 입력하셨습니다.');
+    try {
+      const { message, accessToken } = await login(userId, password);
+      console.log('Response data:', message, accessToken);
+      if (
+        message === '아이디를 다시 학인해주세요' ||
+        message === '비밀번호가 일치하지 않습니다.'
+      ) {
+        alert(message);
+        return;
+      }
+
+      if (message === '로그인 완료!') {
+        alert(message);
+        localStorage.setItem('accessToken', accessToken);
+        navigate('/');
+        window.location.reload();
+      }
+    } catch (error) {
+      const result = error.response.data;
+      alert(result.message);
     }
   };
 
@@ -47,12 +54,12 @@ export const LoginPage = () => {
     setCheckClicked(!checkClicked);
   };
 
-  useEffect(() => {
-    if (isRegistered !== null) {
-      navigate('/', { replace: true });
-      window.location.reload();
-    }
-  }, [isRegistered, navigate]);
+  // useEffect(() => {
+  //   if (isRegistered !== null) {
+  //     navigate('/', { replace: true });
+  //     window.location.reload();
+  //   }
+  // }, [isRegistered, navigate]);
 
   return (
     <Background>

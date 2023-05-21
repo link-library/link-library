@@ -75,10 +75,7 @@ const LogoutButton = ({ onClick }) => {
 };
 
 export const Header = ({ handleLogout: handleLogoutProp, handleMenuClick }) => {
-  const setUser = useSetRecoilState(userState);
-
   const handleLogout = () => {
-    setUser({ username: '', password: '', categories: [] });
     handleLogoutProp();
   };
 

@@ -3,6 +3,8 @@ import AddIcon from '@mui/icons-material/Add';
 import { Box, Grid, IconButton, Menu, MenuItem } from '@mui/material';
 import { useState } from 'react';
 import AddWebsiteDialog from './AddWebsiteDialog';
+import { categoryDataState } from '../atoms';
+import { useRecoilValue } from 'recoil';
 
 const FilterOptions = ({ anchorEl, handleClose }) => {
   // 필터 옵션 설정
@@ -29,7 +31,7 @@ const FilterOptions = ({ anchorEl, handleClose }) => {
   );
 };
 
-const FilterTab = ({ handleAddPostcard }) => {
+const FilterTab = () => {
   const [anchorEl, setAnchorEl] = useState(null); // 필터 메뉴 객체 관리 스테이트
 
   const handleClick = (event) => {
@@ -41,9 +43,11 @@ const FilterTab = ({ handleAddPostcard }) => {
   };
 
   const [AddWebsiteDialogOpen, setAddWebsiteDialogOpen] = useState(false); // 웹 사이트 추가 팝업창 상태 관리
-
+  const categoryData = useRecoilValue(categoryDataState);
   const handleAddWebsiteDialogOpen = () => {
-    setAddWebsiteDialogOpen(true);
+    if (categoryData[0].categories.length === 0) {
+      alert('먼저 카테고리를 하나 이상 만들어야 합니다.');
+    } else setAddWebsiteDialogOpen(true);
   };
 
   const handleAddWebsiteDialogClose = () => {
@@ -91,7 +95,6 @@ const FilterTab = ({ handleAddPostcard }) => {
         <AddWebsiteDialog
           open={AddWebsiteDialogOpen}
           handleClose={handleAddWebsiteDialogClose}
-          onSubmit={handleAddPostcard}
         />
       </>
     );

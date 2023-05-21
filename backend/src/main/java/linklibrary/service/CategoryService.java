@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,10 +54,14 @@ public class CategoryService {
         return categoryDtoList;
     }
 
-    public void deleteCategory(Long categoryId) {
-        boolean isExist = categoryRepository.existsById(categoryId);
-        if(!isExist) throw new EntityNotFoundException("카테고리 엔티티가 없습니다.");
-        postRepository.deleteByCategoryId(categoryId);
-        categoryRepository.deleteById(categoryId);
+
+    // 2023-05-18 삭제카테고리 로직 일부 추가 
+    public void deleteCategory(Long categoryId, Long id) {
+            Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(()-> new EntityNotFoundException("카테고리 엔티티가 없습니다."));
+        category.getPosts().clear();
+
+        categoryRepository.delete(category);
     }
+
 }

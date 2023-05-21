@@ -82,14 +82,14 @@ export const RegistBox = styled.div`
 `;
 
 export const RegistForm = styled.form`
-  width: 20vw;
+  width: 27vw;
 `;
 
 export const Form1 = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 25vw;
+  width: 27vw;
 
   @media screen and (max-width: 768px) {
     padding-left: 0;
@@ -152,7 +152,7 @@ export const Button = styled.button`
   width: 100%;
   box-sizing: border-box;
 
-  ${({ small, blue, Check }) =>
+  ${({ small, blue, check }) =>
     small &&
     blue &&
     css`
@@ -160,8 +160,15 @@ export const Button = styled.button`
       width: 100px;
       height: 45px;
       font-size: 1rem;
-      background-color: ${Check ? '#51cf66' : '#339af0'};
+      background-color: ${check ? '#51cf66' : '#339af0'};
     `}
+
+  ${({ big, blue }) =>
+    big &&
+    blue &&
+    css`
+      background-color: #339af0;
+    `};
 
   @media screen and (max-width: 768px) {
     width: 100%;

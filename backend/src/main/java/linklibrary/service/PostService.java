@@ -40,7 +40,7 @@ public class PostService {
     /**
      * 포스트 생성
      */
-    public Long createPost(PostFormDto postFormDto, Long userId) throws IOException {
+    public PostDto1 createPost(PostFormDto postFormDto, Long userId) throws IOException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("회원 엔티티가 없습니다. [postService]"));
         Category category = categoryRepository.findById(postFormDto.getCategoryId())
@@ -53,8 +53,9 @@ public class PostService {
                 .bookmark(postFormDto.getBookmark())
                 .createdBy(user.getNickname())
                 .build();
+
         this.postRepository.save(post);
-        return post.getId();
+        return PostDto1.builder().postId(post.getId()).categoryId(post.getCategory().getId()).build();
 
     }
 
@@ -70,7 +71,7 @@ public class PostService {
     /**
      * 포스트 수정
      */
-    public Long change(Long postId, PostFormDto postFormDto) {
+    public PostDto1 change(Long postId, PostFormDto postFormDto) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException("포스트 엔티티가 없습니다"));
         Category category = categoryRepository.findById(postFormDto.getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("카테고리 엔티티가 없습니다. [postService]"));
@@ -79,7 +80,7 @@ public class PostService {
         post.setUrl(postFormDto.getUrl());
         post.setCategory(category);
         post.setBookmark(postFormDto.getBookmark());
-        return post.getId();
+        return PostDto1.builder().postId(post.getId()).categoryId(post.getCategory().getId()).build();
     }
     /**
      * 포스트 목록 전체 조회

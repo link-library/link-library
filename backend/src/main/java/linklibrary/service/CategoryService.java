@@ -53,7 +53,10 @@ public class CategoryService {
         return categoryDtoList;
     }
 
-    public void deleteCategory(Long categoryId, Long id) {
+    public void deleteCategory(Long categoryId) {
+        boolean isExist = categoryRepository.existsById(categoryId);
+        if(!isExist) throw new EntityNotFoundException("카테고리 엔티티가 없습니다.");
+        postRepository.deleteByCategoryId(categoryId);
         categoryRepository.deleteById(categoryId);
     }
 }

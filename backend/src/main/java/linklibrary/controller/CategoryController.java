@@ -33,8 +33,8 @@ public class CategoryController {
     }
 
     @DeleteMapping("/category/{categoryId}")
-    public ResponseEntity<?> editCategory(@PathVariable final Long categoryId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        categoryService.deleteCategory(categoryId, principalDetails.getUserDto().getUserId());
+    public ResponseEntity<?> editCategory(@PathVariable final Long categoryId) {
+        categoryService.deleteCategory(categoryId);
         return ResponseEntity.ok(new ResponseData("카테고리 삭제 완료", null));
     }
 }

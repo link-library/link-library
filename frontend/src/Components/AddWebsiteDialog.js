@@ -62,7 +62,19 @@ const AddWebsiteDialog = ({ open, handleClose }) => {
   const handleSubmit = async () => {
     // 팝업창에 입력된 값을 추적하는 핸들러
 
-    const { message, postId } = await postCreate(
+    const {
+      message,
+      postId,
+      title,
+      memo,
+      url,
+      bookmark,
+      nickname,
+      updatedAt,
+      categoryName,
+      storeFileName,
+      categoryId,
+    } = await postCreate(
       false,
       selectedCategoryId,
       descriptionRef.current.value,
@@ -70,20 +82,34 @@ const AddWebsiteDialog = ({ open, handleClose }) => {
       urlRef.current.value
     );
     console.log(message);
+
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString('ko-KR', {
+      month: '2-digit',
+      day: '2-digit',
+      year: 'numeric',
+    });
+    console.log(formattedDate);
+
     if (message === '포스터 생성 완료. 전체 조회 화면으로 이동') {
       const newPostcardData = {
-        bookmark: false,
-        nickname: 'test',
         postId: postId,
-        memo: descriptionRef.current.value,
         title: nameRef.current.value,
+        memo: descriptionRef.current.value,
         url: urlRef.current.value,
+        bookmark: false,
+        nickname: nickname,
+        updatedAt: formattedDate,
         categoryName: selectedCategoryName,
-        updatedAt: Date.now(),
+        storeFileName: storeFileName,
+        categoryId: selectedCategoryId,
       };
+      console.log(postId);
+      console.log(title);
+      console.log(memo);
       setPostcardData((prevPostcardData) => [
-        ...prevPostcardData,
         newPostcardData,
+        ...prevPostcardData,
       ]);
       console.log([...prevPostcardData, newPostcardData]);
     } else if (

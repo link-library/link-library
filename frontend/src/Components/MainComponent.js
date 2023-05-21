@@ -10,7 +10,7 @@ import { Box, Grid, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { PostCard } from './PostCard';
 import '../Animations/postcard-transitions.css';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
-import { postDelete } from '../Pages/Async';
+import { postDelete, postEdit } from '../Pages/Async';
 
 export const MainComponent = () => {
   const theme = useTheme();
@@ -51,6 +51,12 @@ export const MainComponent = () => {
       console.log(message);
       setPostcards(postcards.filter((postcard) => postcard.postId !== id));
     }
+  };
+
+  const handleEdit = (id) => {
+    // 포스트 카드 수정 헨들러
+    console.log(id);
+    //
   };
 
   const getGridTemplateColumns = () => {
@@ -129,6 +135,7 @@ export const MainComponent = () => {
                       category={postcard.categoryName}
                       onDelete={handleDelete}
                       creationTime={postcard.updatedAt}
+                      onEdit={handleEdit}
                     />
                   </Grid>
                 </CSSTransition>

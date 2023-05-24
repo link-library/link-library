@@ -1,50 +1,149 @@
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button } from '@mui/material';
-import { useState } from 'react';
-import { useRecoilState } from 'recoil';
-import { postDataState } from '../atoms';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Button,
+  MenuItem,
+  Menu,
+  IconButton,
+} from '@mui/material';
+import { useEffect, useState } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { categoryDataState, postDataState } from '../atoms';
+import MenuIcon from '@mui/icons-material/Menu';
+import { postEdit } from '../Pages/Async';
 
-const [open, setOpen] = useState(false);
-const [editedPostcard, setEditedPostcard] = useRecoilState(postDataState);
+const EditPostcardDialog = ({
+  open,
+  handleClose,
+  postId,
+  url,
+  memo,
+  nickname,
+  updatedAt,
+  bookmark,
+  title,
+  categoryId,
+  categoryName,
+  storeFileName,
+}) => {
+  const userCategories = useRecoilValue(categoryDataState); // 카테고리 관리 atom 불러오기
+  const [anchorEl, setAnchorEl] = useState(null); // 메뉴바 위치 추적
+  const [postData, setPostData] = useRecoilState(postDataState);
 
-const handleEdit = (id) => {
-    // Find the postcard with the given id
-    const postcard = editedPostcard.find((pc) => pc.postId === id);
-    
-    // Set the initial values of the edited postcard
-    setEditedPostcard({
-      categoryName: postcard.title,
-      memo: postcard.url,
-      title: postcard.description,
-      url: postcard.category,
-    });
-  
-    // Open the popup
-    setOpen(true);
-  
+  const handleEdit = async () => {
+    // 포스트 정보 수정 메서드
+    const {
+      message,
+      newCategoryId, // 변경된 카테고리 id 값
+    } = await postEdit(
+      postId,
+      bookmark,
+      selectedCategoryId,
+      newMemo,
+      newTitle,
+      newUrl
+    );
+
+    if (message === '포스트 수정 완료') {
+      console.log(message);
+      const updatedPostData = postData.map((post) => {
+        if (post.postId === postId) {
+          return {
+            ...post,
+            postId: postId,
+            title: newTitle,
+            memo: newMemo,
+            url: newUrl,
+            bookmark: bookmark,
+            nickname: nickname,
+            updatedAt: updatedAt,
+            categoryName: selectedCategoryName,
+            storeFileName: storeFileName,
+            categoryId: newCategoryId,
+          };
+        }
+        return post;
+      });
+      setPostData(updatedPostData);
+      handleClose();
+    }
+  };
+
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+    event.stopPropagation();
+  };
+  const handleMenuClose = (categoryName) => {
+    setAnchorEl(null);
+    if (typeof categoryName === 'string') {
+      const selectedCategory = pageListSubcategories.find(
+        (subcategory) => subcategory.name === categoryName
+      );
+      setSelectedCategoryName(categoryName);
+      setSelectedCategoryId(selectedCategory?.categoryId || null);
+      console.log(
+        `categoryName: ${categoryName}, categoryId: ${selectedCategory?.categoryId}`
+      );
+    }
+  };
+
+  const pageListCategory = userCategories.find(
+    // 페이지 목록 하위 카테고리만 골라내기
+    (category) => category.name === '페이지 목록'
+  );
+
+  const pageListSubcategories = pageListCategory
+    ? pageListCategory.categories
+    : [];
+
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+  const [selectedCategoryName, setSelectedCategoryName] = useState(null);
+
+  const [newTitle, setNewTitle] = useState('');
+  const [newUrl, setNewUrl] = useState('');
+  const [newMemo, setNewMemo] = useState('');
+
+  useEffect(() => {
+    // 팝업창 열리면 포스트에 정보 불러오기
+    setNewTitle(title);
+    setNewUrl(url);
+    setNewMemo(memo);
+    setSelectedCategoryId(categoryId);
+    setSelectedCategoryName(categoryName);
+  }, [categoryId, categoryName, memo, title, url]);
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>웹사이트 추가</DialogTitle>
+      <DialogTitle>웹사이트 수정</DialogTitle>
       <DialogContent>
         <TextField
           label="웹 사이트 이름"
           fullWidth
           margin="normal"
-          inputRef={nameRef}
+          value={newTitle}
+          onClick={(event) => event.stopPropagation()}
+          onChange={(e) => setNewTitle(e.target.value)}
         />
         <TextField
           label="사이트 URL"
           fullWidth
           margin="normal"
-          inputRef={urlRef}
+          value={newUrl}
+          onClick={(event) => event.stopPropagation()}
+          onChange={(e) => setNewUrl(e.target.value)}
         />
         <TextField
-          inputRef={descriptionRef}
           label="사이트 설명(최대 40자)"
           fullWidth
           multiline
           rows={4}
           margin="normal"
+          value={newMemo}
+          onClick={(event) => event.stopPropagation()}
+          onChange={(e) => setNewMemo(e.target.value)}
         />
         <TextField
           label="카테고리"
@@ -82,11 +181,11 @@ const handleEdit = (id) => {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>취소하기</Button>
-        <Button variant="contained" onClick={handleSubmit}>
-          추가하기
+        <Button variant="contained" onClick={handleEdit}>
+          수정하기
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
-export default 
+export default EditPostcardDialog;

@@ -19,6 +19,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import styled from 'styled-components';
 import EditIcon from '@mui/icons-material/Edit';
+import EditPostcardDialog from './EditPostcardDialog';
 
 const StyledCard = styled(Card)({
   maxWidth: 260,
@@ -40,19 +41,27 @@ export const PostCard = ({
   title,
   url,
   description,
-  category,
+  bookmark,
+  categoryId,
+  categoryName,
   onDelete,
   creationTime,
-  onEdit,
+  storeFileName,
 }) => {
+  const [EditPostcardDialogOpen, setEditPostcardDialogOpen] = useState(false);
+  const handleEditPostcardDialogOpen = (event) => {
+    event.stopPropagation();
+    setEditPostcardDialogOpen(true);
+  };
+
+  const handleEditPostcardDialogClose = (event) => {
+    // event.stopPropagation();
+    setEditPostcardDialogOpen(false);
+  };
+
   const handleDeleteClick = (event) => {
     event.stopPropagation();
     onDelete(id); // 포스트 카드 삭제
-  };
-
-  const handlePostEdit = (event) => {
-    event.stopPropagation();
-    onEdit(id); // 포스트 카드 삭제
   };
 
   const formattedCreationTime = new Intl.DateTimeFormat('en-US', {
@@ -189,7 +198,8 @@ i 플래그는 대소문자를 구분하지 않는 패턴을 만들어 대소문
               WebkitBoxOrient: 'vertical',
             }}
           >
-            {truncate(description, 25)}
+            {truncate(description, 30)}
+            {/* 글자수 제한 */}
           </Typography>
         </CardContent>
         <CardActions
@@ -219,7 +229,7 @@ i 플래그는 대소문자를 구분하지 않는 패턴을 만들어 대소문
           <Box>
             <IconButton
               sx={{ padding: '5px', marginRight: '14px' }}
-              onClick={handlePostEdit}
+              onClick={handleEditPostcardDialogOpen}
             >
               <EditIcon
                 sx={{
@@ -228,6 +238,19 @@ i 플래그는 대소문자를 구분하지 않는 패턴을 만들어 대소문
                 }}
               />
             </IconButton>
+            <EditPostcardDialog
+              open={EditPostcardDialogOpen}
+              handleClose={handleEditPostcardDialogClose}
+              postId={id}
+              url={url}
+              memo={description}
+              updatedAt={creationTime}
+              bookmark={bookmark}
+              title={title}
+              categoryId={categoryId}
+              categoryName={categoryName}
+              storeFileName={storeFileName}
+            />
           </Box>
         </CardActions>
         <Snackbar

@@ -53,12 +53,6 @@ export const MainComponent = () => {
     }
   };
 
-  const handleEdit = (id) => {
-    // 포스트 카드 수정 헨들러
-    console.log(id);
-    //
-  };
-
   const getGridTemplateColumns = () => {
     if (isXs) return 'repeat(1, minmax(260px, 1fr))';
     if (isSm) return 'repeat(2, minmax(260px, 1fr))';
@@ -122,7 +116,7 @@ export const MainComponent = () => {
               .map((postcard) => (
                 <CSSTransition
                   key={postcard.postId}
-                  timeout={500}
+                  timeout={300}
                   classNames="postcard"
                 >
                   <Grid item>
@@ -132,10 +126,13 @@ export const MainComponent = () => {
                       title={postcard.title}
                       url={postcard.url}
                       description={postcard.memo}
-                      category={postcard.categoryName}
+                      categoryName={postcard.categoryName}
+                      categoryId={postcard.categoryId}
+                      bookmark={postcard.bookmark}
+                      nickname={postcard.nickname}
+                      storeFileName={postcard.storeFileName}
                       onDelete={handleDelete}
                       creationTime={postcard.updatedAt}
-                      onEdit={handleEdit}
                     />
                   </Grid>
                 </CSSTransition>

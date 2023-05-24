@@ -9,7 +9,7 @@ import {
   MenuItem,
   TextField,
 } from '@mui/material';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { useRef, useState } from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
 import {
@@ -63,6 +63,10 @@ const AddWebsiteDialog = ({ open, handleClose }) => {
     defaultSelectedCategoryId
   );
   const [prevPostcardData, setPostcardData] = useRecoilState(postDataState);
+  const setPlaceCategoryNameMoveOn = useSetRecoilState(
+    selectedCategoryNameState
+  );
+  const setPlaceCategoryIdMoveOn = useSetRecoilState(selectedCategoryIdState);
 
   const nameRef = useRef();
   const urlRef = useRef();
@@ -129,6 +133,8 @@ const AddWebsiteDialog = ({ open, handleClose }) => {
       alert(message);
       return;
     }
+    setPlaceCategoryNameMoveOn(selectedCategoryName);
+    setPlaceCategoryIdMoveOn(selectedCategoryId);
     handleClose();
   };
 

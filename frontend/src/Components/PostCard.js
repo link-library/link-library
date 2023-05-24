@@ -109,11 +109,14 @@ export const PostCard = ({
   };
 
   const handlePostCardClick = () => {
-    let formattedUrl = url;
-    if (!/^https?:\/\//i.test(url)) {
-      formattedUrl = `https://${url}`;
+    if (!EditPostcardDialogOpen) {
+      // 팝업창 내부 요소 클릭하면 링크 열리는 버그 방지 조건
+      let formattedUrl = url;
+      if (!/^https?:\/\//i.test(url)) {
+        formattedUrl = `https://${url}`;
+      }
+      window.open(formattedUrl, '_blank'); // 새 인터넷 창에서 해당 url로 이동
     }
-    window.open(formattedUrl, '_blank'); // 새 인터넷 창에서 해당 url로 이동
   };
 
   /**

@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   isSidebarOpenState,
@@ -10,7 +9,7 @@ import { Box, Grid, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { PostCard } from './PostCard';
 import '../Animations/postcard-transitions.css';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
-import { postDelete, postEdit } from '../Pages/Async';
+import { postDelete } from '../Pages/Async';
 
 export const MainComponent = () => {
   const theme = useTheme();
@@ -23,24 +22,6 @@ export const MainComponent = () => {
   const isSidebarOpen = useRecoilValue(isSidebarOpenState);
 
   const [postcards, setPostcards] = useRecoilState(postDataState); // 포스트 카드의 저장소
-
-  // const handleAddPostcard = (postcardData) => {
-  //   // 포스트 카드 추가 헨들러
-  //   const newPostcard = {
-  //     postId: postcardData.postId,
-  //     title: postcardData.title,
-  //     url: postcardData.url,
-  //     memo: postcardData.memo,
-  //     categoryName: postcardData.categoryName,
-  //     updatedAt: postcardData.updatedAt,
-  //   };
-  //   setPostcards((prevPostcards) => [...prevPostcards, newPostcard]);
-  // };
-
-  // useRecoilTransactionObserver_UNSTABLE(({ snapshot }) => {
-  //   const newPostcards = snapshot.getLoadable(postDataState).contents;
-  //   setPostcards(newPostcards);
-  // });
 
   const handleDelete = async (id) => {
     // 포스트 카드 삭제 헨들러

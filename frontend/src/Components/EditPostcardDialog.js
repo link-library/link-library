@@ -10,8 +10,13 @@ import {
   IconButton,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { categoryDataState, postDataState } from '../atoms';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import {
+  categoryDataState,
+  postDataState,
+  selectedCategoryIdState,
+  selectedCategoryNameState,
+} from '../atoms';
 import MenuIcon from '@mui/icons-material/Menu';
 import { postEdit } from '../Pages/Async';
 
@@ -32,6 +37,10 @@ const EditPostcardDialog = ({
   const userCategories = useRecoilValue(categoryDataState); // 카테고리 관리 atom 불러오기
   const [anchorEl, setAnchorEl] = useState(null); // 메뉴바 위치 추적
   const [postData, setPostData] = useRecoilState(postDataState);
+  const setPlaceCategoryNameMoveOn = useSetRecoilState(
+    selectedCategoryNameState
+  );
+  const setPlaceCategoryIdMoveOn = useSetRecoilState(selectedCategoryIdState);
 
   const handleEdit = async () => {
     // 포스트 정보 수정 메서드
@@ -68,6 +77,8 @@ const EditPostcardDialog = ({
         return post;
       });
       setPostData(updatedPostData);
+      setPlaceCategoryNameMoveOn(selectedCategoryName);
+      setPlaceCategoryIdMoveOn(newCategoryId);
       handleClose();
     }
   };

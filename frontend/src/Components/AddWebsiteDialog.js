@@ -12,13 +12,20 @@ import {
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useRef, useState } from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
-import { categoryDataState, postDataState } from '../atoms';
+import {
+  categoryDataState,
+  postDataState,
+  selectedCategoryIdState,
+  selectedCategoryNameState,
+} from '../atoms';
 import { postCreate } from '../Pages/Async';
 
 const AddWebsiteDialog = ({ open, handleClose }) => {
   const userCategories = useRecoilValue(categoryDataState); // 카테고리 관리 atom 불러오기
 
   const [anchorEl, setAnchorEl] = useState(null); // 메뉴바 위치 추적
+  const defaultSelectedCategoryId = useRecoilValue(selectedCategoryIdState);
+  const defaultSelectedCategoryName = useRecoilValue(selectedCategoryNameState);
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -47,11 +54,13 @@ const AddWebsiteDialog = ({ open, handleClose }) => {
     : [];
 
   const [selectedCategoryName, setSelectedCategoryName] = useState(
-    pageListSubcategories.length > 0 ? pageListSubcategories[0].name : ''
+    // pageListSubcategories.length > 0 ? pageListSubcategories[0].name : ''
+    defaultSelectedCategoryName
   );
 
   const [selectedCategoryId, setSelectedCategoryId] = useState(
-    pageListSubcategories.length > 0 ? pageListSubcategories[0].categoryId : ''
+    // pageListSubcategories.length > 0 ? pageListSubcategories[0].categoryId : ''
+    defaultSelectedCategoryId
   );
   const [prevPostcardData, setPostcardData] = useRecoilState(postDataState);
 

@@ -201,13 +201,25 @@ export const postDelete = async (postId) => {
   }
 };
 
-export const postEdit = async (postId) => {
+export const postEdit = async (
+  postId,
+  bookmark,
+  categoryId,
+  memo,
+  title,
+  url
+) => {
   try {
     const accessToken = localStorage.getItem('accessToken');
     const response = await instance.put(
       `/post/${postId}`,
       {
         postId: postId,
+        bookmark: bookmark,
+        categoryId: categoryId,
+        memo: memo,
+        title: title,
+        url: url,
       },
       {
         headers: {
@@ -217,7 +229,10 @@ export const postEdit = async (postId) => {
     );
 
     const result = response.data;
-    return result.message;
+    return {
+      message: result.message,
+      newCategoryId: result.data.categoryId,
+    };
   } catch (error) {
     const result = error.response.data;
     return result.message;

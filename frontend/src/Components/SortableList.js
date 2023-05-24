@@ -15,12 +15,7 @@ import { List, ListItemButton } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import SortableListItem from './SortableListItem';
 import NewCategoryInput from './NewCategoryInput';
-import {
-  categoryCreate,
-  categoryDelete,
-  categoryEdit,
-  postCreate,
-} from '../Pages/Async';
+import { categoryCreate, categoryDelete, categoryEdit } from '../Pages/Async';
 
 export const SortableList = ({
   root,
@@ -47,24 +42,20 @@ export const SortableList = ({
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
-    if (active.categoryId !== over.categoryId) {
+    if (active.id !== over.id) {
       const activeRoot = userCategories.find((root) =>
-        root.categories.some(
-          (category) => category.categoryId === active.categoryId
-        )
+        root.categories.some((category) => category.categoryId === active.id)
       );
       const overRoot = userCategories.find((root) =>
-        root.categories.some(
-          (category) => category.categoryId === over.categoryId
-        )
+        root.categories.some((category) => category.categoryId === over.id)
       );
 
       if (activeRoot.id === overRoot.id) {
         const oldIndex = activeRoot.categories.findIndex(
-          (category) => category.categoryId === active.categoryId
+          (category) => category.categoryId === active.id
         );
         const newIndex = overRoot.categories.findIndex(
-          (category) => category.categoryId === over.categoryId
+          (category) => category.categoryId === over.id
         );
 
         const updatedCategories = arrayMove(
@@ -116,6 +107,7 @@ export const SortableList = ({
       // updateUserCategories(newUserCategories);
       setEditingCategoryId(null);
       setSelectedCategoryName(newName);
+      window.location.reload();
     }
   };
 

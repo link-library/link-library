@@ -20,10 +20,13 @@ import Alert from '@mui/material/Alert';
 import styled from 'styled-components';
 import EditIcon from '@mui/icons-material/Edit';
 import EditPostcardDialog from './EditPostcardDialog';
+import { postEdit } from '../Pages/Async';
+import { postDataState } from '../atoms';
+import { useRecoilState } from 'recoil';
 
 const StyledCard = styled(Card)({
-  maxWidth: 260,
-  height: 300,
+  // minWidth: 260,
+  // height: 300,
   position: 'relative',
   borderRadius: '10px',
   transition: 'box-shadow 0.2s ease-in-out',
@@ -47,6 +50,7 @@ export const PostCard = ({
   onDelete,
   creationTime,
   storeFileName,
+  nickname,
 }) => {
   const [EditPostcardDialogOpen, setEditPostcardDialogOpen] = useState(false);
   const handleEditPostcardDialogOpen = (event) => {
@@ -78,13 +82,44 @@ export const PostCard = ({
     }
     return str;
   }
+  const [postData, setPostData] = useRecoilState(postDataState);
+  const [likeClick, setLikeClick] = useState(bookmark); // 찜하기 버튼 토글 관리
 
-  const [likeClick, setLikeClick] = useState(false); // 찜하기 버튼 토글 관리
-
-  const handleLikeClick = (event) => {
+  const handleLikeClick = async (event) => {
     event.stopPropagation();
-    // 찜하기 버튼 토글 기능
-    setLikeClick(!likeClick);
+    console.log(!likeClick);
+    const updatedPostData = postData.map((post) => {
+      if (post.postId === id) {
+        return {
+          ...post,
+          postId: id,
+          title: title,
+          memo: description,
+          url: url,
+          bookmark: !bookmark,
+          nickname: nickname,
+          updatedAt: creationTime,
+          categoryName: categoryName,
+          storeFileName: storeFileName,
+          categoryId: categoryId,
+        };
+      }
+      return post;
+    });
+    setPostData(updatedPostData);
+    setLikeClick(!likeClick); // 찜하기 버튼 토글 기능
+    const { message, newCategoryId } = await postEdit(
+      id,
+      !bookmark,
+      categoryId,
+      description,
+      title,
+      url
+    );
+
+    if (message === '포스트 수정 완료') {
+      console.log(`찜하기: ${likeClick}`);
+    }
   };
 
   const [SnackbarOpen, setSnackbarOpen] = useState(false); // 알림창 상태 관리
@@ -253,6 +288,7 @@ i 플래그는 대소문자를 구분하지 않는 패턴을 만들어 대소문
               categoryId={categoryId}
               categoryName={categoryName}
               storeFileName={storeFileName}
+              nickname={nickname}
             />
           </Box>
         </CardActions>

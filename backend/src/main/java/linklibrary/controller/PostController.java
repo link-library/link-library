@@ -93,7 +93,7 @@ public class PostController {
         PageRequest pageable = PageRequest.of(page, 16);
         Long userId = principalDetails.getUserDto().getUserId();
         MainPageDto mainPageDto = postService.getPosts(userId, null, sort, keyword, categoryId, pageable);
-        return ResponseEntity.ok(new ResponseData("찜목록 or 전체페이지 조회 완료", mainPageDto));
+        return ResponseEntity.ok(new ResponseData("카테고리별 게시글 조회 완료", mainPageDto));
     }
 
 

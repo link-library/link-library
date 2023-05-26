@@ -159,7 +159,19 @@ export const postCreate = async (bookmark, categoryId, memo, title, url) => {
     );
 
     const result = response.data;
-    return { message: result.message, postId: result.data };
+    return {
+      message: result.message,
+      postId: result.data.postId,
+      title: result.data.title,
+      memo: result.data.memo,
+      url: result.data.url,
+      bookmark: result.data.bookmark,
+      nickname: result.data.nickname,
+      updatedAt: result.data.updatedAt,
+      categoryName: result.data.categoryName,
+      storeFileName: result.data.storeFileName,
+      categoryId: result.data.categoryId,
+    };
   } catch (error) {
     const result = error.response.data;
     return result.message;
@@ -183,6 +195,44 @@ export const postDelete = async (postId) => {
 
     const result = response.data;
     return result.message;
+  } catch (error) {
+    const result = error.response.data;
+    return result.message;
+  }
+};
+
+export const postEdit = async (
+  postId,
+  bookmark,
+  categoryId,
+  memo,
+  title,
+  url
+) => {
+  try {
+    const accessToken = localStorage.getItem('accessToken');
+    const response = await instance.put(
+      `/post/${postId}`,
+      {
+        postId: postId,
+        bookmark: bookmark,
+        categoryId: categoryId,
+        memo: memo,
+        title: title,
+        url: url,
+      },
+      {
+        headers: {
+          Authorization: accessToken,
+        },
+      }
+    );
+
+    const result = response.data;
+    return {
+      message: result.message,
+      newCategoryId: result.data.categoryId,
+    };
   } catch (error) {
     const result = error.response.data;
     return result.message;

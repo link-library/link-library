@@ -16,10 +16,11 @@ export const MainFrame = () => {
         marginLeft: isSidebarOpen ? '250px' : '0',
         transition: 'margin-left 0.5s ease-in-out',
         position: 'absolute',
-        top: '70px',
+        top: '78px',
         left: '0',
         bottom: '0',
         right: '0',
+        overflowY: 'hidden',
       }}
     >
       <Sidebar />

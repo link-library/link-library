@@ -4,6 +4,8 @@ import { ListItemButton, ListItemText } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { CSS } from '@dnd-kit/utilities';
+import { useRecoilState } from 'recoil';
+import { selectedCategoryIdState } from '../atoms';
 
 export const SortableListItem = ({
   category,
@@ -22,6 +24,8 @@ export const SortableListItem = ({
   });
   const style = { transform: CSS.Transform.toString(transform) };
 
+  const [selectedCategoryIdNow] = useRecoilState(selectedCategoryIdState);
+
   return (
     <ListItemButton
       onClick={() => handleCategoryClick(category.categoryId, category.name)}
@@ -32,7 +36,7 @@ export const SortableListItem = ({
       sx={{
         padding: '20px',
         backgroundColor:
-          selectedCategoryId === category.categoryId ? '#E7F5FF' : 'inherit', // 선택된 카테고리 배경색 설정
+          selectedCategoryIdNow === category.categoryId ? '#E7F5FF' : 'inherit', // 선택된 카테고리 배경색 설정
         '&:hover': {
           backgroundColor:
             editingCategoryId === category.categoryId ? 'inherit' : '#E7F5FF', // 마우스 올라간 카테고리 배경색 설정

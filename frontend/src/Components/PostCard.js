@@ -18,10 +18,15 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import styled from 'styled-components';
+import EditIcon from '@mui/icons-material/Edit';
+import EditPostcardDialog from './EditPostcardDialog';
+import { postEdit } from '../Pages/Async';
+import { postDataState } from '../atoms';
+import { useRecoilState } from 'recoil';
 
 const StyledCard = styled(Card)({
-  maxWidth: 260,
-  height: 300,
+  // minWidth: 260,
+  // height: 300,
   position: 'relative',
   borderRadius: '10px',
   transition: 'box-shadow 0.2s ease-in-out',
@@ -39,10 +44,25 @@ export const PostCard = ({
   title,
   url,
   description,
-  category,
+  bookmark,
+  categoryId,
+  categoryName,
   onDelete,
   creationTime,
+  storeFileName,
+  nickname,
 }) => {
+  const [EditPostcardDialogOpen, setEditPostcardDialogOpen] = useState(false);
+  const handleEditPostcardDialogOpen = (event) => {
+    event.stopPropagation();
+    setEditPostcardDialogOpen(true);
+  };
+
+  const handleEditPostcardDialogClose = (event) => {
+    // event.stopPropagation();
+    setEditPostcardDialogOpen(false);
+  };
+
   const handleDeleteClick = (event) => {
     event.stopPropagation();
     onDelete(id); // 포스트 카드 삭제
@@ -62,13 +82,44 @@ export const PostCard = ({
     }
     return str;
   }
+  const [postData, setPostData] = useRecoilState(postDataState);
+  const [likeClick, setLikeClick] = useState(bookmark); // 찜하기 버튼 토글 관리
 
-  const [likeClick, setLikeClick] = useState(false); // 찜하기 버튼 토글 관리
-
-  const handleLikeClick = (event) => {
+  const handleLikeClick = async (event) => {
     event.stopPropagation();
-    // 찜하기 버튼 토글 기능
-    setLikeClick(!likeClick);
+    console.log(!likeClick);
+    const updatedPostData = postData.map((post) => {
+      if (post.postId === id) {
+        return {
+          ...post,
+          postId: id,
+          title: title,
+          memo: description,
+          url: url,
+          bookmark: !bookmark,
+          nickname: nickname,
+          updatedAt: creationTime,
+          categoryName: categoryName,
+          storeFileName: storeFileName,
+          categoryId: categoryId,
+        };
+      }
+      return post;
+    });
+    setPostData(updatedPostData);
+    setLikeClick(!likeClick); // 찜하기 버튼 토글 기능
+    const { message, newCategoryId } = await postEdit(
+      id,
+      !bookmark,
+      categoryId,
+      description,
+      title,
+      url
+    );
+
+    if (message === '포스트 수정 완료') {
+      console.log(`찜하기: ${likeClick}`);
+    }
   };
 
   const [SnackbarOpen, setSnackbarOpen] = useState(false); // 알림창 상태 관리
@@ -93,11 +144,14 @@ export const PostCard = ({
   };
 
   const handlePostCardClick = () => {
-    let formattedUrl = url;
-    if (!/^https?:\/\//i.test(url)) {
-      formattedUrl = `https://${url}`;
+    if (!EditPostcardDialogOpen) {
+      // 팝업창 내부 요소 클릭하면 링크 열리는 버그 방지 조건
+      let formattedUrl = url;
+      if (!/^https?:\/\//i.test(url)) {
+        formattedUrl = `https://${url}`;
+      }
+      window.open(formattedUrl, '_blank'); // 새 인터넷 창에서 해당 url로 이동
     }
-    window.open(formattedUrl, '_blank'); // 새 인터넷 창에서 해당 url로 이동
   };
 
   /**
@@ -182,7 +236,8 @@ i 플래그는 대소문자를 구분하지 않는 패턴을 만들어 대소문
               WebkitBoxOrient: 'vertical',
             }}
           >
-            {truncate(description, 25)}
+            {truncate(description, 30)}
+            {/* 글자수 제한 */}
           </Typography>
         </CardContent>
         <CardActions
@@ -191,6 +246,8 @@ i 플래그는 대소문자를 구분하지 않는 패턴을 만들어 대소문
             position: 'absolute',
             bottom: 0,
             width: '100%',
+            display: 'flex',
+            justifyContent: 'space-between',
           }}
         >
           <Box>
@@ -206,6 +263,33 @@ i 플래그는 대소문자를 구분하지 않는 패턴을 만들어 대소문
             <IconButton sx={{ padding: '8px' }} onClick={handleCopyClick}>
               <ContentCopyIcon sx={{ fontSize: '1.2rem', color: '#000000' }} />
             </IconButton>
+          </Box>
+          <Box>
+            <IconButton
+              sx={{ padding: '5px', marginRight: '14px' }}
+              onClick={handleEditPostcardDialogOpen}
+            >
+              <EditIcon
+                sx={{
+                  fontSize: '1.5rem',
+                  color: '#000000',
+                }}
+              />
+            </IconButton>
+            <EditPostcardDialog
+              open={EditPostcardDialogOpen}
+              handleClose={handleEditPostcardDialogClose}
+              postId={id}
+              url={url}
+              memo={description}
+              updatedAt={creationTime}
+              bookmark={bookmark}
+              title={title}
+              categoryId={categoryId}
+              categoryName={categoryName}
+              storeFileName={storeFileName}
+              nickname={nickname}
+            />
           </Box>
         </CardActions>
         <Snackbar

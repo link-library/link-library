@@ -77,10 +77,11 @@ export const MainPage = () => {
         display: 'flex',
         flexDirection: 'column',
         height: '100vh',
+        overflowY: 'hidden',
       }}
     >
       <Header handleLogout={handleLogout} handleMenuClick={handleMenuClick} />
-      <div style={{ display: 'flex', flexGrow: 1 }}>
+      <div style={{ display: 'flex', flexGrow: 1, overflowY: 'hidden' }}>
         {/* <Category isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} /> */}
         <MainFrame />
       </div>

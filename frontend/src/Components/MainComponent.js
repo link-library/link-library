@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   isSidebarOpenState,
@@ -22,28 +21,9 @@ export const MainComponent = () => {
   const selectedCategoryName = useRecoilValue(selectedCategoryNameState);
   const isSidebarOpen = useRecoilValue(isSidebarOpenState);
 
-  const [postcards, setPostcards] = useRecoilState(postDataState); // 포스트 카드의 저장소
-
-  // const handleAddPostcard = (postcardData) => {
-  //   // 포스트 카드 추가 헨들러
-  //   const newPostcard = {
-  //     postId: postcardData.postId,
-  //     title: postcardData.title,
-  //     url: postcardData.url,
-  //     memo: postcardData.memo,
-  //     categoryName: postcardData.categoryName,
-  //     updatedAt: postcardData.updatedAt,
-  //   };
-  //   setPostcards((prevPostcards) => [...prevPostcards, newPostcard]);
-  // };
-
-  // useRecoilTransactionObserver_UNSTABLE(({ snapshot }) => {
-  //   const newPostcards = snapshot.getLoadable(postDataState).contents;
-  //   setPostcards(newPostcards);
-  // });
+  const [postcards, setPostcards] = useRecoilState(postDataState);
 
   const handleDelete = async (id) => {
-    // 포스트 카드 삭제 헨들러
     console.log(id);
     const message = await postDelete(id);
     console.log(message);
@@ -54,56 +34,70 @@ export const MainComponent = () => {
   };
 
   const getGridTemplateColumns = () => {
-    if (isXs) return 'repeat(1, minmax(260px, 1fr))';
-    if (isSm) return 'repeat(2, minmax(260px, 1fr))';
-    if (isMd) return 'repeat(3, minmax(260px, 1fr))';
-    if (isLg) {
-      return isSidebarOpen
-        ? 'repeat(4, minmax(260px, 1fr))'
-        : 'repeat(5, minmax(260px, 1fr))';
+    if (isXs || isSm || isMd || isLg) {
+      return 'repeat(auto-fit, minmax(260px, 260px))';
     }
+  };
+
+  const getGridGap = () => {
+    if (isXs) return '16px';
+    if (isSm) return '24px';
+    if (isMd) return '32px';
+    if (isLg) {
+      return isSidebarOpen ? '32px' : '48px';
+    }
+  };
+
+  const getMarginLeft = () => {
+    if (isSidebarOpen) return '80px';
+    return '50px';
+  };
+
+  const getMarginRight = () => {
+    if (isSidebarOpen) return '50px';
+    return '50px';
   };
 
   return (
     <Box
       sx={{
-        overflow: 'auto',
-        minHeight: '100vh',
-        width: '100%',
-        overflowX: 'auto',
+        height: '100vh',
+        width: isSidebarOpen ? 'calc(100vw - 250px)' : '100vw',
+        marginLeft: getMarginLeft(),
+        // marginRight: getMarginRight(),
+        overflow: 'hidden',
       }}
     >
       <Box
         sx={{
           flexGrow: 1,
-          marginLeft: '20px',
           position: 'sticky',
           top: 0,
           zIndex: 1,
+          overflowY: 'auto',
         }}
       >
         <Typography variant="h4" component="h4" sx={{ paddingTop: '20px' }}>
           {selectedCategoryName}
         </Typography>
-        <Typography>링크 카드 배치</Typography>
+        <Typography>카테고리 별 포스트 개수 표시 예정</Typography>
         <FilterTab />
       </Box>
       <Box
         sx={{
           marginTop: 2,
           overflowY: 'auto',
-          height: 'calc(100vh - 150px)',
+          height: 'calc(100vh - 240px)',
         }}
       >
         <Grid
           container
-          spacing={2}
           sx={{
             display: 'grid',
             gridTemplateColumns: getGridTemplateColumns(),
-            gap: '10px',
+            gap: getGridGap(),
+            justifyContent: 'flex-start',
             paddingTop: '30px',
-            paddingLeft: '50px',
             maxWidth: '100%',
             transition: 'grid-template-columns 0.5s ease-in-out',
           }}
@@ -116,17 +110,21 @@ export const MainComponent = () => {
               .map((postcard) => (
                 <CSSTransition
                   key={postcard.postId}
-                  timeout={500}
+                  timeout={300}
                   classNames="postcard"
                 >
                   <Grid item>
-                    <PostCard // 포스트 카드 배치
+                    <PostCard
                       key={postcard.postId}
                       id={postcard.postId}
                       title={postcard.title}
                       url={postcard.url}
                       description={postcard.memo}
-                      category={postcard.categoryName}
+                      categoryName={postcard.categoryName}
+                      categoryId={postcard.categoryId}
+                      bookmark={postcard.bookmark}
+                      nickname={postcard.nickname}
+                      storeFileName={postcard.storeFileName}
                       onDelete={handleDelete}
                       creationTime={postcard.updatedAt}
                     />

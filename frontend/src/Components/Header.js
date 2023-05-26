@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { userState } from '../atoms';
 import { Logo } from '../Style/LoginPageStyle';
 import LinkLibraryLogo from '../images/LinkLibraryLogo.png';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -10,7 +9,6 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import FavoriteChecker from '../images/FavoriteChecker.png';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Grid } from '@mui/material';
-import { useSetRecoilState } from 'recoil';
 import SearchTab from './SearchTab';
 
 const MenuButton = ({ onClick }) => {

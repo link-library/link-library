@@ -9,16 +9,23 @@ import {
   MenuItem,
   TextField,
 } from '@mui/material';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { useRef, useState } from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
-import { categoryDataState, postDataState } from '../atoms';
+import {
+  categoryDataState,
+  postDataState,
+  selectedCategoryIdState,
+  selectedCategoryNameState,
+} from '../atoms';
 import { postCreate } from '../Pages/Async';
 
 const AddWebsiteDialog = ({ open, handleClose }) => {
   const userCategories = useRecoilValue(categoryDataState); // 카테고리 관리 atom 불러오기
 
   const [anchorEl, setAnchorEl] = useState(null); // 메뉴바 위치 추적
+  const defaultSelectedCategoryId = useRecoilValue(selectedCategoryIdState);
+  const defaultSelectedCategoryName = useRecoilValue(selectedCategoryNameState);
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -47,13 +54,19 @@ const AddWebsiteDialog = ({ open, handleClose }) => {
     : [];
 
   const [selectedCategoryName, setSelectedCategoryName] = useState(
-    pageListSubcategories.length > 0 ? pageListSubcategories[0].name : ''
+    // pageListSubcategories.length > 0 ? pageListSubcategories[0].name : ''
+    defaultSelectedCategoryName
   );
 
   const [selectedCategoryId, setSelectedCategoryId] = useState(
-    pageListSubcategories.length > 0 ? pageListSubcategories[0].categoryId : ''
+    // pageListSubcategories.length > 0 ? pageListSubcategories[0].categoryId : ''
+    defaultSelectedCategoryId
   );
   const [prevPostcardData, setPostcardData] = useRecoilState(postDataState);
+  const setPlaceCategoryNameMoveOn = useSetRecoilState(
+    selectedCategoryNameState
+  );
+  const setPlaceCategoryIdMoveOn = useSetRecoilState(selectedCategoryIdState);
 
   const nameRef = useRef();
   const urlRef = useRef();
@@ -62,7 +75,19 @@ const AddWebsiteDialog = ({ open, handleClose }) => {
   const handleSubmit = async () => {
     // 팝업창에 입력된 값을 추적하는 핸들러
 
-    const { message, postId } = await postCreate(
+    const {
+      message,
+      postId,
+      title,
+      memo,
+      url,
+      bookmark,
+      nickname,
+      updatedAt,
+      categoryName,
+      storeFileName,
+      categoryId,
+    } = await postCreate(
       false,
       selectedCategoryId,
       descriptionRef.current.value,
@@ -70,20 +95,34 @@ const AddWebsiteDialog = ({ open, handleClose }) => {
       urlRef.current.value
     );
     console.log(message);
+
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString('ko-KR', {
+      month: '2-digit',
+      day: '2-digit',
+      year: 'numeric',
+    });
+    console.log(formattedDate);
+
     if (message === '포스터 생성 완료. 전체 조회 화면으로 이동') {
       const newPostcardData = {
-        bookmark: false,
-        nickname: 'test',
         postId: postId,
-        memo: descriptionRef.current.value,
         title: nameRef.current.value,
+        memo: descriptionRef.current.value,
         url: urlRef.current.value,
+        bookmark: false,
+        nickname: nickname,
+        updatedAt: formattedDate,
         categoryName: selectedCategoryName,
-        updatedAt: Date.now(),
+        storeFileName: storeFileName,
+        categoryId: selectedCategoryId,
       };
+      console.log(postId);
+      console.log(title);
+      console.log(memo);
       setPostcardData((prevPostcardData) => [
-        ...prevPostcardData,
         newPostcardData,
+        ...prevPostcardData,
       ]);
       console.log([...prevPostcardData, newPostcardData]);
     } else if (
@@ -94,6 +133,8 @@ const AddWebsiteDialog = ({ open, handleClose }) => {
       alert(message);
       return;
     }
+    setPlaceCategoryNameMoveOn(selectedCategoryName);
+    setPlaceCategoryIdMoveOn(selectedCategoryId);
     handleClose();
   };
 

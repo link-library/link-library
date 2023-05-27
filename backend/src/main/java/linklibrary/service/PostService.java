@@ -149,16 +149,19 @@ public class PostService {
                     .orElseThrow(() -> new EntityNotFoundException("카테고리 아이디에 해당하는 엔티티가 없습니다. [PostService]"));
             current = category.getName(); //만약 Category 목록을 조회했다면 current 에 카테고리명
         }
+        Optional<Category> byId = categoryRepository.findById(categoryId); // 05 27 추가
+        Category category = byId.get();// 05 27 추가
 
         //Response 로 뿌려줄 화면
         Page<PostDto1> postDtos = postRepository.findPostDtos(userId, bookmark, sort, keyword, categoryId, pageable);
         long totalPost = postDtos.getTotalElements(); //포스트의 개수,
-
+        long size = category.getPosts().size();// 05 27 추가
         MainPageDto mainPageDto = MainPageDto.builder()
                 .categoryDtoList(categoryDtoList) //카테고리 리스트
                 .postDtoList(postDtos)  //포스트 리스트
                 .total(totalPost) //총 포스트 개수
                 .currentCategory(current)  //현재 카테고리이름
+                .size(size)
                 .build();
         return mainPageDto;
     }

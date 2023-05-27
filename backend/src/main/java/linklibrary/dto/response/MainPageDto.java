@@ -20,4 +20,5 @@ public class MainPageDto {
     private Page<PostDto1> postDtoList;
     private Long total;
     private String currentCategory;
+    private Long totalPage;  // 2023 - 05- 27 추가
 }

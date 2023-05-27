@@ -8,9 +8,6 @@ import linklibrary.dto.response.PostDto1;
 import linklibrary.entity.Category;
 import linklibrary.entity.Post;
 import linklibrary.entity.User;
-import linklibrary.mapper.Post.ChangePostMapper;
-import linklibrary.mapper.Post.CreatePostMapper;
-import linklibrary.mapper.Post.MainPageMapper;
 import linklibrary.mapper.PostMapper;
 import linklibrary.repository.CategoryRepository;
 import linklibrary.repository.PostRepository;
@@ -148,21 +145,61 @@ public class PostService {
             Category category = categoryRepository.findById(categoryId)
                     .orElseThrow(() -> new EntityNotFoundException("카테고리 아이디에 해당하는 엔티티가 없습니다. [PostService]"));
             current = category.getName(); //만약 Category 목록을 조회했다면 current 에 카테고리명
+            //Response 로 뿌려줄 화면
+            Page<PostDto1> postDtos = postRepository.findPostDtos(userId, bookmark, sort, keyword, categoryId, pageable);
+            long totalPost = postDtos.getTotalElements(); //포스트의 개수,
+            long size = category.getPosts().size();// 05 27 추가
+            MainPageDto mainPageDto = MainPageDto.builder()
+                    .categoryDtoList(categoryDtoList) //카테고리 리스트
+                    .postDtoList(postDtos)  //포스트 리스트
+                    .total(totalPost) //총 포스트 개수
+                    .currentCategory(current)  //현재 카테고리이름
+                    .size(size)
+                    .build();
+            return mainPageDto;
+        } else {
+            //Response 로 뿌려줄 화면
+            Page<PostDto1> postDtos = postRepository.findPostDtos(userId, bookmark, sort, keyword, categoryId, pageable);
+            long totalPost = postDtos.getTotalElements(); //포스트의 개수,
+            MainPageDto mainPageDto = MainPageDto.builder()
+                    .categoryDtoList(categoryDtoList) //카테고리 리스트
+                    .postDtoList(postDtos)  //포스트 리스트
+                    .total(totalPost) //총 포스트 개수
+                    .currentCategory(current)  //현재 카테고리이름
+                    .size(0L)
+                    .build();
+            return mainPageDto;
         }
-        Optional<Category> byId = categoryRepository.findById(categoryId); // 05 27 추가
-        Category category = byId.get();// 05 27 추가
-
-        //Response 로 뿌려줄 화면
-        Page<PostDto1> postDtos = postRepository.findPostDtos(userId, bookmark, sort, keyword, categoryId, pageable);
-        long totalPost = postDtos.getTotalElements(); //포스트의 개수,
-        long size = category.getPosts().size();// 05 27 추가
-        MainPageDto mainPageDto = MainPageDto.builder()
-                .categoryDtoList(categoryDtoList) //카테고리 리스트
-                .postDtoList(postDtos)  //포스트 리스트
-                .total(totalPost) //총 포스트 개수
-                .currentCategory(current)  //현재 카테고리이름
-                .size(size)
-                .build();
-        return mainPageDto;
     }
+//    public MainPageDto getPosts(Long userId, String bookmark, String sort, String keyword, Long categoryId, Pageable pageable) {
+//        List<Category> categories = categoryRepository.findByUserId(userId);   //  Id로 만든 카테고리들 찾아옴
+//
+//
+//        List<CategoryDto> categoryDtoList = categories.stream()    // 카테고리 ->DTO시키기
+//                .map(c -> new CategoryDto(c.getId(), c.getName()))
+//                .collect(Collectors.toList());  //카테고리DTO에는  ID와 NAME만 있음.
+//
+//        String current = bookmark == null ? "전체조회" : "찜목록"; //bookmark 여부에 따라 currentCategory 이름 설정
+//
+//        if (categoryId != null) {
+//            Category category = categoryRepository.findById(categoryId)
+//                    .orElseThrow(() -> new EntityNotFoundException("카테고리 아이디에 해당하는 엔티티가 없습니다. [PostService]"));
+//            current = category.getName(); //만약 Category 목록을 조회했다면 current 에 카테고리명
+//        }
+//        Optional<Category> byId = categoryRepository.findById(categoryId); // 05 27 추가
+//        Category category = byId.get();// 05 27 추가
+//
+//        //Response 로 뿌려줄 화면
+//        Page<PostDto1> postDtos = postRepository.findPostDtos(userId, bookmark, sort, keyword, categoryId, pageable);
+//        long totalPost = postDtos.getTotalElements(); //포스트의 개수,
+//        long size = category.getPosts().size();// 05 27 추가
+//        MainPageDto mainPageDto = MainPageDto.builder()
+//                .categoryDtoList(categoryDtoList) //카테고리 리스트
+//                .postDtoList(postDtos)  //포스트 리스트
+//                .total(totalPost) //총 포스트 개수
+//                .currentCategory(current)  //현재 카테고리이름
+//                .size(size)
+//                .build();
+//        return mainPageDto;
+//    }
 }

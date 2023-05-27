@@ -40,7 +40,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                         user.nickname,
                         post.updatedAt,
                         category.name,
-                        profileImg.storeFileName
+                        profileImg.storeFileName,
+                        category.id
                 ))
                 .from(post)
                 .join(post.user, user)

@@ -71,14 +71,14 @@ const EditPostcardDialog = ({
             updatedAt: updatedAt,
             categoryName: selectedCategoryName,
             storeFileName: storeFileName,
-            categoryId: newCategoryId,
+            categoryId: selectedCategoryId,
           };
         }
         return post;
       });
       setPostData(updatedPostData);
       setPlaceCategoryNameMoveOn(selectedCategoryName);
-      setPlaceCategoryIdMoveOn(newCategoryId);
+      setPlaceCategoryIdMoveOn(selectedCategoryId);
       handleClose();
     }
   };
@@ -110,8 +110,9 @@ const EditPostcardDialog = ({
     ? pageListCategory.categories
     : [];
 
-  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
-  const [selectedCategoryName, setSelectedCategoryName] = useState(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(categoryId);
+  const [selectedCategoryName, setSelectedCategoryName] =
+    useState(categoryName);
 
   const [newTitle, setNewTitle] = useState('');
   const [newUrl, setNewUrl] = useState('');

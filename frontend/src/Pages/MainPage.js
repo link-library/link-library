@@ -1,6 +1,12 @@
 import React, { useEffect } from 'react';
-import { useRecoilState } from 'recoil';
-import { categoryDataState, isSidebarOpenState, postDataState } from '../atoms';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import {
+  categoryDataState,
+  isSidebarOpenState,
+  postDataState,
+  totalPostAmountBySelectedCategory,
+  totalPostAmountBySelectedCategoryState,
+} from '../atoms';
 import { useNavigate } from 'react-router-dom';
 import Header from '../Components/Header';
 import MainFrame from '../Components/MainFrame';
@@ -26,7 +32,9 @@ export const MainPage = () => {
   };
 
   const [isSidebarOpen, setIsSidebarOpen] = useRecoilState(isSidebarOpenState); // 사이드바 관리 State
-
+  const setTotalPostAmountBySelectedCategory = useSetRecoilState(
+    totalPostAmountBySelectedCategoryState
+  );
   const handleMenuClick = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -34,10 +42,12 @@ export const MainPage = () => {
   useEffect(() => {
     console.log(1);
     const fetchData = async () => {
-      const { message, categoryData, postData } =
+      const { message, categoryData, postData, totalPostAmount } =
         await getCategoryAndPostData();
       if (message === '찜목록 or 전체페이지 조회 완료') {
         console.log(message);
+        console.log(totalPostAmount);
+        setTotalPostAmountBySelectedCategory(totalPostAmount);
         setCategoryData((prevCategoryData) => {
           const filteredCategories = prevCategoryData.filter(
             (category) => category.name !== '페이지 목록'
@@ -52,7 +62,7 @@ export const MainPage = () => {
             },
           ];
         });
-        setPostData(postData);
+        // setPostData(postData);
       } else {
         console.error('Failed to fetch post data');
       }

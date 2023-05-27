@@ -26,6 +26,11 @@ export const postDataState = atom({
   default: [],
 });
 
+export const postPageState = atom({
+  key: 'postPageState',
+  default: 1,
+});
+
 export const userState = atom({
   // 현재 로그인된 유저 정보
   key: 'userState',
@@ -139,4 +144,10 @@ export const activeCategoryPostsAtom = atom({
   // 클릭한 카테고리 정보를 비동기 통신으로 받아올 저장소
   key: 'activeCategoryList',
   default: [],
+});
+
+export const totalPostAmountBySelectedCategoryState = atom({
+  // 클릭한 카테고리의 전체 포스트 개수
+  key: 'totalPostAmountBySelectedCategory',
+  default: 0,
 });

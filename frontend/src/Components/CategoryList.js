@@ -7,11 +7,15 @@ import {
   categoryDataState,
   expandedCategoryState,
   isCreatingNewCategoryState,
+  postDataState,
+  postPageState,
   selectedCategoryIdState,
   selectedCategoryNameState,
+  totalPostAmountBySelectedCategoryState,
 } from '../atoms';
 import { List, ListItemButton, ListItemText, Collapse } from '@mui/material';
 import SortableList from './SortableList';
+import { getPostDataBySelectedCategory } from '../Pages/Async';
 
 const CategoryList = ({ categories }) => {
   const [userCategories, setUserCategories] = useRecoilState(categoryDataState);
@@ -28,7 +32,12 @@ const CategoryList = ({ categories }) => {
     selectedCategoryIdState
   ); // 선택된 카테고리 ID 추적
 
+  const [currentPostData, setPostData] = useRecoilState(postDataState);
+  const setTotalPostAmount = useSetRecoilState(
+    totalPostAmountBySelectedCategoryState
+  );
   const setSelectedCategoryName = useSetRecoilState(selectedCategoryNameState);
+  const setPostPage = useSetRecoilState(postPageState);
 
   const handleExpandClick = (rootId) => {
     // 카테고리 요소 열고 닫기 핸들러
@@ -38,11 +47,19 @@ const CategoryList = ({ categories }) => {
     });
   };
 
-  const handleCategoryClick = (categoryId, categoryName) => {
+  const handleCategoryClick = async (categoryId, categoryName) => {
     // 선택된 카테고리 id와 이름 변경 핸들러
-    setSelectedCategoryId(categoryId);
-    console.log(`categoryName: ${categoryName}, categoryId: ${categoryId}`);
-    setSelectedCategoryName(categoryName);
+    const { message, postData, totalPostAmount } =
+      await getPostDataBySelectedCategory(categoryId, 0);
+    if (message === '카테고리별 게시글 조회 완료') {
+      setSelectedCategoryId(categoryId);
+      console.log(`categoryName: ${categoryName}, categoryId: ${categoryId}`);
+      setSelectedCategoryName(categoryName);
+      setPostData(postData);
+      console.log(`포스트 개수: ${totalPostAmount}`);
+      setTotalPostAmount(totalPostAmount);
+      setPostPage(1);
+    }
   };
 
   const handleAddIconClick = (event, rootId) => {

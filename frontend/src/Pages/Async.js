@@ -227,7 +227,6 @@ export const postEdit = async (
         },
       }
     );
-
     const result = response.data;
     return {
       message: result.message,
@@ -253,9 +252,55 @@ export const getCategoryAndPostData = async () => {
       message: result.message,
       categoryData: result.data.categoryDtoList,
       postData: result.data.postDtoList.content,
+      totalPostAmount: result.size,
     };
   } catch (error) {
     const result = error.response.data;
     return result.message;
   }
 };
+
+export const getPostDataBySelectedCategory = async (categoryId, page) => {
+  try {
+    const accessToken = localStorage.getItem('accessToken');
+    const response = await instance.get(`/posts/${categoryId}?page=${page}`, {
+      headers: {
+        Authorization: accessToken,
+      },
+    });
+
+    const result = response.data;
+    return {
+      message: result.message,
+      postData: result.data.postDtoList.content,
+      totalPostAmount: result.data.size,
+    };
+  } catch (error) {
+    const result = error.response.data;
+    return result.message;
+  }
+};
+
+// export const getLikePostData = async () => {
+//   try {
+//     const accessToken = localStorage.getItem('accessToken');
+//     const response = await instance.get('/posts', {
+//       {
+//         bookmark: true,
+//       },
+//       headers: {
+//         Authorization: accessToken,
+//       },
+//     });
+
+//     const result = response.data;
+//     return {
+//       message: result.message,
+//       categoryData: result.data.categoryDtoList,
+//       postData: result.data.postDtoList.content,
+//     };
+//   } catch (error) {
+//     const result = error.response.data;
+//     return result.message;
+//   }
+// };

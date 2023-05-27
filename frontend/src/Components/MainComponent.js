@@ -2,14 +2,25 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   isSidebarOpenState,
   postDataState,
+  postPageState,
+  selectedCategoryIdState,
   selectedCategoryNameState,
+  totalPostAmountBySelectedCategoryState,
 } from '../atoms';
 import FilterTab from './FilterTab';
-import { Box, Grid, Typography, useMediaQuery, useTheme } from '@mui/material';
+import {
+  Box,
+  Button,
+  Grid,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import { PostCard } from './PostCard';
 import '../Animations/postcard-transitions.css';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
-import { postDelete } from '../Pages/Async';
+import { getPostDataBySelectedCategory, postDelete } from '../Pages/Async';
+import { useEffect, useState } from 'react';
 
 export const MainComponent = () => {
   const theme = useTheme();
@@ -19,9 +30,13 @@ export const MainComponent = () => {
   const isLg = useMediaQuery(theme.breakpoints.up('lg'));
 
   const selectedCategoryName = useRecoilValue(selectedCategoryNameState);
+  const selectedCategoryId = useRecoilValue(selectedCategoryIdState);
   const isSidebarOpen = useRecoilValue(isSidebarOpenState);
 
   const [postcards, setPostcards] = useRecoilState(postDataState);
+  const totalPostAmountBySelectedCategory = useRecoilValue(
+    totalPostAmountBySelectedCategoryState
+  );
 
   const handleDelete = async (id) => {
     console.log(id);
@@ -58,6 +73,17 @@ export const MainComponent = () => {
     return '50px';
   };
 
+  const [page, setPage] = useRecoilState(postPageState);
+  const loadMorePostData = async () => {
+    const { message, postData, totalPostAmount } =
+      await getPostDataBySelectedCategory(selectedCategoryId, page);
+    if (message === '카테고리별 게시글 조회 완료') {
+      console.log(`page=${page}, 추가 포스트 데이터 로드 완료`);
+      setPage(page + 1);
+      setPostcards((prevPostData) => [...prevPostData, ...postData]);
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -80,7 +106,9 @@ export const MainComponent = () => {
         <Typography variant="h4" component="h4" sx={{ paddingTop: '20px' }}>
           {selectedCategoryName}
         </Typography>
-        <Typography>카테고리 별 포스트 개수 표시 예정</Typography>
+        <Typography>
+          총 링크 카드 수: {totalPostAmountBySelectedCategory}개
+        </Typography>
         <FilterTab />
       </Box>
       <Box
@@ -132,6 +160,7 @@ export const MainComponent = () => {
                 </CSSTransition>
               ))}
           </TransitionGroup>
+          <Button onClick={loadMorePostData}>링크 카드 목록 불러오기</Button>
         </Grid>
       </Box>
     </Box>

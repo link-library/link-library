@@ -153,13 +153,12 @@ public class PostService {
         //Response 로 뿌려줄 화면
         Page<PostDto1> postDtos = postRepository.findPostDtos(userId, bookmark, sort, keyword, categoryId, pageable);
         long totalPost = postDtos.getTotalElements(); //포스트의 개수,
-        long totalPage = postDtos.getTotalPages(); // 전체 페이지 수 // 2023 -05 -27 추가
+
         MainPageDto mainPageDto = MainPageDto.builder()
                 .categoryDtoList(categoryDtoList) //카테고리 리스트
                 .postDtoList(postDtos)  //포스트 리스트
                 .total(totalPost) //총 포스트 개수
                 .currentCategory(current)  //현재 카테고리이름
-                .totalPage(totalPage)  // 2023 05 - 27 추가
                 .build();
         return mainPageDto;
     }

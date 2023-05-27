@@ -14,11 +14,13 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   categoryDataState,
   postDataState,
+  postPageState,
   selectedCategoryIdState,
   selectedCategoryNameState,
+  totalPostAmountBySelectedCategoryState,
 } from '../atoms';
 import MenuIcon from '@mui/icons-material/Menu';
-import { postEdit } from '../Pages/Async';
+import { getPostDataBySelectedCategory, postEdit } from '../Pages/Async';
 
 const EditPostcardDialog = ({
   open,
@@ -40,7 +42,24 @@ const EditPostcardDialog = ({
   const setPlaceCategoryNameMoveOn = useSetRecoilState(
     selectedCategoryNameState
   );
+  const setPostPage = useSetRecoilState(postPageState);
   const setPlaceCategoryIdMoveOn = useSetRecoilState(selectedCategoryIdState);
+  const setTotalPostAmount = useSetRecoilState(
+    totalPostAmountBySelectedCategoryState
+  );
+  const getPostByCategory = async (categoryId, categoryName) => {
+    // 선택된 카테고리 id와 이름 변경 핸들러
+    const { message, postData, totalPostAmount } =
+      await getPostDataBySelectedCategory(categoryId, 0);
+    if (message === '카테고리별 게시글 조회 완료') {
+      setSelectedCategoryId(categoryId);
+      console.log(`categoryName: ${categoryName}, categoryId: ${categoryId}`);
+      setSelectedCategoryName(categoryName);
+      setPostData(postData);
+      console.log(`포스트 개수: ${totalPostAmount}`);
+      setTotalPostAmount(totalPostAmount);
+    }
+  };
 
   const handleEdit = async () => {
     // 포스트 정보 수정 메서드
@@ -71,14 +90,16 @@ const EditPostcardDialog = ({
             updatedAt: updatedAt,
             categoryName: selectedCategoryName,
             storeFileName: storeFileName,
-            categoryId: selectedCategoryId,
+            categoryId: newCategoryId,
           };
         }
         return post;
       });
       setPostData(updatedPostData);
       setPlaceCategoryNameMoveOn(selectedCategoryName);
-      setPlaceCategoryIdMoveOn(selectedCategoryId);
+      setPlaceCategoryIdMoveOn(newCategoryId);
+      getPostByCategory(selectedCategoryId, selectedCategoryName);
+      setPostPage(1);
       handleClose();
     }
   };

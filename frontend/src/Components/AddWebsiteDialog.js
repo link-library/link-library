@@ -15,10 +15,12 @@ import MenuIcon from '@mui/icons-material/Menu';
 import {
   categoryDataState,
   postDataState,
+  postPageState,
   selectedCategoryIdState,
   selectedCategoryNameState,
+  totalPostAmountBySelectedCategoryState,
 } from '../atoms';
-import { postCreate } from '../Pages/Async';
+import { getPostDataBySelectedCategory, postCreate } from '../Pages/Async';
 
 const AddWebsiteDialog = ({ open, handleClose }) => {
   const userCategories = useRecoilValue(categoryDataState); // 카테고리 관리 atom 불러오기
@@ -67,10 +69,28 @@ const AddWebsiteDialog = ({ open, handleClose }) => {
     selectedCategoryNameState
   );
   const setPlaceCategoryIdMoveOn = useSetRecoilState(selectedCategoryIdState);
-
+  const setTotalPostAmount = useSetRecoilState(
+    totalPostAmountBySelectedCategoryState
+  );
+  const [currentPostData, setPostData] = useRecoilState(postDataState);
   const nameRef = useRef();
   const urlRef = useRef();
   const descriptionRef = useRef();
+  const setPostPage = useSetRecoilState(postPageState);
+
+  const getPostByCategory = async (categoryId, categoryName) => {
+    // 선택된 카테고리 id와 이름 변경 핸들러
+    const { message, postData, totalPostAmount } =
+      await getPostDataBySelectedCategory(categoryId, 0);
+    if (message === '카테고리별 게시글 조회 완료') {
+      setSelectedCategoryId(categoryId);
+      console.log(`categoryName: ${categoryName}, categoryId: ${categoryId}`);
+      setSelectedCategoryName(categoryName);
+      setPostData(postData);
+      console.log(`포스트 개수: ${totalPostAmount}`);
+      setTotalPostAmount(totalPostAmount);
+    }
+  };
 
   const handleSubmit = async () => {
     // 팝업창에 입력된 값을 추적하는 핸들러
@@ -135,6 +155,8 @@ const AddWebsiteDialog = ({ open, handleClose }) => {
     }
     setPlaceCategoryNameMoveOn(selectedCategoryName);
     setPlaceCategoryIdMoveOn(selectedCategoryId);
+    getPostByCategory(selectedCategoryId, selectedCategoryName);
+    setPostPage(1);
     handleClose();
   };
 

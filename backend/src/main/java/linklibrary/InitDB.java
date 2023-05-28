@@ -80,6 +80,11 @@ public class InitDB {
                     .createdBy(user1.getNickname()).category(cateogry2).user(user1).build();
             Post post6 = Post.builder().title("제목6").memo("메모6").bookmark(true).url("www.google.com")
                     .createdBy(user2.getNickname()).category(cateogry3).user(user2).build();
+            for(int i = 0; i<30; i++) {
+                Post post = Post.builder().title("제목" + i).memo("메모" + i).bookmark(true).url("www.naver.com")
+                        .createdBy(user1.getNickname()).category(cateogry1).user(user1).build();
+                em.persist(post);
+            }
 
             em.persist(post1);
             em.persist(post2);

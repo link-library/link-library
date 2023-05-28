@@ -57,7 +57,22 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-        return new PageImpl<>(result, pageable, result.size());
+
+        Long total = queryFactory
+                .select(post.count())
+                .from(post)
+                .join(post.user, user)
+                .join(post.category, category)
+                .leftJoin(post.user.profileImg, profileImg) // profileImg는 null 일수도 있기 때문에 leftJoin
+                .where(
+                        userIdEq(userId),
+                        postTitleEq(keyword),
+                        bookmarkEq(bookmark),
+                        categoryIdEq(categoryId)
+                )
+                .fetchOne();
+
+        return new PageImpl<>(result, pageable, total);
     }
 
     private BooleanExpression categoryIdEq(Long categoryId) {

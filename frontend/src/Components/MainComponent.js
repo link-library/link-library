@@ -34,9 +34,19 @@ export const MainComponent = () => {
   const isSidebarOpen = useRecoilValue(isSidebarOpenState);
 
   const [postcards, setPostcards] = useRecoilState(postDataState);
-  const totalPostAmountBySelectedCategory = useRecoilValue(
-    totalPostAmountBySelectedCategoryState
-  );
+  const [totalPostAmountBySelectedCategory, setTotalPostAmount] =
+    useRecoilState(totalPostAmountBySelectedCategoryState);
+
+  const getPostByCategory = async (categoryId) => {
+    // 선택된 카테고리 id와 이름 변경 핸들러
+    const { message, postData, totalPostAmount } =
+      await getPostDataBySelectedCategory(categoryId, 0);
+    if (message === '카테고리별 게시글 조회 완료') {
+      console.log(`포스트 삭제후 해당 카테고리 포스트 개수 로드 완료`);
+      console.log(`포스트 개수: ${totalPostAmount}`);
+      setTotalPostAmount(totalPostAmount);
+    }
+  };
 
   const handleDelete = async (id) => {
     console.log(id);
@@ -45,6 +55,7 @@ export const MainComponent = () => {
     if (message === '포스트 삭제 완료') {
       console.log(message);
       setPostcards(postcards.filter((postcard) => postcard.postId !== id));
+      getPostByCategory(selectedCategoryId);
     }
   };
 

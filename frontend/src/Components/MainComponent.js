@@ -3,6 +3,7 @@ import {
   isSidebarOpenState,
   postDataState,
   postPageState,
+  searchPostByKeywordState,
   selectedCategoryIdState,
   selectedCategoryNameState,
   selectedSortTypeState,
@@ -22,6 +23,7 @@ import '../Animations/postcard-transitions.css';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import {
   getLikePostData,
+  getPostDataByKeyword,
   getPostDataBySelectedCategory,
   getPostDataBySort,
   postDelete,
@@ -85,13 +87,15 @@ export const MainComponent = () => {
     return '50px';
   };
 
-  const getMarginRight = () => {
-    if (isSidebarOpen) return '50px';
-    return '50px';
-  };
+  // const getMarginRight = () => {
+  //   if (isSidebarOpen) return '50px';
+  //   return '50px';
+  // };
 
   const [page, setPage] = useRecoilState(postPageState);
   const selectedSortType = useRecoilValue(selectedSortTypeState);
+  const searchValue = useRecoilValue(searchPostByKeywordState);
+
   const loadMorePostData = async () => {
     // 포스트 더보기 버튼 눌렀을 때 불러올 데이터
     if (selectedCategoryName === 'bookmark') {
@@ -103,6 +107,18 @@ export const MainComponent = () => {
         console.log(`totalPostAmount: ${totalPostAmount}`);
         setPostcards((prevPostData) => [...prevPostData, ...postData]);
         setTotalPostAmount(totalPostAmount);
+        setPage(page + 1);
+      }
+    } else if (selectedCategoryName === '검색된 링크 카드 목록') {
+      const { message, postData, totalPostAmount } = await getPostDataByKeyword(
+        page,
+        searchValue
+      );
+      if (message === '찜목록 or 전체페이지 조회 완료') {
+        console.log(`${searchValue}로 검색된 값 목록 추가 조회 완료`);
+        setPostcards((prevPostData) => [...prevPostData, ...postData]);
+        setTotalPostAmount(totalPostAmount);
+        setPage(page + 1);
       }
     } else {
       // 단순 카테고리 소속 추가 포스트 정보 불러오기
@@ -198,6 +214,31 @@ export const MainComponent = () => {
                     </Grid>
                   </CSSTransition>
                 ))}
+            {selectedCategoryName === '검색된 링크 카드 목록' &&
+              postcards.map((postcard) => (
+                <CSSTransition
+                  key={postcard.postId}
+                  timeout={300}
+                  classNames="postcard"
+                >
+                  <Grid item>
+                    <PostCard
+                      key={postcard.postId}
+                      id={postcard.postId}
+                      title={postcard.title}
+                      url={postcard.url}
+                      description={postcard.memo}
+                      categoryName={postcard.categoryName}
+                      categoryId={postcard.categoryId}
+                      bookmark={postcard.bookmark}
+                      nickname={postcard.nickname}
+                      storeFileName={postcard.storeFileName}
+                      onDelete={handleDelete}
+                      creationTime={postcard.updatedAt}
+                    />
+                  </Grid>
+                </CSSTransition>
+              ))}
             {/* 북마크 조회는 전체 카테고리에 대해서 리스트를 뽑아옴 */}
             {selectedCategoryName === 'bookmark' &&
               postcards.map((postcard) => (

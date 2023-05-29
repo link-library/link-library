@@ -358,3 +358,28 @@ export const getPostDataBySort = async (page, categoryId, sort) => {
     return result.message;
   }
 };
+
+export const getPostDataByKeyword = async (page, keyword) => {
+  try {
+    const accessToken = localStorage.getItem('accessToken');
+
+    const response = await instance.get(
+      `/posts?keyword=${keyword}&page=${page}`,
+      {
+        headers: {
+          Authorization: accessToken,
+        },
+      }
+    );
+
+    const result = response.data;
+    return {
+      message: result.message,
+      postData: result.data.postDtoList.content,
+      totalPostAmount: result.data.total,
+    };
+  } catch (error) {
+    const result = error.response.data;
+    return result.message;
+  }
+};

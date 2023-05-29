@@ -36,6 +36,11 @@ export const selectedSortTypeState = atom({
   default: 'byDate',
 });
 
+export const searchPostByKeywordState = atom({
+  key: 'searchPostByKeywordState',
+  default: '',
+});
+
 export const userState = atom({
   // 현재 로그인된 유저 정보
   key: 'userState',

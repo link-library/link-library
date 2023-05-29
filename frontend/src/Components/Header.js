@@ -10,6 +10,14 @@ import FavoriteChecker from '../images/FavoriteChecker.png';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Grid } from '@mui/material';
 import SearchTab from './SearchTab';
+import { getLikePostData } from '../Pages/Async';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import {
+  postDataState,
+  selectedCategoryIdState,
+  selectedCategoryNameState,
+  totalPostAmountBySelectedCategoryState,
+} from '../atoms';
 
 const MenuButton = ({ onClick }) => {
   return (
@@ -49,8 +57,37 @@ const ThemeToggleButton = () => {
 };
 
 const FavoriteButton = ({ onClick }) => {
+  const [postData, setPostData] = useRecoilState(postDataState);
+  const setTotalPostAmount = useSetRecoilState(
+    totalPostAmountBySelectedCategoryState
+  );
+  const setSelectedCategoryName = useSetRecoilState(selectedCategoryNameState);
+  const [selectedCategoryId, setSelectedCategoryId] = useRecoilState(
+    selectedCategoryIdState
+  );
+
+  const handleClick = async () => {
+    const { message, postData, totalPostAmount } = await getLikePostData(0);
+    if (message === '찜목록 or 전체페이지 조회 완료') {
+      console.log(`totalPostAmount: ${totalPostAmount}`);
+      setPostData(postData);
+      setTotalPostAmount(totalPostAmount);
+      setSelectedCategoryName('bookmark');
+      setSelectedCategoryId(-1);
+    }
+  };
+
+  const handleFavoriteButtonStyle =
+    selectedCategoryId === -1
+      ? { backgroundColor: '#D0EBFF', borderRadius: '8px', padding: '8px' }
+      : {};
+
   return (
-    <IconButton onClick={onClick} aria-label="favorite">
+    <IconButton
+      onClick={handleClick}
+      aria-label="favorite"
+      style={handleFavoriteButtonStyle}
+    >
       <img src={FavoriteChecker} alt="Favorite" style={{ width: '30px' }} />
     </IconButton>
   );

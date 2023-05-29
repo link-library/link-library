@@ -5,6 +5,7 @@ import {
   postPageState,
   selectedCategoryIdState,
   selectedCategoryNameState,
+  selectedSortTypeState,
   totalPostAmountBySelectedCategoryState,
 } from '../atoms';
 import FilterTab from './FilterTab';
@@ -19,7 +20,12 @@ import {
 import { PostCard } from './PostCard';
 import '../Animations/postcard-transitions.css';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
-import { getPostDataBySelectedCategory, postDelete } from '../Pages/Async';
+import {
+  getLikePostData,
+  getPostDataBySelectedCategory,
+  getPostDataBySort,
+  postDelete,
+} from '../Pages/Async';
 import { useEffect, useState } from 'react';
 
 export const MainComponent = () => {
@@ -34,9 +40,19 @@ export const MainComponent = () => {
   const isSidebarOpen = useRecoilValue(isSidebarOpenState);
 
   const [postcards, setPostcards] = useRecoilState(postDataState);
-  const totalPostAmountBySelectedCategory = useRecoilValue(
-    totalPostAmountBySelectedCategoryState
-  );
+  const [totalPostAmountBySelectedCategory, setTotalPostAmount] =
+    useRecoilState(totalPostAmountBySelectedCategoryState);
+
+  const getPostByCategory = async (categoryId) => {
+    // 선택된 카테고리 id와 이름 변경 핸들러
+    const { message, postData, totalPostAmount } =
+      await getPostDataBySelectedCategory(categoryId, 0);
+    if (message === '카테고리별 게시글 조회 완료') {
+      console.log(`포스트 삭제후 해당 카테고리 포스트 개수 로드 완료`);
+      console.log(`포스트 개수: ${totalPostAmount}`);
+      setTotalPostAmount(totalPostAmount);
+    }
+  };
 
   const handleDelete = async (id) => {
     console.log(id);
@@ -45,6 +61,7 @@ export const MainComponent = () => {
     if (message === '포스트 삭제 완료') {
       console.log(message);
       setPostcards(postcards.filter((postcard) => postcard.postId !== id));
+      getPostByCategory(selectedCategoryId);
     }
   };
 
@@ -74,13 +91,32 @@ export const MainComponent = () => {
   };
 
   const [page, setPage] = useRecoilState(postPageState);
+  const selectedSortType = useRecoilValue(selectedSortTypeState);
   const loadMorePostData = async () => {
-    const { message, postData, totalPostAmount } =
-      await getPostDataBySelectedCategory(selectedCategoryId, page);
-    if (message === '카테고리별 게시글 조회 완료') {
-      console.log(`page=${page}, 추가 포스트 데이터 로드 완료`);
-      setPage(page + 1);
-      setPostcards((prevPostData) => [...prevPostData, ...postData]);
+    // 포스트 더보기 버튼 눌렀을 때 불러올 데이터
+    if (selectedCategoryName === 'bookmark') {
+      // 북마크 조회 클릭된 경우
+      const { message, postData, totalPostAmount } = await getLikePostData(
+        page
+      );
+      if (message === '찜목록 or 전체페이지 조회 완료') {
+        console.log(`totalPostAmount: ${totalPostAmount}`);
+        setPostcards((prevPostData) => [...prevPostData, ...postData]);
+        setTotalPostAmount(totalPostAmount);
+      }
+    } else {
+      // 단순 카테고리 소속 추가 포스트 정보 불러오기
+      const { message, postData, totalPostAmount } = await getPostDataBySort(
+        page,
+        selectedCategoryId,
+        selectedSortType
+      );
+      if (message === '카테고리별 게시글 조회 완료') {
+        console.log(`page=${page}, 추가 포스트 데이터 로드 완료`);
+        setPage(page + 1);
+        setPostcards((prevPostData) => [...prevPostData, ...postData]);
+        setTotalPostAmount(totalPostAmount);
+      }
     }
   };
 
@@ -104,7 +140,9 @@ export const MainComponent = () => {
         }}
       >
         <Typography variant="h4" component="h4" sx={{ paddingTop: '20px' }}>
-          {selectedCategoryName}
+          {selectedCategoryName === 'bookmark'
+            ? '전체 북마크 링크 목록'
+            : selectedCategoryName}
         </Typography>
         <Typography>
           총 링크 카드 수: {totalPostAmountBySelectedCategory}개
@@ -131,11 +169,38 @@ export const MainComponent = () => {
           }}
         >
           <TransitionGroup component={null}>
-            {postcards
-              .filter(
-                (postcard) => postcard.categoryName === selectedCategoryName
-              )
-              .map((postcard) => (
+            {selectedCategoryName !== 'bookmark' &&
+              postcards
+                .filter(
+                  (postcard) => postcard.categoryName === selectedCategoryName
+                )
+                .map((postcard) => (
+                  <CSSTransition
+                    key={postcard.postId}
+                    timeout={300}
+                    classNames="postcard"
+                  >
+                    <Grid item>
+                      <PostCard
+                        key={postcard.postId}
+                        id={postcard.postId}
+                        title={postcard.title}
+                        url={postcard.url}
+                        description={postcard.memo}
+                        categoryName={postcard.categoryName}
+                        categoryId={postcard.categoryId}
+                        bookmark={postcard.bookmark}
+                        nickname={postcard.nickname}
+                        storeFileName={postcard.storeFileName}
+                        onDelete={handleDelete}
+                        creationTime={postcard.updatedAt}
+                      />
+                    </Grid>
+                  </CSSTransition>
+                ))}
+            {/* 북마크 조회는 전체 카테고리에 대해서 리스트를 뽑아옴 */}
+            {selectedCategoryName === 'bookmark' &&
+              postcards.map((postcard) => (
                 <CSSTransition
                   key={postcard.postId}
                   timeout={300}
@@ -160,7 +225,11 @@ export const MainComponent = () => {
                 </CSSTransition>
               ))}
           </TransitionGroup>
-          <Button onClick={loadMorePostData}>링크 카드 목록 불러오기</Button>
+          <Button onClick={loadMorePostData}>
+            {totalPostAmountBySelectedCategory === 0
+              ? '+버튼을 눌러 링크 카드를 생성할 수 있습니다.'
+              : 'more...'}
+          </Button>
         </Grid>
       </Box>
     </Box>

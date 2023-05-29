@@ -281,13 +281,42 @@ export const getPostDataBySelectedCategory = async (categoryId, page) => {
   }
 };
 
-// export const getLikePostData = async () => {
+export const getLikePostData = async (page) => {
+  try {
+    const accessToken = localStorage.getItem('accessToken');
+    const response = await instance.get(
+      `/posts?bookmark=${true}&page=${page}`,
+      {
+        headers: {
+          Authorization: accessToken,
+        },
+      }
+    );
+
+    const result = response.data;
+    return {
+      message: result.message,
+      postData: result.data.postDtoList.content,
+      totalPostAmount: result.data.total,
+    };
+  } catch (error) {
+    const result = error.response.data;
+    return result.message;
+  }
+};
+
+// export const getPostDataByTitle = async (page, bookmark) => {
 //   try {
 //     const accessToken = localStorage.getItem('accessToken');
-//     const response = await instance.get('/posts', {
-//       {
-//         bookmark: true,
-//       },
+//     let endpoint = '';
+
+//     if (bookmark) {
+//       endpoint = `/posts?bookmark=true&page=${page}`;
+//     } else {
+//       endpoint = `/posts?sort=byTitle&page=${page}`;
+//     }
+
+//     const response = await instance.get(endpoint, {
 //       headers: {
 //         Authorization: accessToken,
 //       },
@@ -296,11 +325,36 @@ export const getPostDataBySelectedCategory = async (categoryId, page) => {
 //     const result = response.data;
 //     return {
 //       message: result.message,
-//       categoryData: result.data.categoryDtoList,
 //       postData: result.data.postDtoList.content,
+//       totalPostAmount: result.data.total,
 //     };
 //   } catch (error) {
 //     const result = error.response.data;
 //     return result.message;
 //   }
 // };
+
+export const getPostDataBySort = async (page, categoryId, sort) => {
+  try {
+    const accessToken = localStorage.getItem('accessToken');
+
+    const response = await instance.get(
+      `/posts/${categoryId}?sort=${sort}&page=${page}`,
+      {
+        headers: {
+          Authorization: accessToken,
+        },
+      }
+    );
+
+    const result = response.data;
+    return {
+      message: result.message,
+      postData: result.data.postDtoList.content,
+      totalPostAmount: result.data.total,
+    };
+  } catch (error) {
+    const result = error.response.data;
+    return result.message;
+  }
+};

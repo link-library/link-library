@@ -91,7 +91,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
     }
 
     private BooleanExpression postTitleEq(String keyword) {
-        return keyword.equals("") ? null : post.title.eq(keyword);
+        return keyword.equals("") ? null : post.title.containsIgnoreCase(keyword);
     }
 
     private BooleanExpression userIdEq(Long userId) {

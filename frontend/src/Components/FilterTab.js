@@ -3,8 +3,17 @@ import AddIcon from '@mui/icons-material/Add';
 import { Box, Grid, IconButton, Menu, MenuItem } from '@mui/material';
 import { useState } from 'react';
 import AddWebsiteDialog from './AddWebsiteDialog';
-import { categoryDataState } from '../atoms';
-import { useRecoilValue } from 'recoil';
+import {
+  categoryDataState,
+  postDataState,
+  postPageState,
+  selectedCategoryIdState,
+  selectedCategoryNameState,
+  selectedSortTypeState,
+  totalPostAmountBySelectedCategoryState,
+} from '../atoms';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { getPostDataBySort } from '../Pages/Async';
 
 const FilterOptions = ({ anchorEl, handleClose }) => {
   // 필터 옵션 설정
@@ -33,13 +42,43 @@ const FilterOptions = ({ anchorEl, handleClose }) => {
 
 const FilterTab = () => {
   const [anchorEl, setAnchorEl] = useState(null); // 필터 메뉴 객체 관리 스테이트
+  const [selectedFilter, setSelectedFilter] = useState('');
+  const selectedCategoryName = useRecoilValue(selectedCategoryNameState);
+  const selectedCategoryId = useRecoilValue(selectedCategoryIdState);
+  const [postcards, setPostcards] = useRecoilState(postDataState);
+  const setTotalPostAmount = useSetRecoilState(
+    totalPostAmountBySelectedCategoryState
+  );
 
+  const setSortType = useSetRecoilState(selectedSortTypeState);
+  const [page, setPage] = useRecoilState(postPageState);
   const handleClick = (event) => {
     setAnchorEl({ top: event.clientY, left: event.clientX });
   };
 
-  const handleClose = (event) => {
+  const handleClose = async (event) => {
+    // 필터 항목 선택시 동작
+
+    const filterValue = event.target.innerText;
+    setSelectedFilter(filterValue);
     setAnchorEl(null);
+    console.log('Selected filter:', filterValue);
+    let sort = '';
+    if (filterValue === '이름순') sort = 'byTitle';
+    else if (filterValue === '최근 생성순') sort = 'byDate';
+    console.log(sort);
+    const { message, postData, totalPostAmount } = await getPostDataBySort(
+      0,
+      selectedCategoryId,
+      sort
+    );
+    if (message === '카테고리별 게시글 조회 완료') {
+      console.log(`${sort} 방식으로 포스트 데이터 불러오기 완료`);
+      setPostcards(postData);
+      setTotalPostAmount(totalPostAmount);
+      setSortType(sort);
+      setPage(1);
+    }
   };
 
   const [AddWebsiteDialogOpen, setAddWebsiteDialogOpen] = useState(false); // 웹 사이트 추가 팝업창 상태 관리

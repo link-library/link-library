@@ -29,6 +29,7 @@ import {
   postDelete,
 } from '../Pages/Async';
 import { useEffect, useState } from 'react';
+import UserInfoComponent from './UserInfoComponent';
 
 export const MainComponent = () => {
   const theme = useTheme();
@@ -160,12 +161,16 @@ export const MainComponent = () => {
             ? '전체 북마크 링크 목록'
             : selectedCategoryName}
         </Typography>
-        {totalPostAmountBySelectedCategory !== undefined && (
-          <Typography>
-            {`총 링크 카드 수: ${totalPostAmountBySelectedCategory}`}
-          </Typography>
-        )}
-        <FilterTab />
+        {selectedCategoryName !== '프로필' &&
+          totalPostAmountBySelectedCategory !== undefined && (
+            <>
+              <Typography>
+                {`총 링크 카드 수: ${totalPostAmountBySelectedCategory}`}
+              </Typography>
+              <FilterTab />
+            </>
+          )}
+        {selectedCategoryName === '프로필' && <UserInfoComponent />}
       </Box>
       <Box
         sx={{
@@ -268,13 +273,14 @@ export const MainComponent = () => {
                 </CSSTransition>
               ))}
           </TransitionGroup>
-          {totalPostAmountBySelectedCategory !== undefined && (
-            <Button onClick={loadMorePostData}>
-              {totalPostAmountBySelectedCategory === 0
-                ? '+버튼을 눌러 링크 카드를 생성할 수 있습니다.'
-                : 'more...'}
-            </Button>
-          )}
+          {selectedCategoryName !== '프로필' &&
+            totalPostAmountBySelectedCategory !== undefined && (
+              <Button onClick={loadMorePostData}>
+                {totalPostAmountBySelectedCategory === 0
+                  ? '+버튼을 눌러 링크 카드를 생성할 수 있습니다.'
+                  : 'more...'}
+              </Button>
+            )}
         </Grid>
       </Box>
     </Box>

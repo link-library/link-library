@@ -10,14 +10,16 @@ import FavoriteChecker from '../images/FavoriteChecker.png';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Grid } from '@mui/material';
 import SearchTab from './SearchTab';
-import { getLikePostData } from '../Pages/Async';
+import { getLikePostData, getUserInfo } from '../Pages/Async';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import {
   postDataState,
   selectedCategoryIdState,
   selectedCategoryNameState,
   totalPostAmountBySelectedCategoryState,
+  userInfoState,
 } from '../atoms';
+import { useNavigate } from 'react-router-dom';
 
 const MenuButton = ({ onClick }) => {
   return (
@@ -94,8 +96,40 @@ const FavoriteButton = ({ onClick }) => {
 };
 
 const ProfileButton = ({ onClick }) => {
+  const setSelectedCategoryName = useSetRecoilState(selectedCategoryNameState);
+  const [selectedCategoryId, setSelectedCategoryId] = useRecoilState(
+    selectedCategoryIdState
+  );
+  const setUserInfo = useSetRecoilState(userInfoState);
+
+  const handleProfileButtonClick = async () => {
+    const { message, nickname, totalPost, storeFileName } = await getUserInfo();
+    if (message === '마이페이지 조회 완료') {
+      console.log(`nickname: ${nickname}`);
+      console.log(`totalPost: ${totalPost}`);
+      console.log(`storeFileName: ${storeFileName}`);
+
+      setUserInfo({
+        nickname: nickname,
+        totalPost: totalPost,
+        storeFileName: storeFileName,
+      });
+      setSelectedCategoryName('프로필');
+      setSelectedCategoryId(-3);
+    }
+  };
+
+  const handleProfileButtonStyle =
+    selectedCategoryId === -3
+      ? { backgroundColor: '#D0EBFF', borderRadius: '8px', padding: '8px' }
+      : {};
+
   return (
-    <IconButton onClick={onClick} aria-label="profile">
+    <IconButton
+      onClick={handleProfileButtonClick}
+      aria-label="profile"
+      style={handleProfileButtonStyle}
+    >
       <AccountCircleIcon sx={{ fontSize: '30px' }} />
     </IconButton>
   );
@@ -114,6 +148,13 @@ export const Header = ({ handleLogout: handleLogoutProp, handleMenuClick }) => {
     handleLogoutProp();
   };
 
+  const navigate = useNavigate();
+
+  const handleLogoClick = () => {
+    navigate('/', { replace: true });
+    window.location.reload();
+  };
+
   return (
     <header
       style={{
@@ -124,6 +165,7 @@ export const Header = ({ handleLogout: handleLogoutProp, handleMenuClick }) => {
       }}
     >
       <Logo
+        onClick={handleLogoClick}
         src={LinkLibraryLogo}
         alt="Link Library Logo"
         style={{
@@ -131,6 +173,7 @@ export const Header = ({ handleLogout: handleLogoutProp, handleMenuClick }) => {
           left: '10px',
           width: '200px',
           height: '40px',
+          cursor: 'pointer',
         }}
       />
       <MenuButton onClick={handleMenuClick} />

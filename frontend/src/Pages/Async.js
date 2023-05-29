@@ -383,3 +383,26 @@ export const getPostDataByKeyword = async (page, keyword) => {
     return result.message;
   }
 };
+
+export const getUserInfo = async () => {
+  try {
+    const accessToken = localStorage.getItem('accessToken');
+
+    const response = await instance.get('/user-info', {
+      headers: {
+        Authorization: accessToken,
+      },
+    });
+
+    const result = response.data;
+    return {
+      message: result.message,
+      nickname: result.data.nickname,
+      totalPost: result.data.totalPost,
+      storeFileName: result.data.storeFileName,
+    };
+  } catch (error) {
+    const result = error.response.data;
+    return result.message;
+  }
+};

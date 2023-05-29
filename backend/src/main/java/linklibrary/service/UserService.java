@@ -91,4 +91,14 @@ public class UserService {
     public void delete(Long userId) {
         userRepository.deleteById(userId);
     }
+
+    /**
+     * 닉네임 변경
+     */
+    public String updateNickname(String nickname, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("유저 엔티티가 없습니다"));
+        user.setNickname(nickname);
+        return user.getNickname();
+    }
 }

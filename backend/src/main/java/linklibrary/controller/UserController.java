@@ -99,6 +99,18 @@ public class UserController {
     }
 
     /**
+     * 닉네임 변경
+     */
+    @ApiOperation(value = "닉네임 변경", notes = "닉네임은 최대 8글자까지 가능합니다.")
+    @PutMapping("/nickname")
+    public ResponseEntity<?> updateNickname(@Valid @RequestBody ValidateNicknameForm validateNicknameForm,
+                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        userService.validNickname(validateNicknameForm.getNickname());
+        String updateNickname = userService.updateNickname(validateNicknameForm.getNickname(), principalDetails.getUserDto().getUserId());
+        return ResponseEntity.ok(new ResponseData("닉네임 업데이트 완료", updateNickname));
+    }
+
+    /**
      * 회원 프로필 이미지 업로드
      */
     @PostMapping(path = "/profileImg", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -142,6 +154,8 @@ public class UserController {
                 .contentType(MediaType.IMAGE_JPEG) //메서드는 응답 바디의 타입을 image/jpeg 로 설정
                 .body(imageBytes);
     }
+
+
 
     @DeleteMapping("delete-user")
     public ResponseEntity<?> delete(@AuthenticationPrincipal PrincipalDetails principalDetails) {

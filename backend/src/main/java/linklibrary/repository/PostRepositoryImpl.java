@@ -81,7 +81,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
 
     private OrderSpecifier postOrderBy(String sort) {
         if(sort.equals("byDate")) return post.createdAt.desc();
-        else if(sort.equals("byTitle")) return post.title.desc();
+        else if(sort.equals("byTitle")) return post.title.asc();
         return null;
     }
 

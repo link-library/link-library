@@ -160,9 +160,11 @@ export const MainComponent = () => {
             ? '전체 북마크 링크 목록'
             : selectedCategoryName}
         </Typography>
-        <Typography>
-          총 링크 카드 수: {totalPostAmountBySelectedCategory}개
-        </Typography>
+        {totalPostAmountBySelectedCategory !== undefined && (
+          <Typography>
+            {`총 링크 카드 수: ${totalPostAmountBySelectedCategory}`}
+          </Typography>
+        )}
         <FilterTab />
       </Box>
       <Box
@@ -266,11 +268,13 @@ export const MainComponent = () => {
                 </CSSTransition>
               ))}
           </TransitionGroup>
-          <Button onClick={loadMorePostData}>
-            {totalPostAmountBySelectedCategory === 0
-              ? '+버튼을 눌러 링크 카드를 생성할 수 있습니다.'
-              : 'more...'}
-          </Button>
+          {totalPostAmountBySelectedCategory !== undefined && (
+            <Button onClick={loadMorePostData}>
+              {totalPostAmountBySelectedCategory === 0
+                ? '+버튼을 눌러 링크 카드를 생성할 수 있습니다.'
+                : 'more...'}
+            </Button>
+          )}
         </Grid>
       </Box>
     </Box>

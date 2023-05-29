@@ -16,6 +16,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import SortableListItem from './SortableListItem';
 import NewCategoryInput from './NewCategoryInput';
 import { categoryCreate, categoryDelete, categoryEdit } from '../Pages/Async';
+import { useNavigate } from 'react-router-dom';
 
 export const SortableList = ({
   root,
@@ -28,7 +29,7 @@ export const SortableList = ({
   setSelectedCategoryName,
 }) => {
   const [editingCategoryId, setEditingCategoryId] = useState(null); // 편집 중인 카테고리를 추적
-
+  const navigate = useNavigate();
   const sensors = useSensors(
     // 드래그 센서. 250ms만큼 누르고 있어야 드래그 가능해짐.
     useSensor(PointerSensor, {
@@ -85,6 +86,7 @@ export const SortableList = ({
     // 편집된 카테고리 값을 db에 적용.
     const newName = event.target.textContent.trim();
     const msg = await categoryEdit(newName, categoryId);
+
     if (msg === '카테고리 수정 완료') {
       console.log('카테고리 수정 완료');
     }
@@ -107,6 +109,7 @@ export const SortableList = ({
       // updateUserCategories(newUserCategories);
       setEditingCategoryId(null);
       setSelectedCategoryName(newName);
+      navigate('/', { replace: true });
       window.location.reload();
     }
   };
@@ -142,6 +145,8 @@ export const SortableList = ({
           : root
       )
     );
+    navigate('/', { replace: true });
+    window.location.reload();
   };
 
   const handleCreateNewCategory = async (newCategoryName, rootId) => {

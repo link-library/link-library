@@ -142,12 +142,12 @@ export const isCreatingNewCategoryState = atom({
 
 export const selectedCategoryNameState = atom({
   key: 'selectedCategoryNameState',
-  default: '헤더 테스트',
+  default: '',
 });
 
 export const selectedCategoryIdState = atom({
   key: 'selectedCategoryIdState',
-  default: '헤더 테스트',
+  default: '',
 });
 
 export const activeCategoryPostsAtom = atom({

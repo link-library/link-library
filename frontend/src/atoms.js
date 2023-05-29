@@ -161,3 +161,8 @@ export const totalPostAmountBySelectedCategoryState = atom({
   key: 'totalPostAmountBySelectedCategory',
   default: 0,
 });
+
+export const userInfoState = atom({
+  key: 'userInfoState',
+  default: [],
+});

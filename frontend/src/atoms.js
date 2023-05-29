@@ -31,6 +31,11 @@ export const postPageState = atom({
   default: 1,
 });
 
+export const selectedSortTypeState = atom({
+  key: 'selectedSortTypeState',
+  default: 'byDate',
+});
+
 export const userState = atom({
   // 현재 로그인된 유저 정보
   key: 'userState',

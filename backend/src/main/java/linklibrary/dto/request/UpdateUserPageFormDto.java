@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.Pattern;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,9 +22,9 @@ public class UpdateUserPageFormDto {
 
     //    @Schema(title = "유저가 저장한 파일이름", description = "...")
 //    private String storeFileName; //저장된 파일 이름.
-    @Schema(title = "유저 패스워드", description = "abcdefg1!")
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,16}$",
+            message = "비밀번호는 8~16자리수여야 합니다. 영문 대소문자, 숫자, 특수문자를 1개 이상 포함해야 합니다.")
     private String password;
 
-    private MultipartFile profileImg;
 
 }

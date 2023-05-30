@@ -1,11 +1,10 @@
 package linklibrary.service;
 
 import linklibrary.dto.request.JoinFormDto;
+import linklibrary.dto.request.UpdateUserPageFormDto;
 import linklibrary.dto.response.UserPageDto;
 import linklibrary.entity.Role;
 import linklibrary.entity.User;
-import linklibrary.mapper.User.JoinMapper;
-import linklibrary.mapper.User.UserPageMapper;
 import linklibrary.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -87,6 +86,28 @@ public class UserService {
                 .build();
         return userPageDto;
     }
+/////////////////////////////////////////////2022 - 05 -30
+    // 마이페이지 수정
+    public UserPageDto change(Long userId, UpdateUserPageFormDto formDto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("유저 엔티티가 없습니다"));
+        Integer totalPost = postService.findTotalPostNumberByUser(userId);
+
+        user.setNickname(formDto.getNickname());
+        user.setPassword(formDto.getPassword());
+        getUserPage(userId);
+
+        String storeFileName =
+                (user.getProfileImg() != null) ? user.getProfileImg().getStoreFileName() : null;
+        UserPageDto userPageDto = UserPageDto.builder()
+                .userId(user.getId())
+                .nickname(user.getNickname())
+                .storeFileName(storeFileName)
+                .totalPost(totalPost)
+                .build();
+        return userPageDto;
+    }
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void delete(Long userId) {
         userRepository.deleteById(userId);

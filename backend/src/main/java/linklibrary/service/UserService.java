@@ -93,19 +93,34 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("유저 엔티티가 없습니다"));
         Integer totalPost = postService.findTotalPostNumberByUser(userId);
 
-        user.setNickname(formDto.getNickname());
-        user.setPassword(formDto.getPassword());
-        getUserPage(userId);
+        if(formDto.getPassword() ==null) {
+            user.setNickname(formDto.getNickname());
+            getUserPage(userId);
 
-        String storeFileName =
-                (user.getProfileImg() != null) ? user.getProfileImg().getStoreFileName() : null;
-        UserPageDto userPageDto = UserPageDto.builder()
-                .userId(user.getId())
-                .nickname(user.getNickname())
-                .storeFileName(storeFileName)
-                .totalPost(totalPost)
-                .build();
-        return userPageDto;
+            String storeFileName =
+                    (user.getProfileImg() != null) ? user.getProfileImg().getStoreFileName() : null;
+            UserPageDto userPageDto = UserPageDto.builder()
+                    .userId(user.getId())
+                    .nickname(user.getNickname())
+                    .storeFileName(storeFileName)
+                    .totalPost(totalPost)
+                    .build();
+            return userPageDto;
+        }else {
+            user.setNickname(formDto.getNickname());
+            user.setPassword(formDto.getPassword());
+            getUserPage(userId);
+
+            String storeFileName =
+                    (user.getProfileImg() != null) ? user.getProfileImg().getStoreFileName() : null;
+            UserPageDto userPageDto = UserPageDto.builder()
+                    .userId(user.getId())
+                    .nickname(user.getNickname())
+                    .storeFileName(storeFileName)
+                    .totalPost(totalPost)
+                    .build();
+            return userPageDto;
+        }
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 

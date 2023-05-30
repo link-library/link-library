@@ -163,6 +163,7 @@ const ProfileImgSection = () => {
   const [selectedImageFinal, setSelectedImageFinal] =
     useRecoilState(selectedUserImg);
   const [selectedImage, setSelectedImage] = useState(selectedImageFinal);
+  const [selectedOriginImg, setSelectedOriginImg] = useState(null);
 
   const handleImgClick = () => {
     fileInputRef.current.click();
@@ -171,20 +172,17 @@ const ProfileImgSection = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setSelectedImage(URL.createObjectURL(file));
-    setSelectedImageFinal(file);
+    setSelectedOriginImg(file);
     console.log(file);
   };
 
   const handleEditProfileImg = async () => {
     // 프로필 이미지 최종 변경 버튼
-    const { message, imgName } = await EditProfileImg(selectedImageFinal);
+    const { message, imgName } = await EditProfileImg(selectedOriginImg);
     console.log(message); // or handle the response as required
     if (message === '이미지 업로드 완료') {
       alert(message);
-      setSelectedImageFinal({
-        selectedImage: selectedImage,
-        imgName: imgName,
-      });
+      setSelectedImageFinal(selectedImage);
       //깔끔하게 리다이렉트 ㄱㄱ
     }
   };

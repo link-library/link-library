@@ -86,14 +86,15 @@ public class UserService {
                 .build();
         return userPageDto;
     }
-/////////////////////////////////////////////2022 - 05 -30
+
+    /////////////////////////////////////////////2022 - 05 -30
     // 마이페이지 수정
     public UserPageDto change(Long userId, UpdateUserPageFormDto formDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("유저 엔티티가 없습니다"));
         Integer totalPost = postService.findTotalPostNumberByUser(userId);
 
-        if(formDto.getPassword() ==null) {
+        if (formDto.getNickname() != null && formDto.getPassword() == null) { //Nickname만 받을경우
             user.setNickname(formDto.getNickname());
             getUserPage(userId);
             String storeFileName =
@@ -103,9 +104,9 @@ public class UserService {
                     .nickname(user.getNickname())
                     .storeFileName(storeFileName)
                     .totalPost(totalPost)
-                    .build();
+                    .build(); //formDto.getPassword()!=null && formDto.getPassword()==null
             return userPageDto;
-        }else {
+        } else {
             user.setPassword(formDto.getPassword());
             getUserPage(userId);
 
@@ -120,6 +121,8 @@ public class UserService {
             return userPageDto;
         }
     }
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void delete(Long userId) {

@@ -98,9 +98,14 @@ export const RegistrationPage = () => {
 
     if (
       msg === '이미 사용중인 닉네임 입니다.' ||
-      msg === '닉네임은 8글자 이하로 작성해 주세요.'
+      msg ===
+        'Request processing failed; nested exception is org.springframework.dao.IncorrectResultSizeDataAccessException: query did not return a unique result: 2; nested exception is javax.persistence.NonUniqueResultException: query did not return a unique result: 2'
     ) {
       // 닉네임 중복 체크 or 조건 만족 확인
+      alert('이미 사용중인 닉네임입니다.');
+      setUserNameCheck(false);
+      return;
+    } else if (msg === '닉네임은 8글자 이하로 작성해 주세요.') {
       alert(msg);
       setUserNameCheck(false);
       return;

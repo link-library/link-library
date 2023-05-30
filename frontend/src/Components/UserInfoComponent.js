@@ -4,6 +4,9 @@ import { userInfoState } from '../atoms';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import LayersIcon from '@mui/icons-material/Layers';
+import { useEffect, useState } from 'react';
+import { EditUserNickname } from '../Pages/Async';
+import { useNavigate } from 'react-router-dom';
 
 const AccountInfoSection = () => {
   return (
@@ -23,19 +26,50 @@ const RecordInfoSection = () => {
   );
 };
 
-const NicknameChangeSection = ({ nickname }) => {
+const NicknameChangeSection = () => {
+  const navigate = useNavigate();
+  const prevNickname = useRecoilValue(userInfoState);
+  const [nickname, setNickname] = useState(prevNickname.nickname);
+
+  const handleNicknameChangeBtn = async () => {
+    console.log(nickname);
+    if (nickname === '') {
+      alert('변경할 닉네임을 입력한 후 변경 버튼을 눌러주세요.');
+      return;
+    } else if (nickname.length >= 9) {
+      alert('닉네임은 8글자 이하로 작성해 주세요.');
+      return;
+    } else if (nickname === prevNickname.nickname) {
+      alert('현재 사용중인 닉네임입니다.');
+    } else {
+      const { message, newNickname } = await EditUserNickname(nickname);
+      if (message === '마이페이지 수정 완료') {
+        alert(message);
+        // navigate('/', { replace: true });
+        // window.location.reload();
+      } else if (message === '이미 존재하는 닉네임입니다.') {
+        alert(message);
+        return;
+      } else {
+        console.log('WTF?');
+      }
+    }
+  };
+
   return (
     <Box sx={{ margin: '50px' }}>
       <Typography variant="h6">닉네임 변경</Typography>
       <Box sx={{ display: 'flex', alignItems: 'center', marginTop: '30px' }}>
         <TextField
-          defaultValue={nickname}
+          defaultValue={prevNickname.nickname}
           variant="outlined"
           size="small"
           sx={{ backgroundColor: 'white' }}
+          onChange={(e) => setNickname(e.target.value)}
         />
         <Button
           variant="outlined"
+          onClick={handleNicknameChangeBtn}
           sx={{
             marginLeft: '10px',
             width: '80px',
@@ -107,7 +141,7 @@ const UserInfoComponent = () => {
         }}
       >
         <Box>
-          <NicknameChangeSection nickname={nickname.nickname} />
+          <NicknameChangeSection />
           <PasswordChangeSection />
         </Box>
         <Box sx={{ margin: '50px', position: 'relative' }}>

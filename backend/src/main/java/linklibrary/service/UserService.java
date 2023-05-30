@@ -3,6 +3,7 @@ package linklibrary.service;
 import linklibrary.dto.request.JoinFormDto;
 import linklibrary.dto.request.UpdateUserPageFormDto;
 import linklibrary.dto.response.UserPageDto;
+import linklibrary.entity.Post;
 import linklibrary.entity.Role;
 import linklibrary.entity.User;
 import linklibrary.repository.UserRepository;
@@ -89,12 +90,17 @@ public class UserService {
 
     /////////////////////////////////////////////2022 - 05 -30
     // 마이페이지 수정
-    public UserPageDto change(Long userId, UpdateUserPageFormDto formDto) {
+    public UserPageDto change(Long userId, UpdateUserPageFormDto formDto)  {
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("유저 엔티티가 없습니다"));
+
         Integer totalPost = postService.findTotalPostNumberByUser(userId);
 
         if (formDto.getNickname() != null && formDto.getPassword() == null) { //Nickname만 받을경우
+            if(user.getNickname().equals(formDto.getNickname())) {
+                throw new IllegalStateException("이미 존재하는 닉네임입니다.");
+            }
             user.setNickname(formDto.getNickname());
             getUserPage(userId);
             String storeFileName =

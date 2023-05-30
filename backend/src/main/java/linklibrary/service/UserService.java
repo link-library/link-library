@@ -96,7 +96,6 @@ public class UserService {
         if(formDto.getPassword() ==null) {
             user.setNickname(formDto.getNickname());
             getUserPage(userId);
-
             String storeFileName =
                     (user.getProfileImg() != null) ? user.getProfileImg().getStoreFileName() : null;
             UserPageDto userPageDto = UserPageDto.builder()
@@ -107,7 +106,6 @@ public class UserService {
                     .build();
             return userPageDto;
         }else {
-            user.setNickname(formDto.getNickname());
             user.setPassword(formDto.getPassword());
             getUserPage(userId);
 

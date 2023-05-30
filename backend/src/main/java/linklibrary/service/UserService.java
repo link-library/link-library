@@ -113,6 +113,9 @@ public class UserService {
                     .build(); //formDto.getPassword()!=null && formDto.getPassword()==null
             return userPageDto;
         } else {
+            if(user.getPassword().equals(formDto.getPassword())) {
+                throw new IllegalStateException("중복된 비밀번호 입니다.");
+            }
             user.setPassword(formDto.getPassword());
             getUserPage(userId);
 

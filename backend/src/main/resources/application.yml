@@ -33,7 +33,8 @@ logging.level:
   org.hibernate.SQL: trace # 디버그 모드로 sql 출력
 
 file:
-  dir: C:/Users/김진수/link-library/
+#  dir: C:/Users/김진수/link-library/ 19진수 경로
+  dir: C:\Users\astar\linkLibraryImages/
 
 jwt:
   secret: gsgsefzsefesgazseffzsefgzsgzsfafaesfaesgaseasdgasfasegsegsgasefsegzsegfasefaegaefsefsegasezds

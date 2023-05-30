@@ -12,8 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Schema(title = "유저 수정 마이페이지 응답", description = "유저 수정 마이페이지 응답")
 public class UpdateUserPageFormDto {
-    @Schema(title = "유저 ID", description = "1")
-    private Long userId;
+
 
     @Schema(title = "유저 닉네임", example = "nickname1")
     private String nickname; //닉네임

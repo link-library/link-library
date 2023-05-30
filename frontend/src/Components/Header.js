@@ -10,12 +10,13 @@ import FavoriteChecker from '../images/FavoriteChecker.png';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Grid } from '@mui/material';
 import SearchTab from './SearchTab';
-import { getLikePostData, getUserInfo } from '../Pages/Async';
+import { GetProfileImg, getLikePostData, getUserInfo } from '../Pages/Async';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import {
   postDataState,
   selectedCategoryIdState,
   selectedCategoryNameState,
+  selectedUserImg,
   totalPostAmountBySelectedCategoryState,
   userInfoState,
 } from '../atoms';
@@ -97,6 +98,7 @@ const FavoriteButton = ({ onClick }) => {
 
 const ProfileButton = ({ onClick }) => {
   const setSelectedCategoryName = useSetRecoilState(selectedCategoryNameState);
+  const setSelectedImageFinal = useSetRecoilState(selectedUserImg);
   const [selectedCategoryId, setSelectedCategoryId] = useRecoilState(
     selectedCategoryIdState
   );
@@ -114,6 +116,8 @@ const ProfileButton = ({ onClick }) => {
         totalPost: totalPost,
         storeFileName: storeFileName,
       });
+      const userImg = await GetProfileImg(storeFileName);
+      setSelectedImageFinal(userImg);
       setSelectedCategoryName('프로필');
       setSelectedCategoryId(-3);
     }

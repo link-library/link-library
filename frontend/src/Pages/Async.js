@@ -489,7 +489,7 @@ export const GetProfileImg = async (imgName) => {
     const accessToken = localStorage.getItem('accessToken');
 
     const response = await instance.get(`/images/${imgName}`, {
-      responseType: 'blob', // specify that we are expecting a stream of bytes
+      responseType: 'blob',
       headers: {
         Authorization: accessToken,
       },

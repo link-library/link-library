@@ -8,7 +8,7 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import FavoriteChecker from '../images/FavoriteChecker.png';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { Grid } from '@mui/material';
+import { Avatar, Grid } from '@mui/material';
 import SearchTab from './SearchTab';
 import { GetProfileImg, getLikePostData, getUserInfo } from '../Pages/Async';
 import { useRecoilState, useSetRecoilState } from 'recoil';
@@ -51,9 +51,33 @@ const ThemeToggleButton = () => {
   return (
     <IconButton onClick={handleThemeToggle} aria-label="toggle theme">
       {isDarkMode ? (
-        <LightModeIcon sx={{ fontSize: '30px' }} />
+        <LightModeIcon
+          sx={{
+            fontSize: '36px',
+            borderRadius: '50%',
+            padding: '3px',
+            '& > img': {
+              borderRadius: '50%',
+              width: 'calc(100% - 6px)',
+              height: 'calc(100% - 6px)',
+            },
+            boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+          }}
+        />
       ) : (
-        <DarkModeIcon sx={{ fontSize: '30px' }} />
+        <DarkModeIcon
+          sx={{
+            fontSize: '36px',
+            borderRadius: '50%',
+            padding: '3px',
+            '& > img': {
+              borderRadius: '50%',
+              width: 'calc(100% - 6px)',
+              height: 'calc(100% - 6px)',
+            },
+            boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+          }}
+        />
       )}
     </IconButton>
   );
@@ -91,36 +115,35 @@ const FavoriteButton = ({ onClick }) => {
       aria-label="favorite"
       style={handleFavoriteButtonStyle}
     >
-      <img src={FavoriteChecker} alt="Favorite" style={{ width: '30px' }} />
+      <img
+        src={FavoriteChecker}
+        alt="Favorite"
+        style={{
+          width: '40px',
+          borderRadius: '50%',
+          padding: '3px',
+          '& > img': {
+            borderRadius: '50%',
+            width: 'calc(100% - 6px)',
+            height: 'calc(100% - 6px)',
+          },
+          boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+        }}
+      />
     </IconButton>
   );
 };
 
 const ProfileButton = ({ onClick }) => {
   const setSelectedCategoryName = useSetRecoilState(selectedCategoryNameState);
-  const setSelectedImageFinal = useSetRecoilState(selectedUserImg);
+  const [selectedImg, setSelectedImageFinal] = useRecoilState(selectedUserImg);
   const [selectedCategoryId, setSelectedCategoryId] = useRecoilState(
     selectedCategoryIdState
   );
-  const setUserInfo = useSetRecoilState(userInfoState);
 
-  const handleProfileButtonClick = async () => {
-    const { message, nickname, totalPost, storeFileName } = await getUserInfo();
-    if (message === '마이페이지 조회 완료') {
-      console.log(`nickname: ${nickname}`);
-      console.log(`totalPost: ${totalPost}`);
-      console.log(`storeFileName: ${storeFileName}`);
-
-      setUserInfo({
-        nickname: nickname,
-        totalPost: totalPost,
-        storeFileName: storeFileName,
-      });
-      const userImg = await GetProfileImg(storeFileName);
-      setSelectedImageFinal(userImg);
-      setSelectedCategoryName('프로필');
-      setSelectedCategoryId(-3);
-    }
+  const handleProfileButtonClick = () => {
+    setSelectedCategoryName('프로필');
+    setSelectedCategoryId(-3);
   };
 
   const handleProfileButtonStyle =
@@ -134,7 +157,20 @@ const ProfileButton = ({ onClick }) => {
       aria-label="profile"
       style={handleProfileButtonStyle}
     >
-      <AccountCircleIcon sx={{ fontSize: '30px' }} />
+      <Avatar
+        sx={{
+          fontSize: '15px',
+          borderRadius: '50%',
+          padding: '3px',
+          '& > img': {
+            borderRadius: '50%',
+            width: 'calc(100% - 6px)',
+            height: 'calc(100% - 6px)',
+          },
+          boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+        }}
+        src={selectedImg || undefined}
+      />
     </IconButton>
   );
 };
@@ -142,7 +178,19 @@ const ProfileButton = ({ onClick }) => {
 const LogoutButton = ({ onClick }) => {
   return (
     <IconButton onClick={onClick} aria-label="logout">
-      <LogoutIcon sx={{ fontSize: '30px' }} />
+      <LogoutIcon
+        sx={{
+          fontSize: '36px',
+          borderRadius: '50%',
+          padding: '3px',
+          '& > img': {
+            borderRadius: '50%',
+            width: 'calc(100% - 6px)',
+            height: 'calc(100% - 6px)',
+          },
+          boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+        }}
+      />
     </IconButton>
   );
 };
@@ -192,7 +240,7 @@ export const Header = ({ handleLogout: handleLogoutProp, handleMenuClick }) => {
         justifyContent="flex-end"
         sx={{
           position: 'absolute',
-          top: '25px',
+          top: '15px',
           right: '20px',
           width: 'auto',
           height: '30px',

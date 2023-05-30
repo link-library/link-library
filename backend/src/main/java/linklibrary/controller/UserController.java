@@ -2,6 +2,7 @@ package linklibrary.controller;
 
 import io.swagger.annotations.ApiOperation;
 import linklibrary.dto.request.*;
+import linklibrary.dto.response.PostDto1;
 import linklibrary.dto.response.ResponseData;
 import linklibrary.dto.response.UserPageDto;
 import linklibrary.entity.ProfileImg;
@@ -167,4 +168,15 @@ public class UserController {
     public String test(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         return principalDetails.getUsername();
     }
+////////////////////////////////////////////// 2023 - 05 - 30
+    @PutMapping("/user-info")
+    public ResponseEntity<?> updateUserPage(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                            @Valid @RequestBody final UpdateUserPageFormDto formDto) {
+        Long userId = principalDetails.getUserDto().getUserId();
+        userService.change(userId, formDto);
+        UserPageDto userPageDto = userService.getUserPage(userId);
+        return ResponseEntity.ok(new ResponseData("마이페이지 수정 완료", userPageDto));
+    }
+    //////////////////////////////////////////////////
+
 }

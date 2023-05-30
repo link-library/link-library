@@ -406,3 +406,56 @@ export const getUserInfo = async () => {
     return result.message;
   }
 };
+
+export const EditUserNickname = async (nickname) => {
+  try {
+    const accessToken = localStorage.getItem('accessToken');
+
+    const response = await instance.put(
+      '/user-info',
+      {
+        nickname: nickname,
+      },
+      {
+        headers: {
+          Authorization: accessToken,
+        },
+      }
+    );
+
+    const result = response.data;
+    return {
+      message: result.message,
+      newNickname: result.data,
+    };
+  } catch (error) {
+    const result = error.response.data;
+    return result.message;
+  }
+};
+
+export const EditUserPassword = async (password) => {
+  try {
+    const accessToken = localStorage.getItem('accessToken');
+
+    const response = await instance.put(
+      '/user-info',
+      {
+        password: password,
+      },
+      {
+        headers: {
+          Authorization: accessToken,
+        },
+      }
+    );
+
+    const result = response.data;
+    return {
+      message: result.message,
+    };
+  } catch (error) {
+    const result = error.response.data;
+    return result.message;
+  }
+};

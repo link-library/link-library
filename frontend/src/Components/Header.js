@@ -53,9 +53,9 @@ const ThemeToggleButton = () => {
       {isDarkMode ? (
         <LightModeIcon
           sx={{
-            fontSize: '36px',
+            fontSize: '38px',
             borderRadius: '50%',
-            padding: '3px',
+            padding: '2px',
             '& > img': {
               borderRadius: '50%',
               width: 'calc(100% - 6px)',
@@ -67,9 +67,9 @@ const ThemeToggleButton = () => {
       ) : (
         <DarkModeIcon
           sx={{
-            fontSize: '36px',
+            fontSize: '38px',
             borderRadius: '50%',
-            padding: '3px',
+            padding: '2px',
             '& > img': {
               borderRadius: '50%',
               width: 'calc(100% - 6px)',
@@ -119,9 +119,9 @@ const FavoriteButton = ({ onClick }) => {
         src={FavoriteChecker}
         alt="Favorite"
         style={{
-          width: '40px',
+          width: '35px',
           borderRadius: '50%',
-          padding: '3px',
+          padding: '5px',
           '& > img': {
             borderRadius: '50%',
             width: 'calc(100% - 6px)',
@@ -159,9 +159,10 @@ const ProfileButton = ({ onClick }) => {
     >
       <Avatar
         sx={{
-          fontSize: '15px',
+          width: '38px',
+          height: '38px',
           borderRadius: '50%',
-          padding: '3px',
+          padding: '2px',
           '& > img': {
             borderRadius: '50%',
             width: 'calc(100% - 6px)',

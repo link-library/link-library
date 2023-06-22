@@ -2,7 +2,6 @@ package linklibrary.controller;
 
 import io.swagger.annotations.ApiOperation;
 import linklibrary.dto.request.*;
-import linklibrary.dto.response.PostDto1;
 import linklibrary.dto.response.ResponseData;
 import linklibrary.dto.response.UserPageDto;
 import linklibrary.entity.ProfileImg;
@@ -33,7 +32,6 @@ public class UserController {
 
     private final UserService userService;
     private final ProfileImgService profileImgService;
-    private final PostService postService;
     private final AuthService authService;
 
 

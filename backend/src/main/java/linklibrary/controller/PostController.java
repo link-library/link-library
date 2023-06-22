@@ -4,7 +4,6 @@ import io.swagger.annotations.ApiOperation;
 import linklibrary.dto.request.PostFormDto;
 import linklibrary.dto.response.*;
 import linklibrary.security.auth.PrincipalDetails;
-import linklibrary.service.CategoryService;
 import linklibrary.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,16 +15,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 public class PostController {
     private final PostService postService;
-    private final CategoryService categoryService;
 
     /**
      * 포스트 생성,

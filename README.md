@@ -37,9 +37,9 @@
 <table align=center>
   <thead>
     <tr>
-      <th>김진수</th>
-      <th>민지훈</th>
-      <th>김진수</th>
+      <th>김진수(BE)</th>
+      <th>민지훈(FE)</th>
+      <th>김진수(BE)</th>
     </tr>
   </thead>
   <tbody>

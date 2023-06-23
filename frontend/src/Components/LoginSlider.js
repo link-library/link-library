@@ -3,8 +3,8 @@ import Slider from 'react-slick';
 import styled from 'styled-components';
 
 import LoginImage1 from '../images/LoginImage1.png';
-import cat2 from '../images/cat2.jpg';
-import cat3 from '../images/cat3.jpg';
+import LoginImage2 from '../images/LoginImage2.png';
+import LoginImage3 from '../images/LoginImage3.png';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -15,16 +15,16 @@ const LoginImg1 = styled.img`
   margin-top: 50px;
 `;
 
-const Cat2 = styled.img`
-  width: 320px;
-  height: 240px;
+const LoginImg2 = styled.img`
+  width: 300px;
+  height: 250px;
   margin-top: 50px;
   /* padding-left: 330px; */
 `;
 
-const Cat3 = styled.img`
+const LoginImg3 = styled.img`
   width: 320px;
-  height: 240px;
+  height: 250px;
   margin-top: 50px;
   /* padding-left: 330px; */
 `;
@@ -69,19 +69,19 @@ export const LoginSlider = () => {
             </ImgText>
           </div>
           <div>
-            <Cat2 src={cat2} alt="cat2" />
+            <LoginImg2 src={LoginImage2} alt="LoginImage2" />
             <ImgText>
-              고양이2
+              카테고리 별 페이지
               <br />
-              사진입니다.
+              분류 기능을 제공합니다.
             </ImgText>
           </div>
           <div>
-            <Cat3 src={cat3} alt="cat2" />
+            <LoginImg3 src={LoginImage3} alt="LoginImage3" />
             <ImgText>
-              고양이3
+              링크들에 대한 정보를 시각적으로
               <br />
-              사진입니다.
+              배치하고 편집할 수 있습니다.
             </ImgText>
           </div>
         </Slider>

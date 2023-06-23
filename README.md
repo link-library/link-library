@@ -32,3 +32,39 @@
 뿔뿔히 흩어져 찾으려고 하면 보이지 않던 링크 링크 라이브러리에서 관리하세요
 
 
+## 👨‍👦‍👦 Team Member
+
+<table align=center>
+  <thead>
+    <tr>
+      <th>김진수</th>
+      <th>민지훈</th>
+      <th>김진수</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td align=center>
+        <img src="https://github.com/dgjinsu/link-library/assets/97269799/21983c46-e5e1-475d-a1a5-09a6600530e9" width=150 height=150 />
+      </td>
+      <td align=center>
+        <img src="https://user-images.githubusercontent.com/65100540/201484293-12dac57c-69d8-4ca7-a17d-0dd1d0bbf2c5.jpeg" width=150 height=150 />
+      </td>
+      <td align=center>
+        <img src="https://github.com/dgjinsu/link-library/assets/97269799/fccd0703-f571-4ad0-9edc-b8286da09fb3" width=150 height=150 />
+      </td>
+    </tr>
+    <tr>
+      <td align=center>
+        <a href="https://github.com/dgjinsu">@dgjinsu</a>
+      </td>
+      <td align=center>
+        <a href="https://github.com/lazarus0320">@lazarus0320</a>
+      </td>
+       <td align=center>
+        <a href="https://github.com/plan11plan">@plan11plan</a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+

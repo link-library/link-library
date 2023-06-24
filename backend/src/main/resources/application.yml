@@ -27,7 +27,7 @@ spring:
         default_batch_fetch_size: 100  # batch size 설정
 
   redis:
-    host: localhost
+    host: link-library-inmemory-001.qjkuoz.0001.apn2.cache.amazonaws.com:6379
     port: 6379
 
   servlet:

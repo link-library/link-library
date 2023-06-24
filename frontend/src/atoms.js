@@ -166,3 +166,8 @@ export const userInfoState = atom({
   key: 'userInfoState',
   default: [],
 });
+
+export const selectedUserImg = atom({
+  key: 'selectedUserImg',
+  default: {},
+});

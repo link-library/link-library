@@ -1,12 +1,22 @@
-import { Box, Divider, Typography, TextField, Button } from '@mui/material';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { userInfoState } from '../atoms';
+import {
+  Box,
+  Divider,
+  Typography,
+  TextField,
+  Button,
+  Avatar,
+} from '@mui/material';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { selectedUserImg, userInfoState } from '../atoms';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import LayersIcon from '@mui/icons-material/Layers';
-import { useEffect, useState } from 'react';
-import { EditUserNickname } from '../Pages/Async';
-import { useNavigate } from 'react-router-dom';
+import { useRef, useState } from 'react';
+import {
+  EditProfileImg,
+  EditUserNickname,
+  EditUserPassword,
+} from '../Pages/Async';
 
 const AccountInfoSection = () => {
   return (
@@ -27,7 +37,7 @@ const RecordInfoSection = () => {
 };
 
 const NicknameChangeSection = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const prevNickname = useRecoilValue(userInfoState);
   const [nickname, setNickname] = useState(prevNickname.nickname);
 
@@ -89,6 +99,32 @@ const NicknameChangeSection = () => {
 };
 
 const PasswordChangeSection = () => {
+  const [password, setPassword] = useState('');
+  const handlePasswordChangeBtn = async () => {
+    console.log(password);
+    if (password === '') {
+      alert('변경할 비밀번호를 입력한 후 변경 버튼을 눌러주세요.');
+      return;
+    } else {
+      const { message } = await EditUserPassword(password);
+      console.log(message);
+      if (message === '마이페이지 수정 완료') {
+        alert(message);
+        // navigate('/', { replace: true });
+        // window.location.reload();
+      } else if (message === '중복된 비밀번호 입니다.') {
+        alert(message);
+      } else if (
+        message ===
+        '비밀번호는 8~16자리수여야 합니다. 영문 대소문자, 숫자, 특수문자를 1개 이상 포함해야 합니다.'
+      ) {
+        alert(message);
+      } else {
+        console.log(message);
+      }
+    }
+  };
+
   return (
     <Box sx={{ margin: '50px' }}>
       <Typography variant="h6">비밀번호 변경</Typography>
@@ -96,10 +132,13 @@ const PasswordChangeSection = () => {
         <TextField
           variant="outlined"
           size="small"
+          type="password"
           sx={{ backgroundColor: 'white' }}
+          onChange={(e) => setPassword(e.target.value)}
         />
         <Button
           variant="outlined"
+          onClick={handlePasswordChangeBtn}
           sx={{
             marginLeft: '10px',
             width: '80px',
@@ -114,6 +153,96 @@ const PasswordChangeSection = () => {
           변경
         </Button>
       </Box>
+    </Box>
+  );
+};
+
+const ProfileImgSection = () => {
+  const fileInputRef = useRef(null);
+
+  const [selectedImageFinal, setSelectedImageFinal] =
+    useRecoilState(selectedUserImg);
+  const [selectedImage, setSelectedImage] = useState(selectedImageFinal);
+  const [selectedOriginImg, setSelectedOriginImg] = useState(null);
+
+  const handleImgClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setSelectedImage(URL.createObjectURL(file));
+    setSelectedOriginImg(file);
+    console.log(file);
+  };
+
+  const handleEditProfileImg = async () => {
+    // 프로필 이미지 최종 변경 버튼
+    const { message, imgName } = await EditProfileImg(selectedOriginImg);
+    console.log(message); // or handle the response as required
+    if (message === '이미지 업로드 완료') {
+      alert(message);
+      setSelectedImageFinal(selectedImage);
+      //깔끔하게 리다이렉트 ㄱㄱ
+    }
+  };
+
+  return (
+    <Box sx={{ margin: '50px', position: 'relative' }}>
+      <Typography variant="h6">프로필 사진 변경</Typography>
+      <div
+        onMouseEnter={(e) => {
+          const addIcon = e.currentTarget.children[1];
+          addIcon.style.opacity = '1';
+        }}
+        onMouseLeave={(e) => {
+          const addIcon = e.currentTarget.children[1];
+          addIcon.style.opacity = '0';
+        }}
+      >
+        <Avatar
+          sx={{
+            width: '300px',
+            height: '300px',
+            fontSize: '130px',
+            color: '#ffffff',
+            cursor: 'pointer',
+            border: '8px solid #ffffff',
+            boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.15)',
+          }}
+          onClick={handleImgClick}
+          src={selectedImage || undefined}
+        />
+        <AddPhotoAlternateIcon
+          sx={{
+            fontSize: '80px',
+            position: 'absolute',
+            bottom: '-20px',
+            right: '-20px',
+            transform: 'translate(-50%, -50%)',
+            opacity: '0',
+            transition: 'opacity 0.3s',
+            color: '#339AF3',
+            cursor: 'pointer',
+          }}
+          onClick={handleImgClick}
+        />
+      </div>
+      <input
+        type="file"
+        accept="image/*"
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+        onChange={handleFileChange}
+      />
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleEditProfileImg}
+        sx={{ marginTop: '20px' }}
+      >
+        프로필 이미지 변경
+      </Button>
     </Box>
   );
 };
@@ -144,34 +273,7 @@ const UserInfoComponent = () => {
           <NicknameChangeSection />
           <PasswordChangeSection />
         </Box>
-        <Box sx={{ margin: '50px', position: 'relative' }}>
-          <Typography variant="h6">프로필 사진 변경</Typography>
-          <AccountCircleIcon
-            sx={{ fontSize: '300px', color: '#74C0FC' }}
-            onMouseEnter={(e) => {
-              const icon = e.target;
-              const addIcon = icon.nextSibling;
-              addIcon.style.opacity = '1';
-            }}
-            onMouseLeave={(e) => {
-              const icon = e.target;
-              const addIcon = icon.nextSibling;
-              addIcon.style.opacity = '0';
-            }}
-          />
-          <AddPhotoAlternateIcon
-            sx={{
-              fontSize: '80px',
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              opacity: '0',
-              transition: 'opacity 0.3s',
-              color: '#339AF0',
-            }}
-          />
-        </Box>
+        <ProfileImgSection />
       </Box>
       <Box sx={{ overflow: 'auto' }}>
         <RecordInfoSection />

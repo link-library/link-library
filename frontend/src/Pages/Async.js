@@ -426,7 +426,7 @@ export const EditUserNickname = async (nickname) => {
     const result = response.data;
     return {
       message: result.message,
-      newNickname: result.data,
+      newNickname: result.data.nickname,
     };
   } catch (error) {
     const result = error.response.data;
@@ -454,6 +454,51 @@ export const EditUserPassword = async (password) => {
     return {
       message: result.message,
     };
+  } catch (error) {
+    const result = error.response.data;
+    return result.message;
+  }
+};
+
+export const EditProfileImg = async (img) => {
+  try {
+    const formData = new FormData();
+    formData.append('profileImg', img);
+
+    const accessToken = localStorage.getItem('accessToken');
+    const response = await instance.post('/profileImg', formData, {
+      headers: {
+        Authorization: accessToken,
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    const result = response.data;
+    return {
+      message: result.message,
+      imgName: result.data,
+    };
+  } catch (error) {
+    const result = error.response.data;
+    return result.message;
+  }
+};
+
+export const GetProfileImg = async (imgName) => {
+  try {
+    const accessToken = localStorage.getItem('accessToken');
+
+    const response = await instance.get(`/images/${imgName}`, {
+      responseType: 'blob',
+      headers: {
+        Authorization: accessToken,
+      },
+    });
+
+    const blob = new Blob([response.data], { type: 'image/jpeg' });
+    const image = URL.createObjectURL(blob);
+
+    return image;
   } catch (error) {
     const result = error.response.data;
     return result.message;

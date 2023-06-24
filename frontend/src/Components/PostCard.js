@@ -21,8 +21,8 @@ import styled from 'styled-components';
 import EditIcon from '@mui/icons-material/Edit';
 import EditPostcardDialog from './EditPostcardDialog';
 import { postEdit } from '../Pages/Async';
-import { postDataState } from '../atoms';
-import { useRecoilState } from 'recoil';
+import { postDataState, selectedUserImg } from '../atoms';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 const StyledCard = styled(Card)({
   // minWidth: 260,
@@ -84,6 +84,7 @@ export const PostCard = ({
   }
   const [postData, setPostData] = useRecoilState(postDataState);
   const [likeClick, setLikeClick] = useState(bookmark); // 찜하기 버튼 토글 관리
+  const userImg = useRecoilValue(selectedUserImg);
 
   const handleLikeClick = async (event) => {
     event.stopPropagation();
@@ -173,7 +174,21 @@ i 플래그는 대소문자를 구분하지 않는 패턴을 만들어 대소문
       <StyledCard className="custom-card" onClick={handlePostCardClick}>
         <CardHeader
           avatar={
-            <Avatar sx={{ bgcolor: red[500], width: 30, height: 30 }}>M</Avatar>
+            <Avatar
+              sx={{
+                width: 30,
+                height: 30,
+                // padding: '3px',
+                borderRadius: '50%',
+                '& > img': {
+                  borderRadius: '50%',
+                  width: 'calc(100%)',
+                  height: 'calc(100%)',
+                },
+                // boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+              }}
+              src={userImg || undefined}
+            ></Avatar>
           }
           action={
             <IconButton onClick={handleDeleteClick}>

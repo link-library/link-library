@@ -4,19 +4,28 @@ import {
   categoryDataState,
   isSidebarOpenState,
   postDataState,
+  selectedUserImg,
   totalPostAmountBySelectedCategory,
   totalPostAmountBySelectedCategoryState,
+  userInfoState,
 } from '../atoms';
 import { useNavigate } from 'react-router-dom';
 import Header from '../Components/Header';
 import MainFrame from '../Components/MainFrame';
-import { getCategoryAndPostData, logoutUser } from './Async';
+import {
+  GetProfileImg,
+  getCategoryAndPostData,
+  getUserInfo,
+  logoutUser,
+} from './Async';
 
 export const MainPage = () => {
   const navigate = useNavigate();
   const [categoryData, setCategoryData] = useRecoilState(categoryDataState);
   const [postData, setPostData] = useRecoilState(postDataState);
-
+  const [selectedImageFinal, setSelectedImageFinal] =
+    useRecoilState(selectedUserImg);
+  const setUserInfo = useSetRecoilState(userInfoState);
   const handleLogout = async () => {
     const msg = await logoutUser(localStorage.getItem('accessToken'));
     if (msg === '잘못된 요청입니다.') {
@@ -76,9 +85,25 @@ export const MainPage = () => {
   }, []);
 
   useEffect(() => {
-    console.log(categoryData);
-    console.log(postData);
-  }, [categoryData, postData]);
+    const getUserData = async () => {
+      const { message, nickname, totalPost, storeFileName } =
+        await getUserInfo();
+      if (message === '마이페이지 조회 완료') {
+        console.log(`nickname: ${nickname}`);
+        console.log(`totalPost: ${totalPost}`);
+        console.log(`storeFileName: ${storeFileName}`);
+
+        setUserInfo({
+          nickname: nickname,
+          totalPost: totalPost,
+          storeFileName: storeFileName,
+        });
+        const userImg = await GetProfileImg(storeFileName);
+        setSelectedImageFinal(userImg);
+      }
+    };
+    getUserData();
+  }, []);
 
   return (
     <div

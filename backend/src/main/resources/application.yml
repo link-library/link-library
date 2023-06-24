@@ -25,6 +25,8 @@ spring:
       hibernate:
         format_sql: true # sql 문 포맷
         default_batch_fetch_size: 100  # batch size 설정
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
   redis:
     host: link-library-inmemory-001.qjkuoz.0001.apn2.cache.amazonaws.com:6379

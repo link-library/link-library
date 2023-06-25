@@ -29,8 +29,8 @@ spring:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
   redis:
-#    host: link-library-inmemory-001.qjkuoz.0001.apn2.cache.amazonaws.com:6379
-    host: localhost
+    host: link-library-inmemory-001.qjkuoz.0001.apn2.cache.amazonaws.com:6379
+#    host: localhost
     port: 6379
 
   servlet:

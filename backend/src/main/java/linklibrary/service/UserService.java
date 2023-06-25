@@ -24,6 +24,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder;
     private final PostService postService;
+    private final ProfileImgService profileImgService;
 
     /**
      * 회원 가입
@@ -81,16 +82,18 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("유저 엔티티가 없습니다"));
         String storeFileName =
                 (user.getProfileImg() != null) ? user.getProfileImg().getStoreFileName() : null;
+
+        //s3 주소 가져오기
+        String s3Url = profileImgService.getImgPath(storeFileName);
         UserPageDto userPageDto = UserPageDto.builder()
                 .userId(user.getId())
                 .nickname(user.getNickname())
-                .storeFileName(storeFileName)
+                .storeFileName(s3Url)
                 .totalPost(totalPost)
                 .build();
         return userPageDto;
     }
 
-    /////////////////////////////////////////////2022 - 05 -30
     // 마이페이지 수정
     public void change(Long userId, UpdateUserPageFormDto formDto)  {
 
@@ -115,9 +118,6 @@ public class UserService {
         }
 
     }
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void delete(Long userId) {
         userRepository.deleteById(userId);

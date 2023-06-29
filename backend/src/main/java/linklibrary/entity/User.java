@@ -25,9 +25,6 @@ public class User extends BaseEntity{
     private String loginId;
     private String password;
 
-//    @Column(name = "created_at")
-//    private LocalDateTime createdAt;
-
     @Enumerated(EnumType.STRING)
     private Role role; // USER, ADMIN
 

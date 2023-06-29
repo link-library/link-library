@@ -82,11 +82,6 @@ public class PostService {
     /**
      * 포스트 목록 전체 조회
      */
-    /**
-     * posts에 있는 각 앨범을 하나씩 하나씩 `PostMapper.converToDto`로 변화시킨 이후 리스트형태로 다시 모읍니다
-     * `collect(Collectors.toList())`.
-     */
-
     public List<PostDto> getPostList(Long userId, String keyword, String sort, Boolean bookmark, Pageable pageRequest) {
         Slice<Post> posts;
         if (bookmark != null) { // 북마크 해준 경우
@@ -171,35 +166,4 @@ public class PostService {
             return mainPageDto;
         }
     }
-//    public MainPageDto getPosts(Long userId, String bookmark, String sort, String keyword, Long categoryId, Pageable pageable) {
-//        List<Category> categories = categoryRepository.findByUserId(userId);   //  Id로 만든 카테고리들 찾아옴
-//
-//
-//        List<CategoryDto> categoryDtoList = categories.stream()    // 카테고리 ->DTO시키기
-//                .map(c -> new CategoryDto(c.getId(), c.getName()))
-//                .collect(Collectors.toList());  //카테고리DTO에는  ID와 NAME만 있음.
-//
-//        String current = bookmark == null ? "전체조회" : "찜목록"; //bookmark 여부에 따라 currentCategory 이름 설정
-//
-//        if (categoryId != null) {
-//            Category category = categoryRepository.findById(categoryId)
-//                    .orElseThrow(() -> new EntityNotFoundException("카테고리 아이디에 해당하는 엔티티가 없습니다. [PostService]"));
-//            current = category.getName(); //만약 Category 목록을 조회했다면 current 에 카테고리명
-//        }
-//        Optional<Category> byId = categoryRepository.findById(categoryId); // 05 27 추가
-//        Category category = byId.get();// 05 27 추가
-//
-//        //Response 로 뿌려줄 화면
-//        Page<PostDto1> postDtos = postRepository.findPostDtos(userId, bookmark, sort, keyword, categoryId, pageable);
-//        long totalPost = postDtos.getTotalElements(); //포스트의 개수,
-//        long size = category.getPosts().size();// 05 27 추가
-//        MainPageDto mainPageDto = MainPageDto.builder()
-//                .categoryDtoList(categoryDtoList) //카테고리 리스트
-//                .postDtoList(postDtos)  //포스트 리스트
-//                .total(totalPost) //총 포스트 개수
-//                .currentCategory(current)  //현재 카테고리이름
-//                .size(size)
-//                .build();
-//        return mainPageDto;
-//    }
 }

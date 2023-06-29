@@ -24,6 +24,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder;
     private final PostService postService;
+    private final ProfileImgService profileImgService;
 
     /**
      * 회원 가입
@@ -81,18 +82,20 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("유저 엔티티가 없습니다"));
         String storeFileName =
                 (user.getProfileImg() != null) ? user.getProfileImg().getStoreFileName() : null;
+
+        //s3 주소 가져오기
+        String s3Url = profileImgService.getImgPath(storeFileName);
         UserPageDto userPageDto = UserPageDto.builder()
                 .userId(user.getId())
                 .nickname(user.getNickname())
-                .storeFileName(storeFileName)
+                .storeFileName(s3Url)
                 .totalPost(totalPost)
                 .build();
         return userPageDto;
     }
 
-    /////////////////////////////////////////////2022 - 05 -30
     // 마이페이지 수정
-    public UserPageDto change(Long userId, UpdateUserPageFormDto formDto)  {
+    public void change(Long userId, UpdateUserPageFormDto formDto)  {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("유저 엔티티가 없습니다"));
@@ -104,40 +107,17 @@ public class UserService {
                 throw new IllegalStateException("이미 존재하는 닉네임입니다.");
             }
             user.setNickname(formDto.getNickname());
-            getUserPage(userId); //반환 값이 아래랑 같음  //UserPageDto를 getUserPage로 하면 안 되던가요?
-            String storeFileName =
-                    (user.getProfileImg() != null) ? user.getProfileImg().getStoreFileName() : null;
-            UserPageDto userPageDto = UserPageDto.builder()
-                    .userId(user.getId())
-                    .nickname(user.getNickname())
-                    .storeFileName(storeFileName)
-                    .totalPost(totalPost)
-                    .build(); //formDto.getPassword()!=null && formDto.getPassword()==null
-            return userPageDto;
-        } else {
+        }
+        else {
             log.info("=========================");
-            log.info(user.getPassword());
-            log.info(encoder.encode(formDto.getPassword()));
-            if(encoder.matches(user.getPassword(), encoder.encode(formDto.getPassword()))) {
+            log.info(formDto.getPassword());
+            if(encoder.matches(formDto.getPassword(), user.getPassword())) {
                 throw new IllegalStateException("기존 비밀번호와 동일합니다.");
             }
             user.setPassword(encoder.encode(formDto.getPassword()));
-            getUserPage(userId);
-
-            String storeFileName =
-                    (user.getProfileImg() != null) ? user.getProfileImg().getStoreFileName() : null;
-            UserPageDto userPageDto = UserPageDto.builder()
-                    .userId(user.getId())
-                    .nickname(user.getNickname())
-                    .storeFileName(storeFileName)
-                    .totalPost(totalPost)
-                    .build();
-            return userPageDto;
         }
+
     }
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void delete(Long userId) {
         userRepository.deleteById(userId);

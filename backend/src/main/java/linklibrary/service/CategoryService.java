@@ -55,12 +55,10 @@ public class CategoryService {
     }
 
 
-    // 2023-05-18 삭제카테고리 로직 일부 추가 
     public void deleteCategory(Long categoryId, Long id) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new EntityNotFoundException("카테고리 엔티티가 없습니다."));
         postRepository.deleteByCategoryId(category.getId());
-//        category.getPosts().clear(); //쿼리 N 개 나가서 위 로직으로 변경
 
         categoryRepository.delete(category);
     }

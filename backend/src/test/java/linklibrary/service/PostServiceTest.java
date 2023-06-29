@@ -38,8 +38,8 @@ class PostServiceTest {
         //when
         PostDto1 postDto = postService.createPost(postFormDto, user.getId());
         //then
-        em.flush();
-        em.clear();
+//        em.flush();
+//        em.clear();
         Post post = postRepository.findById(postDto.getPostId()).get();
         assertThat(post.getTitle()).isEqualTo(postFormDto.getTitle()); //title 비교
         assertThat(post.getMemo()).isEqualTo(postFormDto.getMemo()); //memo 비교
@@ -58,8 +58,8 @@ class PostServiceTest {
         //when
         PostDto1 postDto = postService.change(post.getId(), postForm);
         //then
-        em.flush();
-        em.clear();
+//        em.flush();
+//        em.clear();
         Post updatedPost = postRepository.findById(postDto.getPostId()).get();
         assertThat(updatedPost.getTitle()).isEqualTo(postForm.getTitle());
     }
@@ -73,8 +73,8 @@ class PostServiceTest {
         //when
         postService.deletePost(post.getId());
         //then
-        em.flush();
-        em.clear();
+//        em.flush();
+//        em.clear();
         Optional<Post> findPost = postRepository.findById(post.getId());
         assertThat(findPost).isEmpty();
     }

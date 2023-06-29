@@ -7,22 +7,30 @@ spring:
 
   main:
     allow-circular-references: true
+#  datasource:
+#    url: jdbc:h2:tcp://localhost/~/link-library
+#    username: sa
+#    password:
+#    driver-class-name: org.h2.Driver
   datasource:
-    url: jdbc:h2:tcp://localhost/~/link-library
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://link-library-db.coz9al7ljo0h.ap-northeast-2.rds.amazonaws.com:3306/link_library_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: admin
+    password: linklibrary2023
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true # sql 문 포맷
         default_batch_fetch_size: 100  # batch size 설정
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
   redis:
-    host: localhost
+    host: link-library-inmemory-001.qjkuoz.0001.apn2.cache.amazonaws.com
+#    host: localhost
     port: 6379
 
   servlet:
@@ -35,6 +43,17 @@ logging.level:
 file:
 #  dir: C:/Users/김진수/link-library/ 19진수 경로
   dir: C:\Users\astar\linkLibraryImages/
+
+# s3 관련 설정
+cloud:
+  aws:
+    s3:
+      bucket: linklibrarybucket
+    stack.auto: false #기본 cloudFormation 구성 시작 사용 x
+    region.static: ap-northeast-2 #한국
+    credentials:
+      accessKey: AKIAVIV2F6ANX6LMBOV4
+      secretKey: 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
 
 jwt:
   secret: gsgsefzsefesgazseffzsefgzsgzsfafaesfaesgaseasdgasfasegsegsgasefsegzsegfasefaegaefsefsegasezds

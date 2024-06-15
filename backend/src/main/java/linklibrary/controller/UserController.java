@@ -117,8 +117,12 @@ public class UserController {
         Long userId = principalDetails.getUserDto().getUserId();
         User user = userService.findUser(principalDetails.getUserDto().getLoginId());
 
-        ProfileImg profileImg = profileImgService.uploadImg(profileImgDto.getProfileImg(), userId);
-        return ResponseEntity.ok(new ResponseData("이미지 업로드 완료", profileImg.getStoreFileName()));
+//        ProfileImg profileImg = profileImgService.uploadImg(profileImgDto.getProfileImg(), userId);
+        String fileUrl = profileImgService.uploadImgS3(profileImgDto.getProfileImg(), userId);
+        if (fileUrl == null) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        return ResponseEntity.ok(new ResponseData("이미지 업로드 완료", fileUrl));
     }
 
     /**
@@ -166,7 +170,6 @@ public class UserController {
     public String test(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         return principalDetails.getUsername();
     }
-////////////////////////////////////////////// 2023 - 05 - 30
     @PutMapping("/user-info")
     public ResponseEntity<?> updateUserPage(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                             @Valid @RequestBody final UpdateUserPageFormDto formDto) {
@@ -175,6 +178,5 @@ public class UserController {
         UserPageDto userPageDto = userService.getUserPage(userId);
         return ResponseEntity.ok(new ResponseData("마이페이지 수정 완료", userPageDto));
     }
-    //////////////////////////////////////////////////
 
 }

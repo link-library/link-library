@@ -7,14 +7,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /**
  * cors 에러 해결 (WebMvcConfigurer 에서)
  */
-@Configuration
-public class WebConfig implements WebMvcConfigurer {
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000")
-                .allowedMethods("*")
-                .allowedOriginPatterns("*")
-                .allowCredentials(true);
-    }
-}
+//@Configuration
+//public class WebConfig implements WebMvcConfigurer {
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**")
+//                .allowedOrigins("http://localhost:3000")
+//                .allowedMethods("*")
+//                .allowedOriginPatterns("*")
+//                .allowCredentials(true);
+//    }
+//}
